@@ -3,6 +3,7 @@
 /node_modules
 .history
 /dist
+.env.*
 
 # Logs
 logs
