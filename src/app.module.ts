@@ -1,17 +1,16 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
-import { DatabaseModule } from './config/database/database.module';
+import { ApplogMiddleware } from './core/middleware/applog/applog.middleware';
+import { APP_INTERCEPTOR_PROVIDERS, APP_MODULES } from './app.const';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      envFilePath: ['.env.dev.local'],
-    }),
-    DatabaseModule,
-  ],
+  imports: [...APP_MODULES],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ...APP_INTERCEPTOR_PROVIDERS],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ApplogMiddleware).forRoutes('*');
+  }
+}
