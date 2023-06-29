@@ -3,7 +3,7 @@ import { DatabaseModule } from './config/database/database.module';
 import { AllExceptionsFilter } from './core/exception/all-exception.filter';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AppLogInterceptor } from './core/interceptor/applog/applog.interceptor';
-import { Scope } from '@nestjs/common';
+import {  Scope } from '@nestjs/common';
 import {
   ExcludeNullInterceptor,
   TimeoutInterceptor,
@@ -43,9 +43,6 @@ export const APP_EXCEPTION_PROVIDERS = [
 ];
 
 export const APP_MODULES_IMPORT = [
-  ConfigModule.forRoot({
-    envFilePath: ['.env.dev.local'],
-  }),
   AppLogModule,
   DatabaseModule,
 ];
