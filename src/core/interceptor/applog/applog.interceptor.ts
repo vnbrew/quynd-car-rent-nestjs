@@ -3,26 +3,21 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
-  Provider,
 } from '@nestjs/common';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Observable, map } from 'rxjs';
+import { LogService } from 'src/core/log/log.service';
 
 @Injectable()
-class AppLogInterceptor implements NestInterceptor {
+export class AppLogInterceptor implements NestInterceptor {
+  constructor(private readonly logger: LogService) {}
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    console.log('Request has been received.');
+    this.logger.info('Request has been received.');
     const start = Date.now();
     return next.handle().pipe(
       map((data) => {
-        console.log(`Request has been processed in ${Date.now() - start}ms.`);
+        this.logger.info(`Request has been processed in ${Date.now() - start}ms.`);
         return data;
       }),
     );
   }
 }
-
-export const AppLogInterceptorProvider: Provider = {
-  provide: APP_INTERCEPTOR,
-  useClass: AppLogInterceptor,
-};

@@ -2,8 +2,7 @@ import { BadRequestException, ForbiddenException, GoneException, Injectable } fr
 
 @Injectable()
 export class AppService {
-  
   getHello(id: number): string {
-    throw new BadRequestException();
+    return 'Hello World!';
   }
 }

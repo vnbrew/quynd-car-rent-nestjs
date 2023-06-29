@@ -1,33 +1,36 @@
 import {
-    ExceptionFilter,
-    Catch,
-    ArgumentsHost,
-    HttpException,
-    HttpStatus,
-  } from '@nestjs/common';
-import { generateResponseError, generateValidationError } from './error-response.interface';
-  
-  @Catch()
-  export class AllExceptionsFilter implements ExceptionFilter {
-    catch(exception: unknown, host: ArgumentsHost) {
-      const ctx = host.switchToHttp();
-      const response = ctx.getResponse();
-      const request = ctx.getRequest();
-  
-      const status =
-        exception instanceof HttpException
-          ? exception.getStatus()
-          : HttpStatus.INTERNAL_SERVER_ERROR;
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
+import { HttpAdapterHost } from '@nestjs/core';
+import { LogService } from '../log/log.service';
 
-        //Validation Error
-        //Invalid Request
-        // Business Logic Error
-        if(status === HttpStatus.BAD_REQUEST) {
-            response.status(status).json(generateValidationError(exception));
-        }
-        else {
-            response.status(status).json(generateResponseError(status, ''));
-        }
-      
-    }
+@Catch()
+export class AllExceptionsFilter implements ExceptionFilter {
+  constructor(
+    private readonly httpAdapterHost: HttpAdapterHost,
+    private readonly logger: LogService,
+  ) {}
+
+  catch(exception: unknown, host: ArgumentsHost): void {
+    const { httpAdapter } = this.httpAdapterHost;
+    const ctx = host.switchToHttp();
+    const httpStatus =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    this.logger.info(`catch all ${httpStatus}`);
+
+    const responseBody = {
+      statusCode: httpStatus,
+      timestamp: new Date().toISOString(),
+      path: httpAdapter.getRequestUrl(ctx.getRequest()),
+    };
+
+    httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
+}
