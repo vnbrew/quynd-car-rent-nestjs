@@ -11,6 +11,7 @@ import {
 } from './core/interceptor/transform/transform.interceptor';
 import { LogService } from './core/log/log.service';
 import { LogModule } from './core/log/log.module';
+import { MembersModule } from './exercises/members/members.module';
 
 export const APP_INTERCEPTOR_PROVIDERS = [
   {
@@ -49,3 +50,5 @@ export const APP_MODULES_IMPORT = [
   LogModule,
   DatabaseModule,
 ];
+
+export const EXERCISES_MODULES_IMPORT = [MembersModule];

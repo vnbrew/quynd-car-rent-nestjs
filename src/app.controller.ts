@@ -14,11 +14,11 @@ export class FindOneParams {
   id: number;
 }
 
-@Controller()
+@Controller('v1/hello')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('/api/v1/hello/:id')
+  @Get(':id')
   @UsePipes(ValidationPipe)
   getHello(@Param() params: FindOneParams): string {
     return this.appService.getHello(params.id);
