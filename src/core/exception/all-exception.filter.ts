@@ -6,13 +6,13 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
-import { LogService } from '../log/log.service';
+import { AppLogService } from '../log/app.log.service';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   constructor(
     private readonly httpAdapterHost: HttpAdapterHost,
-    private readonly logger: LogService,
+    private readonly logger: AppLogService,
   ) {}
 
   catch(exception: unknown, host: ArgumentsHost): void {
@@ -23,7 +23,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    this.logger.info(`catch all ${httpStatus}`);
+    this.logger.log(`catch all ${httpStatus}`, AllExceptionsFilter.name);
 
     const responseBody = {
       statusCode: httpStatus,

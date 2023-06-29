@@ -1,15 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
+import { Member } from './entities/member.entity';
+import { generateMembers } from './helper/menber.helper';
 
 @Injectable()
 export class MembersService {
+  private readonly members: Member[] = [];
+
   create(createMemberDto: CreateMemberDto) {
     return 'This action adds a new member';
   }
 
   findAll() {
-    return `This action returns all members`;
+    // const newMember = new Member();
+    // newMember.name = 'Lê Nhật Anh';
+    // newMember.gender = 'Male';
+    // return {
+    //   members: [newMember],
+    // };
+    return {
+      members: generateMembers(),
+    };
   }
 
   findOne(id: number) {

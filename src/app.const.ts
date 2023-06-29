@@ -3,15 +3,14 @@ import { DatabaseModule } from './config/database/database.module';
 import { AllExceptionsFilter } from './core/exception/all-exception.filter';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AppLogInterceptor } from './core/interceptor/applog/applog.interceptor';
-import { Provider, Scope } from '@nestjs/common';
+import { Scope } from '@nestjs/common';
 import {
   ExcludeNullInterceptor,
   TimeoutInterceptor,
   TransformInterceptor,
 } from './core/interceptor/transform/transform.interceptor';
-import { LogService } from './core/log/log.service';
-import { LogModule } from './core/log/log.module';
 import { MembersModule } from './exercises/members/members.module';
+import { AppLogModule } from './core/log/app.log.module';
 
 export const APP_INTERCEPTOR_PROVIDERS = [
   {
@@ -47,7 +46,7 @@ export const APP_MODULES_IMPORT = [
   ConfigModule.forRoot({
     envFilePath: ['.env.dev.local'],
   }),
-  LogModule,
+  AppLogModule,
   DatabaseModule,
 ];
 
