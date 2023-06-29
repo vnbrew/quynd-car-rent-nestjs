@@ -1,13 +1,6 @@
-import { Controller, Get, Param, UseFilters, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { AppService } from './app.service';
-import {
-  ExcludeNullInterceptor,
-  TimeoutInterceptor,
-  TransformInterceptor,
-} from './core/interceptor/transform/transform.interceptor';
 import { IsNumberString } from 'class-validator';
-import { AppLogInterceptor } from './core/interceptor/applog/applog.interceptor';
-import { AllExceptionsFilter } from './core/exception/all-exception.filter';
 
 export class FindOneParams {
   @IsNumberString()
@@ -16,10 +9,9 @@ export class FindOneParams {
 
 @Controller('v1/hello')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) { }
 
   @Get(':id')
-  @UsePipes(ValidationPipe)
   getHello(@Param() params: FindOneParams): string {
     return this.appService.getHello(params.id);
   }

@@ -1,50 +1,43 @@
-import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './config/database/database.module';
-import { AllExceptionsFilter } from './core/exception/all-exception.filter';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
-import { AppLogInterceptor } from './core/interceptor/applog/applog.interceptor';
-import {  Scope } from '@nestjs/common';
-import {
-  ExcludeNullInterceptor,
-  TimeoutInterceptor,
-  TransformInterceptor,
-} from './core/interceptor/transform/transform.interceptor';
+import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { Scope } from '@nestjs/common';
 import { MembersModule } from './exercises/members/members.module';
 import { AppLogModule } from './core/log/app.log.module';
+import { AppAllExceptionFilter } from './core/filter/app.exception.filter';
+import { AppExceptionModule } from './core/exception/app.exception.module';
+import { AppValidationPipe } from './core/pipe/app.validation.pipe';
+import { AppLoggingInterceptor } from './core/interceptor/app.logging.interceptor';
+import { AppResponseInterceptor } from './core/interceptor/app.response.interceptor';
 
 export const APP_INTERCEPTOR_PROVIDERS = [
   {
     provide: APP_INTERCEPTOR,
     scope: Scope.REQUEST,
-    useClass: AppLogInterceptor,
+    useClass: AppResponseInterceptor,
   },
   {
     provide: APP_INTERCEPTOR,
     scope: Scope.REQUEST,
-    useClass: TransformInterceptor,
+    useClass: AppLoggingInterceptor,
   },
   {
-    provide: APP_INTERCEPTOR,
+    provide: APP_PIPE,
     scope: Scope.REQUEST,
-    useClass: ExcludeNullInterceptor,
-  },
-  {
-    provide: APP_INTERCEPTOR,
-    scope: Scope.REQUEST,
-    useClass: TimeoutInterceptor,
+    useClass: AppValidationPipe,
   },
 ];
 
 export const APP_EXCEPTION_PROVIDERS = [
   {
     provide: APP_FILTER,
-    useClass: AllExceptionsFilter,
+    useClass: AppAllExceptionFilter,
   },
 ];
 
 export const APP_MODULES_IMPORT = [
   AppLogModule,
   DatabaseModule,
+  AppExceptionModule,
 ];
 
 export const EXERCISES_MODULES_IMPORT = [MembersModule];

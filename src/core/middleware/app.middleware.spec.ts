@@ -1,4 +1,4 @@
-import { ApplogMiddleware } from './applog.middleware';
+import { ApplogMiddleware } from './app.middleware';
 
 describe('ApplogMiddleware', () => {
   it('should be defined', () => {

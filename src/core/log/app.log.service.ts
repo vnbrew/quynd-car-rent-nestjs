@@ -1,49 +1,25 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { IAppLog } from './app.log.interface';
 
 @Injectable()
-export class AppLogService {
-  private readonly logger: Logger;
-  constructor() {
-    this.logger = new Logger();
-  }
-
-  log(message: string, context?: string): void {
-    if (context) {
-      this.logger.log(`${message}`, context);
-    } else {
-      this.logger.log(message);
+export class AppLogService extends Logger implements IAppLog {
+  debug(context: string, message: string) {
+    if (process.env.NODE_ENV !== 'production') {
+      super.debug(`[DEBUG] ${message}`, context);
     }
   }
-
-  error(message: string, trace?: string, context?: string): void {
-    if (context) {
-      this.logger.error(`${message}`, trace, context);
-    } else {
-      this.logger.error(message, trace);
-    }
+  log(context: string, message: string) {
+    super.log(`[INFO] ${message}`, context);
   }
-
-  warn(message: string, context?: string): void {
-    if (context) {
-      this.logger.warn(`${message}`, context);
-    } else {
-      this.logger.warn(message);
-    }
+  error(context: string, message: string, trace?: string) {
+    super.error(`[ERROR] ${message}`, trace, context);
   }
-
-  debug(message: string, context?: string): void {
-    if (context) {
-      this.logger.debug(`${message}`, context);
-    } else {
-      this.logger.debug(message);
-    }
+  warn(context: string, message: string) {
+    super.warn(`[WARN] ${message}`, context);
   }
-
-  verbose(message: string, context?: string): void {
-    if (context) {
-      this.logger.verbose(`${message}`, context);
-    } else {
-      this.logger.verbose(message);
+  verbose(context: string, message: string) {
+    if (process.env.NODE_ENV !== 'production') {
+      super.verbose(`[VERBOSE] ${message}`, context);
     }
   }
 }
