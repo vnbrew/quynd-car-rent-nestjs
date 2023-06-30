@@ -1,16 +1,16 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { AppLogService } from 'src/core/log/app.log.service';
+import { AppLogService } from '../log/console/app.log.service';
 
 @Injectable()
-export class ApplogMiddleware implements NestMiddleware {
+export class AppMiddleware implements NestMiddleware {
   constructor(private readonly logger: AppLogService) { }
 
   use(req: any, res: any, next: () => void) {
     const method = req.method;
     const url = req.originalUrl;
-    this.logger.log(ApplogMiddleware.name, `Request ${method} ${url} started`);
+    this.logger.log(AppMiddleware.name, `Request ${method} ${url} started`);
     res.on('finish', () => {
-      this.logger.log(ApplogMiddleware.name, `Request ${method} ${url} completed`);
+      this.logger.log(AppMiddleware.name, `Request ${method} ${url} completed`);
     });
     next();
   }

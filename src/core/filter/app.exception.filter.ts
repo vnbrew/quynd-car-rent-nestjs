@@ -1,6 +1,6 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
-import { AppLogService } from '../log/app.log.service';
 import { IBaseExceptionMessage } from '../exception/app.exception.interface';
+import { AppLogService } from '../log/console/app.log.service';
 
 @Catch()
 export class AppAllExceptionFilter implements ExceptionFilter {

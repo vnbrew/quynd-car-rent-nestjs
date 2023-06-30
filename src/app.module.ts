@@ -7,7 +7,7 @@ import {
   APP_MODULES_IMPORT,
   EXERCISES_MODULES_IMPORT,
 } from './app.const';
-import { ApplogMiddleware } from './core/middleware/app.middleware';
+import { AppMiddleware } from './core/middleware/app.middleware';
 
 @Module({
   imports: [...APP_MODULES_IMPORT, ...EXERCISES_MODULES_IMPORT],
@@ -20,6 +20,6 @@ import { ApplogMiddleware } from './core/middleware/app.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(ApplogMiddleware).forRoutes('*');
+    consumer.apply(AppMiddleware).forRoutes('*');
   }
 }

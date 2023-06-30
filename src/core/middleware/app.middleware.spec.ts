@@ -1,7 +1,7 @@
-import { ApplogMiddleware } from './app.middleware';
+import { AppMiddleware } from './app.middleware';
 
-describe('ApplogMiddleware', () => {
+describe('AppMiddleware', () => {
   it('should be defined', () => {
-    // expect(new ApplogMiddleware()).toBeDefined();
+    // expect(new AppMiddleware()).toBeDefined();
   });
 });
