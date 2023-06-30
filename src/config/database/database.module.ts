@@ -10,8 +10,8 @@ import { TypeOrmConfigModule } from '../typeorm-config/typeorm-config.module';
     TypeOrmModule.forRootAsync({
       imports: [TypeOrmConfigModule],
       inject: [TypeOrmConfigService],
-      useFactory: async (config: TypeOrmConfigService) => config.createTypeOrmOptions(),
-      // useClass: TypeOrmConfigService,
+      // useFactory: async (config: TypeOrmConfigService) => config.createTypeOrmOptions(),
+      useClass: TypeOrmConfigService,
     }),
   ],
   controllers: [DatabaseController],

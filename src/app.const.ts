@@ -8,6 +8,11 @@ import { AppExceptionModule } from './core/exception/app.exception.module';
 import { AppValidationPipe } from './core/pipe/app.validation.pipe';
 import { AppLoggingInterceptor } from './core/interceptor/app.logging.interceptor';
 import { AppResponseInterceptor } from './core/interceptor/app.response.interceptor';
+import { CatsModule } from './exercises/cats/cats.module';
+import { Member } from './exercises/members/entities/member.entity';
+import { Cat } from './exercises/cats/entities/cat.entity';
+import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type';
+import { MixedList } from 'typeorm/common/MixedList';
 
 export const APP_INTERCEPTOR_PROVIDERS = [
   {
@@ -40,4 +45,6 @@ export const APP_MODULES_IMPORT = [
   AppExceptionModule,
 ];
 
-export const EXERCISES_MODULES_IMPORT = [MembersModule];
+export const EXERCISES_MODULES_IMPORT = [MembersModule, CatsModule];
+
+export const ENTITY_IMPORT = [Member, Cat];

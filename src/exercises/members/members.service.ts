@@ -1,27 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
+import { AbsDataServices } from 'src/core/base/abstracts/data.service.abstract';
+import { MemberFactory } from './factory/member.factory';
 import { Member } from './entities/member.entity';
-import { generateMembers } from './helper/menber.helper';
 
 @Injectable()
 export class MembersService {
-  private readonly members: Member[] = [];
+  constructor(private readonly dataServices: AbsDataServices) {}
 
-  create(createMemberDto: CreateMemberDto) {
-    return 'This action adds a new member';
+  async createMember(member: Member): Promise<Member> {
+    try {
+      const createdMember = await this.dataServices.members.createOrUpdate(member);
+      return createdMember;
+    } catch (error) {
+      throw error;
+    }
   }
 
   findAll() {
-    // const newMember = new Member();
-    // newMember.name = 'Lê Nhật Anh';
-    // newMember.gender = 'Male';
-    // return {
-    //   members: [newMember],
-    // };
-    return {
-      members: generateMembers(),
-    };
+    return this.dataServices.members.findAll();
   }
 
   findOne(id: number) {

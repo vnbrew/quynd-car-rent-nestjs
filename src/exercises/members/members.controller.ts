@@ -1,15 +1,50 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  BadRequestException,
+} from '@nestjs/common';
 import { MembersService } from './members.service';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
+import { CreateMemberResponse } from './response/member.response';
+import { MemberFactory } from './factory/member.factory';
+import { AppExceptionService } from 'src/core/exception/app.exception.service';
+import { IBaseExceptionMessage } from 'src/core/exception/app.exception.interface';
 
 @Controller('members')
 export class MembersController {
-  constructor(private readonly membersService: MembersService) {}
+  constructor(
+    private readonly membersService: MembersService,
+    private readonly memberFactory: MemberFactory,
+    private readonly exceptionService: AppExceptionService,
+  ) {}
 
   @Post()
-  create(@Body() createMemberDto: CreateMemberDto) {
-    return this.membersService.create(createMemberDto);
+  async create(
+    @Body() createMemberDto: CreateMemberDto,
+  ): Promise<CreateMemberResponse> {
+    const createMemberResponse = new CreateMemberResponse();
+    try {
+      const member = this.memberFactory.createNewMember(createMemberDto);
+      const createdMember = await this.membersService.createMember(member);
+      createMemberResponse.success = true;
+      createMemberResponse.createdMember = createdMember;
+    } catch (e) {
+      createMemberResponse.success = false;
+      const errorResponse: IBaseExceptionMessage = {
+        message: "asasasa asasa sa sas",
+        code_error: 1000,
+        sub_code_error: "NC001",
+      }
+      throw this.exceptionService.badRequestException(errorResponse)
+      // throw new BadRequestException(errorResponse);
+    }
+    return createMemberResponse;
   }
 
   @Get()
