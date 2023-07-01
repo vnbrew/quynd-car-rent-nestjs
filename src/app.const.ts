@@ -1,4 +1,3 @@
-import { DatabaseModule } from './config/database/database.module';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { Scope } from '@nestjs/common';
 import { MembersModule } from './exercises/members/members.module';
@@ -10,11 +9,10 @@ import { AppResponseInterceptor } from './core/interceptor/app.response.intercep
 import { CatsModule } from './exercises/cats/cats.module';
 import { Member } from './exercises/members/entities/member.entity';
 import { Cat } from './exercises/cats/entities/cat.entity';
-import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type';
-import { MixedList } from 'typeorm/common/MixedList';
-import { AppLogModule } from './core/log/console/app.log.module';
-import { AppLogFileService } from './core/log/file/app.log.file.service';
+import { AppLogModule } from './core/logger/console/app.log.module';
+import { AppLogFileService } from './core/logger/file/app.log.file.service';
 import { format, transports } from 'winston';
+import { DatabaseModule } from './config/database/connections/database.module';
 
 export const APP_INTERCEPTOR_PROVIDERS = [
   {

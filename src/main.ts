@@ -1,9 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { config } from 'dotenv';
-import { AppLogFileService } from './core/log/file/app.log.file.service';
-import { format, transports } from "winston";
-import { appendIdToRequest, appendRequestIdToLogger, morganRequestLogger, morganResponseLogger, AppLogFileInterceptor } from './core/log/file';
+import { appendIdToRequest, appendRequestIdToLogger, morganRequestLogger, morganResponseLogger, AppLogFileInterceptor } from './core/logger/file';
 import { globalLogger } from './app.const';
 
 async function bootstrap() {
