@@ -12,7 +12,7 @@ import { Cat } from './exercises/cats/entities/cat.entity';
 import { AppLogModule } from './core/logger/console/app.log.module';
 import { AppLogFileService } from './core/logger/file/app.log.file.service';
 import { format, transports } from 'winston';
-import { DatabaseModule } from './config/database/database.module';
+import { DatabaseModule } from './core/database/database.module';
 
 export const APP_INTERCEPTOR_PROVIDERS = [
   {
