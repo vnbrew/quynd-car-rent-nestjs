@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ENTITY_IMPORT } from 'src/app.const';
+import { MIGRATIONS_FILE_NAME } from 'src/migrations';
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -11,11 +12,12 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       port: parseInt(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
+      database: process.env.DB_NAME,
       entities: ENTITY_IMPORT,
-      synchronize: process.env.NODE_ENV === 'development',
+      synchronize: false,
       logging: process.env.NODE_ENV === 'development',
-      migrations: [],
+      migrationsRun: true,
+      migrations: MIGRATIONS_FILE_NAME,
       subscribers: [],
     };
   }

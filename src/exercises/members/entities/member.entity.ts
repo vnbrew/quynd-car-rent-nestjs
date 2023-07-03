@@ -8,9 +8,15 @@ export class Member extends AppEntityOrm {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 100, unique: true })
+  @Column({ length: 100 })
   name: string;
 
-  @Column({ unique: true })
+  @Column()
   gender: string;
+
+  @Column()
+  age: number;
+
+  @Column({ default: '', nullable: false })
+  address: string;
 }

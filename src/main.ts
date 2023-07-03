@@ -1,11 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { config } from 'dotenv';
 import { appendIdToRequest, appendRequestIdToLogger, morganRequestLogger, morganResponseLogger, AppLogFileInterceptor } from './core/logger/file';
 import { globalLogger } from './app.const';
 
 async function bootstrap() {
-  config()
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api')
 
