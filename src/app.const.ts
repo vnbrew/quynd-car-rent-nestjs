@@ -1,5 +1,4 @@
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
-import { Scope } from '@nestjs/common';
 import { MembersModule } from './exercises/members/members.module';
 import { AppAllExceptionFilter } from './core/filter/app.exception.filter';
 import { AppExceptionModule } from './core/exception/app.exception.module';
@@ -13,21 +12,19 @@ import { AppLogModule } from './core/logger/console/app.log.module';
 import { AppLogFileService } from './core/logger/file/app.log.file.service';
 import { format, transports } from 'winston';
 import { DatabaseModule } from './core/database/database.module';
+import { AppLanguageModule } from './core/language/app.language.module';
 
 export const APP_INTERCEPTOR_PROVIDERS = [
   {
     provide: APP_INTERCEPTOR,
-    scope: Scope.REQUEST,
     useClass: AppResponseInterceptor,
   },
   {
     provide: APP_INTERCEPTOR,
-    scope: Scope.REQUEST,
     useClass: AppLoggingInterceptor,
   },
   {
     provide: APP_PIPE,
-    scope: Scope.REQUEST,
     useClass: AppValidationPipe,
   },
 ];
@@ -43,6 +40,7 @@ export const APP_MODULES_IMPORT = [
   AppLogModule,
   DatabaseModule,
   AppExceptionModule,
+  AppLanguageModule,
 ];
 
 export const EXERCISES_MODULES_IMPORT = [MembersModule, CatsModule];
@@ -51,14 +49,15 @@ export const ENTITY_IMPORT = [Member, Cat];
 
 export const globalLogger = new AppLogFileService({
   level: 'debug',
+  silent: false,
   format: format.combine(
-    format.timestamp({ format: "isoDateTime" }),
+    format.timestamp({ format: 'isoDateTime' }),
     format.json(),
     format.colorize({ all: true }),
   ),
   transports: [
-    new transports.File({ filename: "error.log", level: "error" }),
-    new transports.File({ filename: "combined.log" }),
+    new transports.File({ filename: 'error.log', level: 'error' }),
+    new transports.File({ filename: 'combined.log' }),
     new transports.Console(),
   ],
 });
