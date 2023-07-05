@@ -8,12 +8,13 @@ import {
   AppLogFileInterceptor,
 } from './core/logger/file';
 import { globalLogger } from './app.const';
-import { I18nValidationExceptionFilter, I18nValidationPipe, i18nValidationErrorFactory } from 'nestjs-i18n';
-import { ValidationPipe } from '@nestjs/common';
+import { VersioningType } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
+
+  app.enableVersioning({ type: VersioningType.URI });
 
   //LogFile
   app.useLogger(globalLogger);

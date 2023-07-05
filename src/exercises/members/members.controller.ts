@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   BadRequestException,
+  Version,
 } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { CreateMemberDto } from './dto/create-member.dto';
@@ -16,8 +17,9 @@ import { MemberFactory } from './factory/member.factory';
 import { AppExceptionService } from 'src/core/exception/app.exception.service';
 import { IBaseExceptionMessage } from 'src/core/exception/app.exception.interface';
 import { I18nContext, I18nService } from 'nestjs-i18n';
+import { version } from 'os';
 
-@Controller('members')
+@Controller('v1/members')
 export class MembersController {
   constructor(
     private readonly membersService: MembersService,
