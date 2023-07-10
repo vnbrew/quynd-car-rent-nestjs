@@ -1,22 +1,13 @@
-import { Exclude } from 'class-transformer';
-import { AppEntityOrm } from 'src/core/base/entity/app.entity.typeorm';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {Table, Column, Model, DataType, AutoIncrement} from 'sequelize-typescript';
 
-@Entity()
-export class Member extends AppEntityOrm {
-  @Exclude()
-  @PrimaryGeneratedColumn()
-  id: number;
+@Table
+export class Member extends Model<Member> {
+    @Column
+    name: string;
 
-  @Column({ length: 100 })
-  name: string;
+    @Column
+    email: string;
 
-  @Column()
-  gender: string;
-
-  @Column()
-  age: number;
-
-  @Column({ default: '', nullable: false })
-  address: string;
+    @Column
+    password: string;
 }

@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppDataSource } from 'ormconfig';
+import {databaseProvider} from "./database.provider";
 
 @Module({
-  imports: [TypeOrmModule.forRoot(AppDataSource.options)],
-  controllers: [],
-  providers: [],
+  providers: [...databaseProvider],
+  exports: [...databaseProvider]
 })
 export class DatabaseModule {}
