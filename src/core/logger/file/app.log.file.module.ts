@@ -16,9 +16,9 @@ export class AppLogFileModule {
             const logger = new AppLogFileService(options);
             logger.setContext(context);
             return logger;
-          },
+          }
         };
-      },
+      }
     );
 
     return {
@@ -26,15 +26,15 @@ export class AppLogFileModule {
       providers: [
         {
           provide: APP_LOG_FILE_CONFIG_OPTIONS,
-          useValue: options,
+          useValue: options
         },
         AppLogFileService,
-        ...loggerProviders,
+        ...loggerProviders
       ],
       exports: [
         AppLogFileService,
-        ...contexts.map((context) => getLoggerToken(context)),
-      ],
+        ...contexts.map((context) => getLoggerToken(context))
+      ]
     };
   }
 }

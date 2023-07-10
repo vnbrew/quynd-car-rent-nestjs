@@ -5,7 +5,7 @@ export const APP_LOG_FILE_CONFIG_OPTIONS = "APP_LOG_FILE_CONFIG_OPTIONS";
 
 export const LOG_TYPE = {
   REQUEST_ARGS: "Request args",
-  RESPONSE_RESULT: "Response result",
+  RESPONSE_RESULT: "Response result"
 };
 
 @Injectable({ scope: Scope.TRANSIENT })
@@ -20,29 +20,33 @@ export class AppLogFileService extends ConsoleLogger {
   setContext(serviceName: string) {
     this.logger.defaultMeta = {
       ...this.logger.defaultMeta,
-      service: serviceName,
+      service: serviceName
     };
   }
 
   appendDefaultMeta(key: string, value: string) {
     this.logger.defaultMeta = {
       ...this.logger.defaultMeta,
-      [key]: value,
+      [key]: value
     };
   }
 
   log(message: string) {
     this.logger.info(message);
   }
+
   error(message: string) {
     this.logger.error(message);
   }
+
   warn(message: string) {
     this.logger.warn(message);
   }
+
   debug(message: string) {
     this.logger.debug(message);
   }
+
   verbose(message: string) {
     this.logger.verbose(message);
   }

@@ -1,25 +1,24 @@
-import { Injectable } from '@nestjs/common';
-import { CreateMemberDto } from './dto/create-member.dto';
-import { UpdateMemberDto } from './dto/update-member.dto';
-import { AbsDataServices } from 'src/core/base/abstracts/data.service.abstract';
-import { MemberFactory } from './factory/member.factory';
-import { Member } from './entities/member.entity';
+import { Inject, Injectable } from "@nestjs/common";
+import { UpdateMemberDto } from "./dto/update-member.dto";
+import { MEMBER_REPOSITORY } from "../../core/constants";
+import { Member } from "./entities/member.entity";
+import { IMember } from "./interfaces/member.interface";
 
 @Injectable()
 export class MembersService {
-  constructor(private readonly dataServices: AbsDataServices) {}
+  constructor(@Inject(MEMBER_REPOSITORY) private readonly memberRepository: typeof Member) {
+  }
 
-  async createMember(member: Member): Promise<Member> {
+  async createMember(member: IMember): Promise<Member> {
     try {
-      const createdMember = await this.dataServices.members.createOrUpdate(member);
-      return createdMember;
+      return await this.memberRepository.create<Member>(member);
     } catch (error) {
       throw error;
     }
   }
 
   findAll() {
-    return this.dataServices.members.findAll();
+    return this.memberRepository.findAll();
   }
 
   findOne(id: number) {

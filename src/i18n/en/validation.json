@@ -1,8 +1,8 @@
 {
-    "data": {
-        "type": "Incorrect data type"
-    },
-    "isString": "Should be a String",
-    "isNotEmpty": "Should not be Empty",
-    "isEmail": "Email is invalid"
+  "data": {
+    "type": "Incorrect data type"
+  },
+  "isString": "Should be a String",
+  "isNotEmpty": "Should not be Empty",
+  "isEmail": "Email is invalid"
 }

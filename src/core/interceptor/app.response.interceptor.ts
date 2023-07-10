@@ -1,6 +1,6 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from "@nestjs/common";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 export class ResponseFormat<T> {
   isArray: boolean;
@@ -22,8 +22,8 @@ export class AppResponseInterceptor<T> implements NestInterceptor<T, ResponseFor
         isArray: Array.isArray(data),
         path: request.path,
         duration: `${Date.now() - now}ms`,
-        method: request.method,
-      })),
+        method: request.method
+      }))
     );
   }
 }
