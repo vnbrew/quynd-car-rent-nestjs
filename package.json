@@ -21,6 +21,7 @@
     "migrate:generate": "npx sequelize-cli migration:generate --name",
     "migrate:up": "npx sequelize-cli db:migrate",
     "migrate:down": "npx sequelize-cli db:migrate:undo",
+    "seed:generate": "npx sequelize-cli seed:generate --name",
     "seed:up:all": "npx sequelize-cli db:seed:all",
     "seed:down": "npx sequelize-cli db:seed:undo --seed",
     "seed:down:all": "npx sequelize-cli db:seed:undo:all"
@@ -42,6 +43,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "sequelize": "^6.32.1",
+    "sequelize-auto": "^0.8.8",
     "sequelize-typescript": "^2.1.5",
     "typeorm": "^0.3.17",
     "winston": "^3.3.3"

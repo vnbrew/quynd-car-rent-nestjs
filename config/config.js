@@ -24,9 +24,9 @@ module.exports = {
     database: process.env.DB_NAME,
     dialect: process.env.DB_DIALECT,
     migrationStorage: "sequelize",
-    migrationStorageTableName: "sequelize_meta",
+    migrationStorageTableName: "sequelize_meta_migration",
     seederStorage: "sequelize",
-    seederStorageTableName: "sequelize_data",
+    seederStorageTableName: "sequelize_data_seeder",
     dialectOptions: {
       bigNumberStrings: true
     }
@@ -39,9 +39,9 @@ module.exports = {
     database: process.env.DB_NAME,
     dialect: process.env.DB_DIALECT,
     migrationStorage: "sequelize",
-    migrationStorageTableName: "sequelize_meta",
+    migrationStorageTableName: "sequelize_meta_migration",
     seederStorage: "sequelize",
-    seederStorageTableName: "sequelize_data",
+    seederStorageTableName: "sequelize_data_seeder",
     dialectOptions: {
       bigNumberStrings: true,
 // ssl: {

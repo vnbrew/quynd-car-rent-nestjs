@@ -70,14 +70,22 @@ $ npm run test:cov
 
 ```bash
 $ npm run migrate:generate 
-# npm run migrate:generate create_users_table
+# npm run migrate:generate create-users-table
 $ npm run migrate:up
 $ npm run migrate:down
 
+$ npm run seed:generate
+# npm run seed:generate create-demo-users
 $ npm run seed:up:all
 $ npm run seed:down 
 # npm run seed:down 20230711063341-demo-user.js
 $ npm run seed:down:all
+```
+
+## sequelize-auto
+
+```bash
+$ sequelize-auto -h localhost -d quynd_car_rent_nestjs -u root -x er-quynd-123 -p 3306  --dialect mysql -o ./db/models -t user_roles
 ```
 
 ## Support
