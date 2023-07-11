@@ -66,6 +66,20 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Migration
+
+```bash
+$ npm run migrate:generate 
+# npm run migrate:generate create_users_table
+$ npm run migrate:up
+$ npm run migrate:down
+
+$ npm run seed:up:all
+$ npm run seed:down 
+# npm run seed:down 20230711063341-demo-user.js
+$ npm run seed:down:all
+```
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).

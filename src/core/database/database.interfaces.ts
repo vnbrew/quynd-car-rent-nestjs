@@ -7,7 +7,7 @@ export interface IDatabaseConfigAttributes {
   dialect?: string;
   urlDatabase?: string;
   define: {
-    timestamps: boolean
+    timestamps: boolean;
   };
 }
 
