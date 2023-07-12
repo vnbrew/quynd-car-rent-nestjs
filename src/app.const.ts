@@ -10,6 +10,7 @@ import { AppLogFileService } from "./core/logger/file/app.log.file.service";
 import { format, transports } from "winston";
 import { DatabaseModule } from "./core/database/database.module";
 import { AppLanguageModule } from "./core/language/app.language.module";
+import { UsersModule } from "./modules/users/users.module";
 
 export const APP_INTERCEPTOR_PROVIDERS = [
   {
@@ -31,13 +32,6 @@ export const APP_EXCEPTION_PROVIDERS = [
     provide: APP_FILTER,
     useClass: AppAllExceptionFilter
   }
-];
-
-export const APP_MODULES_IMPORT = [
-  AppLogModule,
-  DatabaseModule,
-  AppExceptionModule,
-  AppLanguageModule
 ];
 
 export const EXERCISES_MODULES_IMPORT = [MembersModule];
