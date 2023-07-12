@@ -7,13 +7,13 @@ module.exports = {
             {
                 email: 'admin@carrent.com',
                 password: 'abc123!@#',
-                user_role_id: 1,
+                role: 'Admin',
                 name: 'Admin'
             },
             {
                 email: 'quyn@tech.est-rouge.com',
                 password: 'abc123!@#',
-                user_role_id: 1,
+                role: 'Admin',
                 name: 'Nguyen Duc Quy'
             }
         ])
