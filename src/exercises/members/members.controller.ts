@@ -46,7 +46,7 @@ export class MembersController {
         code_error: 1000,
         sub_code_error: "NC001"
       };
-      this.exceptionService.badRequestException(e);
+      this.exceptionService.badRequestException(errorResponse);
     }
     return createMemberResponse;
   }

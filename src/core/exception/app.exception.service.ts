@@ -1,5 +1,5 @@
 import {
-  BadRequestException,
+  BadRequestException, ConflictException,
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
@@ -9,6 +9,10 @@ import { IAppException, IBaseExceptionMessage } from "./app.exception.interface"
 
 @Injectable()
 export class AppExceptionService implements IAppException {
+  conflictException(data: IBaseExceptionMessage): void {
+    throw new ConflictException(data);
+  }
+
   badRequestException(data: IBaseExceptionMessage): void {
     throw new BadRequestException(data);
   }
@@ -21,7 +25,7 @@ export class AppExceptionService implements IAppException {
     throw new ForbiddenException(data);
   }
 
-  UnauthorizedException(data?: IBaseExceptionMessage): void {
+  unauthorizedException(data?: IBaseExceptionMessage): void {
     throw new UnauthorizedException(data);
   }
 }

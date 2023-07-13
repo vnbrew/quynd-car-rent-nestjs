@@ -17,5 +17,5 @@ export interface IAppException {
 
   forbiddenException(data?: IBaseExceptionMessage): void;
 
-  UnauthorizedException(data?: IBaseExceptionMessage): void;
+  unauthorizedException(data?: IBaseExceptionMessage): void;
 }

@@ -1,16 +1,29 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, HasOne, Index, IsEmail, Model, Table, Unique } from "sequelize-typescript";
+import { Role } from "../../../shared/enum/role";
+import { TableName } from "../../../shared/enum/table";
+import { UserToken } from "./user-token.entity";
 
 @Table({
-  tableName: "users"
+  tableName: TableName.users
 })
-class Users extends Model<Users> {
+export class User extends Model<User> {
   @Column({
-    type: DataType.ENUM("Admin", "Customer"),
+    type: DataType.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+    allowNull: false
+  })
+  id: number;
+
+  @Column({
+    type: DataType.ENUM(Role.admin, Role.user),
     allowNull: false,
-    defaultValue: "Customer"
+    defaultValue: Role.user
   })
   role: string;
 
+  @Unique
+  @IsEmail
   @Column({
     type: DataType.STRING(100),
     allowNull: false,
@@ -24,6 +37,7 @@ class Users extends Model<Users> {
   })
   password: string;
 
+  @Index
   @Column({
     type: DataType.STRING(100),
     allowNull: false
@@ -53,4 +67,7 @@ class Users extends Model<Users> {
     defaultValue: ""
   })
   image_url: string;
+
+  @HasOne(() => UserToken)
+  user_token: UserToken;
 }

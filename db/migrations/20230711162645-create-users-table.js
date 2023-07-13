@@ -10,9 +10,9 @@ module.exports = {
         autoIncrement: true
       },
       role: {
-        type: Sequelize.ENUM("Admin", "Customer"),
+        type: Sequelize.ENUM("admin", "user"),
         allowNull: false,
-        defaultValue: "Customer"
+        defaultValue: "user"
       },
       email: {
         type: Sequelize.STRING(100),

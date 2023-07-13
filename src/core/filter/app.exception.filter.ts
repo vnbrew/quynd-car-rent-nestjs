@@ -8,23 +8,27 @@ export class AppAllExceptionFilter implements ExceptionFilter {
   }
 
   catch(exception: any, host: ArgumentsHost) {
+    const now = Date.now();
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request: any = ctx.getRequest();
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
-    const message =
+    const error =
       exception instanceof HttpException
         ? (exception.getResponse() as IBaseExceptionMessage)
         : { message: (exception as Error).message, code_error: null };
-    const responseData = {
+
+    let responseData = {
+      statusCode: status,
       ...{
-        statusCode: status,
-        timestamp: new Date().toISOString(),
-        path: request.url
-      },
-      ...message
+        error,
+        isArray: Array.isArray(error),
+        path: request.path,
+        duration: `${Date.now() - now}ms`,
+        method: request.method
+      }
     };
-    this.logMessage(request, message, status, exception);
+    this.logMessage(request, error, status, exception);
     response.status(status).json(responseData);
   }
 

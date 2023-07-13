@@ -10,21 +10,31 @@ import { DatabaseModule } from "./core/database/database.module";
 import { AppExceptionModule } from "./core/exception/app.exception.module";
 import { AppLanguageModule } from "./core/language/app.language.module";
 import { UsersModule } from "./modules/users/users.module";
-import { UsersController } from './modules/users/users.controller';
+import { AuthModule } from "./modules/auth/auth.module";
+import { JwtModule } from "@nestjs/jwt";
+import { CacheModule } from "@nestjs/cache-manager";
 
 @Module({
-  imports: [...EXERCISES_MODULES_IMPORT,
+  imports: [
+    ...EXERCISES_MODULES_IMPORT,
+    JwtModule.register({
+      global: true,
+      secret: `${process.env.JWT_KEY}`,
+      signOptions: { expiresIn: process.env.JWT_EXP_TIME }
+    }),
+    CacheModule.register({ isGlobal: true }),
     AppLogModule,
     DatabaseModule,
     AppExceptionModule,
     AppLanguageModule,
+    AuthModule,
     UsersModule
   ],
   providers: [
     ...APP_INTERCEPTOR_PROVIDERS,
     ...APP_EXCEPTION_PROVIDERS
   ],
-  controllers: [UsersController]
+  controllers: []
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -173,18 +173,24 @@ CREATE TABLE IF NOT EXISTS `default_schema`.`cars`
     DEFAULT CHARSET = utf8mb4
     COLLATE = utf8mb4_unicode_ci;
 
-
 -- -----------------------------------------------------
--- Table `default_schema`.`user_roles`
+-- Table `default_schema`.`users`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `default_schema`.`user_roles`
+CREATE TABLE IF NOT EXISTS `default_schema`.`users`
 (
-    `id`          INT(11)     NOT NULL,
-    `role`        VARCHAR(20) NOT NULL,
-    `description` TEXT        NULL,
-    `created_at`  DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at`  DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
+    `id`           INT(11)                NOT NULL AUTO_INCREMENT,
+    `role`         ENUM ('admin', 'user') NOT NULL DEFAULT 'user',
+    `email`        VARCHAR(100)           NOT NULL UNIQUE,
+    `password`     VARCHAR(255)           NOT NULL,
+    `name`         VARCHAR(100)           NOT NULL,
+    `city`         VARCHAR(100)           NULL     DEFAULT '',
+    `address`      VARCHAR(100)           NULL     DEFAULT '',
+    `phone_number` VARCHAR(30)            NULL     DEFAULT '',
+    `image_url`    VARCHAR(100)           NULL     DEFAULT '',
+    `created_at`   DATETIME               NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`   DATETIME               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    INDEX `name_email_index` (`name` ASC, `email` ASC) VISIBLE
 )
     ENGINE = InnoDB
     AUTO_INCREMENT = 1
@@ -193,27 +199,24 @@ CREATE TABLE IF NOT EXISTS `default_schema`.`user_roles`
 
 
 -- -----------------------------------------------------
--- Table `default_schema`.`users`
+-- Table `default_schema`.`user_tokens`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `default_schema`.`users`
+CREATE TABLE IF NOT EXISTS `default_schema`.`user_tokens`
 (
-    `id`           INT(11)      NOT NULL AUTO_INCREMENT,
-    `user_role_id` INT(11)      NOT NULL,
-    `email`        VARCHAR(100) NOT NULL UNIQUE,
-    `password`     VARCHAR(255) NOT NULL,
-    `name`         VARCHAR(100) NOT NULL,
-    `city`         VARCHAR(100) NULL     DEFAULT '',
-    `address`      VARCHAR(100) NULL     DEFAULT '',
-    `phone_number` VARCHAR(30)  NULL     DEFAULT '',
-    `image_url`    VARCHAR(100) NULL     DEFAULT '',
-    `created_at`   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at`   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `id`              INT(11)      NOT NULL AUTO_INCREMENT,
+    `user_id`         INT(11)      NOT NULL UNIQUE,
+    `token`           VARCHAR(255) NOT NULL,
+    `expiration_time` DATETIME     NOT NULL,
+    `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
-    INDEX `name_email_index` (`name` ASC, `email` ASC) VISIBLE,
-    INDEX `pk_user_roles_users` (`user_role_id` ASC) VISIBLE,
-    CONSTRAINT `pk_user_roles_users`
-        FOREIGN KEY (`user_role_id`)
-            REFERENCES `default_schema`.`user_roles` (`id`)
+    INDEX `token_index` (`token` ASC) VISIBLE,
+    INDEX `pk_users_user_tokens` (`user_id` ASC) VISIBLE,
+    CONSTRAINT `pk_users_user_tokens`
+        FOREIGN KEY (`user_id`)
+            REFERENCES `default_schema`.`users` (`id`)
+            ON UPDATE RESTRICT
+            ON DELETE CASCADE
 )
     ENGINE = InnoDB
     AUTO_INCREMENT = 1
@@ -341,58 +344,6 @@ CREATE TABLE IF NOT EXISTS `default_schema`.`car_images`
     AUTO_INCREMENT = 1
     DEFAULT CHARSET = utf8mb4
     COLLATE = utf8mb4_unicode_ci;
-
-
--- -----------------------------------------------------
--- Table `default_schema`.`user_tokens`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `default_schema`.`user_tokens`
-(
-    `id`              INT(11)      NOT NULL AUTO_INCREMENT,
-    `user_id`         INT(11)      NOT NULL,
-    `token`           VARCHAR(255) NOT NULL,
-    `expiration_time` DATETIME     NOT NULL,
-    `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    INDEX `token_index` (`token` ASC) VISIBLE,
-    INDEX `pk_users_user_tokens` (`user_id` ASC) VISIBLE,
-    CONSTRAINT `pk_users_user_tokens`
-        FOREIGN KEY (`user_id`)
-            REFERENCES `default_schema`.`users` (`id`)
-            ON UPDATE RESTRICT
-            ON DELETE CASCADE
-)
-    ENGINE = InnoDB
-    AUTO_INCREMENT = 1
-    DEFAULT CHARSET = utf8mb4
-    COLLATE = utf8mb4_unicode_ci;
-
-
--- -----------------------------------------------------
--- Table `default_schema`.`user_login_sections`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `default_schema`.`user_login_sections`
-(
-    `id`          INT(11)  NOT NULL AUTO_INCREMENT,
-    `user_id`     INT(11)  NOT NULL,
-    `login_time`  DATETIME NOT NULL,
-    `logout_time` DATETIME NOT NULL,
-    `created_at`  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at`  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    INDEX `pk_users_user_login_sections` (`user_id` ASC) VISIBLE,
-    CONSTRAINT `pk_users_user_login_sections`
-        FOREIGN KEY (`user_id`)
-            REFERENCES `default_schema`.`users` (`id`)
-            ON UPDATE RESTRICT
-            ON DELETE CASCADE
-)
-    ENGINE = InnoDB
-    AUTO_INCREMENT = 1
-    DEFAULT CHARSET = utf8mb4
-    COLLATE = utf8mb4_unicode_ci;
-
 
 -- -----------------------------------------------------
 -- Table `default_schema`.`favorites`

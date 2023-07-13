@@ -4,7 +4,7 @@ import {
   ArgumentMetadata
 } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
-import { IBaseExceptionMessage } from "../exception/app.exception.interface";
+import { IBaseExceptionMessage, IDetailExceptionMessage } from "../exception/app.exception.interface";
 import { AppExceptionService } from "../exception/app.exception.service";
 import { validate } from "class-validator";
 import { I18nContext, I18nService } from "nestjs-i18n";
@@ -26,19 +26,20 @@ export class AppValidationPipe implements PipeTransform<any> {
     const errors = await validate(object);
     if (errors.length > 0) {
       const transformedErrors = errors.map((error) => {
-        console.log(error);
         const property = error.property;
         const message = Object.values(error.constraints)[0];
         // const key = Object.keys(error.constraints)[0];
-        // const message = this.i18n.translate(`validation.${key}`, {
+        // console.log(key);
+        // const message: string = this.i18n.translate(`validation.${key}`, {
         //   args: { property: error.property },
-        //   lang: lang,
+        //   lang: lang
         // });
-        return { property, message };
+        let detail: IDetailExceptionMessage = { property, message };
+        return detail;
       });
 
       const errorResponse: IBaseExceptionMessage = {
-        message: this.i18n.translate("validation.data.type", {
+        message: this.i18n.translate("error.data_type", {
           lang: lang
         }),
         detail: transformedErrors
@@ -48,23 +49,8 @@ export class AppValidationPipe implements PipeTransform<any> {
     return value;
   }
 
-  private translateErrors(errors: any) {
-    const data = [];
-    errors.forEach(async (error: { constraints: {}; property: any }) => {
-      const message = Promise.all(
-        Object.keys(error.constraints).map(async (key) =>
-          this.i18n.translate(`validation.${key}`, {
-            args: { property: error.property }
-          })
-        )
-      );
-      data.push({ field: error.property, message });
-    });
-    return data;
-  }
-
-  private toValidate(metatype: Function): boolean {
+  private toValidate(metaType: any): boolean {
     const types: Function[] = [String, Boolean, Number, Array, Object];
-    return !types.includes(metatype);
+    return !types.includes(metaType);
   }
 }
