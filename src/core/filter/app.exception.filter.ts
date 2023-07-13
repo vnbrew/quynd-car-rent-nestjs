@@ -8,7 +8,6 @@ export class AppAllExceptionFilter implements ExceptionFilter {
   }
 
   catch(exception: any, host: ArgumentsHost) {
-    const now = Date.now();
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request: any = ctx.getRequest();
@@ -16,16 +15,11 @@ export class AppAllExceptionFilter implements ExceptionFilter {
     const error =
       exception instanceof HttpException
         ? (exception.getResponse() as IBaseExceptionMessage)
-        : { message: (exception as Error).message, code_error: null };
+        : { message: (exception as Error).message, code: '', title: '', errors: [] };
 
     let responseData = {
-      statusCode: status,
       ...{
-        error,
-        isArray: Array.isArray(error),
-        path: request.path,
-        duration: `${Date.now() - now}ms`,
-        method: request.method
+        error
       }
     };
     this.logMessage(request, error, status, exception);
@@ -36,13 +30,13 @@ export class AppAllExceptionFilter implements ExceptionFilter {
     if (status === HttpStatus.INTERNAL_SERVER_ERROR) {
       this.logger.error(
         AppAllExceptionFilter.name,
-        `End Request for ${request.path} method=${request.method} status=${status} code_error=${message.code_error ? message.code_error : null} message=${message.message ? message.message : null}`,
+        `End Request for ${request.path} method=${request.method} status=${status} code_error=${message.code ? message.code : null} message=${message.message ? message.message : null}`,
         status >= HttpStatus.INTERNAL_SERVER_ERROR ? exception.stack : ""
       );
     } else {
       this.logger.warn(
         AppAllExceptionFilter.name,
-        `End Request for ${request.path} method=${request.method} status=${status} code_error=${message.code_error ? message.code_error : null} message=${message.message ? message.message : null}`
+        `End Request for ${request.path} method=${request.method} status=${status} code_error=${message.code ? message.code : null} message=${message.message ? message.message : null}`
       );
     }
   }

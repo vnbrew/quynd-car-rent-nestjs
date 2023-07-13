@@ -5,6 +5,6 @@
   "invalid_email": "Email does not exist.",
   "invalid_password": "Incorrect password.",
   "unauthorized": "Unauthorized.",
-  "forbidden": "Forbidden resource",
-  "user_not_existing": "User not existing"
+  "method_not_allowed": "Method Not Allowed.",
+  "user_not_existing": "User not existing."
 }

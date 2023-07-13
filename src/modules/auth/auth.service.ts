@@ -29,23 +29,17 @@ export class AuthService {
     let password = userLoginRequestDto.password;
     let userInDB = await this.usersService.getUserByEmail(email);
     if (!userInDB) {
-      let userNotExisting: IBaseExceptionMessage = {
-        message: this.i18n.translate("error.invalid_email", {
-          lang: I18nContext.current().lang
-        }),
-        detail: []
-      };
-      this.exceptionService.badRequestException(userNotExisting);
+      let message = this.i18n.translate("error.invalid_email", {
+        lang: I18nContext.current().lang
+      });
+      this.exceptionService.badRequestException(message, []);
     }
     const isMatch = await compare(password, userInDB.password);
     if (!isMatch) {
-      let userNotExisting: IBaseExceptionMessage = {
-        message: this.i18n.translate("error.invalid_password", {
-          lang: I18nContext.current().lang
-        }),
-        detail: []
-      };
-      this.exceptionService.badRequestException(userNotExisting);
+      let message = this.i18n.translate("error.invalid_password", {
+        lang: I18nContext.current().lang
+      });
+      this.exceptionService.badRequestException(message, []);
     }
     let payload = {
       id: userInDB.id,

@@ -38,23 +38,17 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const token = extractTokenFromHeader(request);
     if (!token) {
-      const errorResponse: IBaseExceptionMessage = {
-        message: this.i18n.translate("error.unauthorized", {
-          lang: I18nContext.current().lang
-        }),
-        detail: []
-      };
-      this.appExceptionService.unauthorizedException(errorResponse);
+      let message = this.i18n.translate("error.unauthorized", {
+        lang: I18nContext.current().lang
+      });
+      this.appExceptionService.unauthorizedException(message, []);
     }
     let tokenStatus = await this.cacheManager.get<String>(token);
     if (tokenStatus == TokenStatus.invalid) {
-      const errorResponse: IBaseExceptionMessage = {
-        message: this.i18n.translate("error.unauthorized", {
-          lang: I18nContext.current().lang
-        }),
-        detail: []
-      };
-      this.appExceptionService.unauthorizedException(errorResponse);
+      let message = this.i18n.translate("error.unauthorized", {
+        lang: I18nContext.current().lang
+      });
+      this.appExceptionService.unauthorizedException(message, []);
     }
     try {
       const payload = await this.jwtService.verifyAsync(
@@ -66,13 +60,10 @@ export class AuthGuard implements CanActivate {
       // console.log(payload);
       request["user"] = payload;
     } catch (error) {
-      const errorResponse: IBaseExceptionMessage = {
-        message: this.i18n.translate("error.unauthorized", {
-          lang: I18nContext.current().lang
-        }),
-        detail: []
-      };
-      this.appExceptionService.unauthorizedException(errorResponse);
+      let message = this.i18n.translate("error.unauthorized", {
+        lang: I18nContext.current().lang
+      });
+      this.appExceptionService.unauthorizedException(message, []);
     }
     return true;
   }

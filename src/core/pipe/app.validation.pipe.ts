@@ -21,30 +21,20 @@ export class AppValidationPipe implements PipeTransform<any> {
     if (!metatype || !this.toValidate(metatype)) {
       return value;
     }
-    const lang = I18nContext.current().lang;
     const object = plainToInstance(metatype, value);
     const errors = await validate(object);
     if (errors.length > 0) {
       const transformedErrors = errors.map((error) => {
-        const property = error.property;
+        const code = '';
+        const field = error.property;
         const message = Object.values(error.constraints)[0];
-        // const key = Object.keys(error.constraints)[0];
-        // console.log(key);
-        // const message: string = this.i18n.translate(`validation.${key}`, {
-        //   args: { property: error.property },
-        //   lang: lang
-        // });
-        let detail: IDetailExceptionMessage = { property, message };
+        let detail: IDetailExceptionMessage = {code, field, message };
         return detail;
       });
-
-      const errorResponse: IBaseExceptionMessage = {
-        message: this.i18n.translate("error.data_type", {
-          lang: lang
-        }),
-        detail: transformedErrors
-      };
-      this.exceptionService.badRequestException(errorResponse);
+      let message = this.i18n.translate("error.data_type", {
+        lang: I18nContext.current().lang
+      });
+      this.exceptionService.badRequestException(message, transformedErrors);
     }
     return value;
   }

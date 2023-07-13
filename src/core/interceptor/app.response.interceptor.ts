@@ -3,10 +3,6 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 export class ResponseFormat<T> {
-  isArray: boolean;
-  path: string;
-  duration: string;
-  method: string;
   data: T;
 }
 
@@ -18,11 +14,7 @@ export class AppResponseInterceptor<T> implements NestInterceptor<T, ResponseFor
     const request = httpContext.getRequest();
     return next.handle().pipe(
       map((data) => ({
-        data,
-        isArray: Array.isArray(data),
-        path: request.path,
-        duration: `${Date.now() - now}ms`,
-        method: request.method
+        data
       }))
     );
   }

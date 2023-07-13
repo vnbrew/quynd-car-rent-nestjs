@@ -73,27 +73,22 @@ export class UsersService {
             if (error.original.code === "ER_DUP_ENTRY") {
                 if (error.errors.length > 0) {
                     const transformedErrors = error.errors.map((e) => {
-                        const property = e.path;
+                        const code = '';
+                        const field = e.path;
                         const message = e.message;
-                        let detail: IDetailExceptionMessage = {property, message};
+                        let detail: IDetailExceptionMessage = {code, field, message};
                         return detail;
                     });
-                    const errorResponse: IBaseExceptionMessage = {
-                        message: this.i18n.translate("error.data_type", {
-                            lang: I18nContext.current().lang
-                        }),
-                        detail: transformedErrors
-                    };
-                    this.exceptionService.conflictException(errorResponse);
+                    let message = this.i18n.translate("error.data_type", {
+                        lang: I18nContext.current().lang
+                    });
+                    this.exceptionService.badRequestException(message, transformedErrors);
                 }
             }
-            const errorResponse: IBaseExceptionMessage = {
-                message: this.i18n.translate("error.internal_server_error", {
-                    lang: I18nContext.current().lang
-                }),
-                detail: []
-            };
-            this.exceptionService.internalServerErrorException(errorResponse);
+            let message = this.i18n.translate("error.internal_server_error", {
+                lang: I18nContext.current().lang
+            });
+            this.exceptionService.internalServerErrorException(message, []);
         }
     }
 
@@ -108,13 +103,10 @@ export class UsersService {
     async findOne(id: number) {
         let userInDB = await this.usersRepository.findOne<User>({where: {id: id}});
         if (!userInDB) {
-            const errorResponse: IBaseExceptionMessage = {
-                message: this.i18n.translate("error.user_not_existing", {
-                    lang: I18nContext.current().lang
-                }),
-                detail: []
-            };
-            this.exceptionService.badRequestException(errorResponse);
+            let message = this.i18n.translate("error.user_not_existing", {
+                lang: I18nContext.current().lang
+            });
+            this.exceptionService.badRequestException(message, []);
         }
         return userInDB
     }
@@ -122,13 +114,10 @@ export class UsersService {
     async update(id: number, updateUserDto: UpdateUserDto): Promise<UpdateUserResponseDto> {
         let userInDB = await this.usersRepository.findOne<User>({where: {id}});
         if (!userInDB) {
-            const errorResponse: IBaseExceptionMessage = {
-                message: this.i18n.translate("error.user_not_existing", {
-                    lang: I18nContext.current().lang
-                }),
-                detail: []
-            };
-            this.exceptionService.badRequestException(errorResponse);
+            let message = this.i18n.translate("error.user_not_existing", {
+                lang: I18nContext.current().lang
+            });
+            this.exceptionService.badRequestException(message, []);
         }
         await this.usersRepository.update<User>({
             name: updateUserDto.name,
@@ -160,13 +149,10 @@ export class UsersService {
             });
             return {message};
         } else {
-            const errorResponse: IBaseExceptionMessage = {
-                message: this.i18n.translate("error.user_not_existing", {
-                    lang: I18nContext.current().lang
-                }),
-                detail: []
-            };
-            this.exceptionService.badRequestException(errorResponse);
+            let message = this.i18n.translate("error.user_not_existing", {
+                lang: I18nContext.current().lang
+            });
+            this.exceptionService.badRequestException(message, []);
         }
     }
 }

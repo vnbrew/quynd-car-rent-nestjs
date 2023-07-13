@@ -39,14 +39,10 @@ export class MembersController {
       createMemberResponse.createdMember = createdMember;
     } catch (e) {
       createMemberResponse.success = false;
-      const errorResponse: IBaseExceptionMessage = {
-        message: this.i18n.translate("validation.data.type", {
-          lang: I18nContext.current().lang
-        }),
-        code_error: 1000,
-        sub_code_error: "NC001"
-      };
-      this.exceptionService.badRequestException(errorResponse);
+      let message = this.i18n.translate("error.data_type", {
+        lang: I18nContext.current().lang
+      });
+      this.exceptionService.badRequestException(message, []);
     }
     return createMemberResponse;
   }

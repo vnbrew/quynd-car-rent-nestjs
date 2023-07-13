@@ -1,32 +1,64 @@
 import {
-  BadRequestException, ConflictException,
-  ForbiddenException,
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException
+    BadRequestException,
+    Injectable,
+    InternalServerErrorException, MethodNotAllowedException, NotFoundException,
+    UnauthorizedException
 } from "@nestjs/common";
-import { IAppException, IBaseExceptionMessage } from "./app.exception.interface";
+import {IBaseExceptionMessage, IDetailExceptionMessage} from "./app.exception.interface";
 
 @Injectable()
-export class AppExceptionService implements IAppException {
-  conflictException(data: IBaseExceptionMessage): void {
-    throw new ConflictException(data);
-  }
+export class AppExceptionService {
 
-  badRequestException(data: IBaseExceptionMessage): void {
-    throw new BadRequestException(data);
-  }
+    badRequestException(message: string, errors: IDetailExceptionMessage[]): void {
+        const errorResponse: IBaseExceptionMessage = {
+            code: "",
+            title: "",
+            message: message,
+            errors: errors
+        };
+        throw new BadRequestException(errorResponse);
+    }
 
-  internalServerErrorException(data?: IBaseExceptionMessage): void {
-    throw new InternalServerErrorException(data);
-  }
+    unauthorizedException(message: string, errors: IDetailExceptionMessage[]): void {
+        const errorResponse: IBaseExceptionMessage = {
+            code: "",
+            title: "",
+            message: message,
+            errors: errors
+        };
+        throw new UnauthorizedException(errorResponse);
+    }
 
-  forbiddenException(data?: IBaseExceptionMessage): void {
-    throw new ForbiddenException(data);
-  }
+    notFoundException(message: string, errors: IDetailExceptionMessage[]): void {
+        const errorResponse: IBaseExceptionMessage = {
+            code: "",
+            title: "",
+            message: message,
+            errors: errors
+        };
+        throw new NotFoundException(errorResponse);
+    }
 
-  unauthorizedException(data?: IBaseExceptionMessage): void {
-    throw new UnauthorizedException(data);
-  }
+    internalServerErrorException(message: string, errors: IDetailExceptionMessage[]): void {
+        const errorResponse: IBaseExceptionMessage = {
+            code: "",
+            title: "",
+            message: message,
+            errors: errors
+        };
+        throw new InternalServerErrorException(errorResponse);
+    }
+
+    methodNotAllowedException(message: string, errors: IDetailExceptionMessage[]): void {
+        const errorResponse: IBaseExceptionMessage = {
+            code: "",
+            title: "",
+            message: message,
+            errors: errors
+        };
+        throw new MethodNotAllowedException(errorResponse);
+    }
+
+
 }
   
