@@ -5,11 +5,13 @@ import {CreateUserResponseDto} from "./dto/create-user-response.dto";
 import {USER_TOKENS_REPOSITORY, USERS_REPOSITORY} from "../../core/constants";
 import {User} from "./entities/user.entity";
 import {AppExceptionService} from "../../core/exception/app.exception.service";
-import {IBaseExceptionMessage, IDetailExceptionMessage} from "../../core/exception/app.exception.interface";
+import {IDetailExceptionMessage} from "../../core/exception/app.exception.interface";
 import {I18nContext, I18nService} from "nestjs-i18n";
 import {genSalt, hash} from "bcrypt";
 import {UserToken} from "./entities/user-token.entity";
 import {UpdateUserResponseDto} from "./dto/update-user-response.dto";
+import {FindOptions} from "sequelize";
+import {UpdateOptions} from "sequelize/types/model";
 
 @Injectable()
 export class UsersService {
@@ -23,11 +25,17 @@ export class UsersService {
     }
 
     async getUserByEmail(email: string) {
-        return this.usersRepository.findOne<User>({where: {email}});
+        const options: FindOptions = {
+            where: {email: email},
+        };
+        return this.usersRepository.findOne<User>(options);
     }
 
     async getUserTokenByUserId(userId: number) {
-        return this.userTokensRepository.findOne<UserToken>({where: {user_id: userId}});
+        const options: FindOptions = {
+            where: {user_id: userId},
+        };
+        return this.userTokensRepository.findOne<UserToken>(options);
     }
 
     async addOrUpdateUserAccessToken(userId: number, access_token: string) {
@@ -35,10 +43,13 @@ export class UsersService {
         expiration_time.setSeconds(expiration_time.getSeconds() + parseInt(process.env.JWT_EXP_TIME));
         let userTokenInDB = await this.getUserTokenByUserId(userId);
         if (userTokenInDB) {
+            const options: UpdateOptions = {
+                where: {user_id: userId},
+            };
             await this.userTokensRepository.update({
                 token: access_token,
                 expiration_time: expiration_time
-            }, {where: {user_id: userId}});
+            }, options);
         } else {
             let userToken = new UserToken();
             userToken.user_id = userId;
@@ -49,7 +60,10 @@ export class UsersService {
     }
 
     async removeTokenFromUserToken(token: string): Promise<boolean> {
-        let userTokenInDB = await this.userTokensRepository.findOne({where: {token}});
+        const options: FindOptions = {
+            where: {token: token},
+        };
+        let userTokenInDB = await this.userTokensRepository.findOne(options);
         if (userTokenInDB) {
             await userTokenInDB.destroy();
             return true;
@@ -93,7 +107,10 @@ export class UsersService {
     }
 
     findMe(user: any) {
-        return this.usersRepository.findOne<User>({where: {id: user.id}});
+        const options: FindOptions = {
+            where: {id: user.id},
+        };
+        return this.usersRepository.findOne<User>(options);
     }
 
     findAll() {
@@ -101,7 +118,10 @@ export class UsersService {
     }
 
     async findOne(id: number) {
-        let userInDB = await this.usersRepository.findOne<User>({where: {id: id}});
+        const options: FindOptions = {
+            where: {id: id},
+        };
+        let userInDB = await this.usersRepository.findOne<User>(options);
         if (!userInDB) {
             let message = this.i18n.translate("error.user_not_existing", {
                 lang: I18nContext.current().lang
@@ -112,20 +132,25 @@ export class UsersService {
     }
 
     async update(id: number, updateUserDto: UpdateUserDto): Promise<UpdateUserResponseDto> {
-        let userInDB = await this.usersRepository.findOne<User>({where: {id}});
+        let userInDB = await this.usersRepository.findOne<User>({
+            where: {id: id},
+        } as FindOptions);
         if (!userInDB) {
             let message = this.i18n.translate("error.user_not_existing", {
                 lang: I18nContext.current().lang
             });
             this.exceptionService.badRequestException(message, []);
         }
+        const options: UpdateOptions = {
+            where: {id: id},
+        };
         await this.usersRepository.update<User>({
             name: updateUserDto.name,
             city: updateUserDto.city,
             address: updateUserDto.address,
             phone_number: updateUserDto.phone_number
-        }, {where: {id}});
-        let newUser = await this.usersRepository.findOne<User>({where: {id}});
+        }, options);
+        let newUser = await this.usersRepository.findOne<User>({where: {id}} as FindOptions);
         return new UpdateUserResponseDto(newUser);
     }
 
@@ -135,13 +160,13 @@ export class UsersService {
             city: updateUserDto.city,
             address: updateUserDto.address,
             phone_number: updateUserDto.phone_number
-        }, {where: {id}});
-        let newUser = await this.usersRepository.findOne<User>({where: {id}});
+        }, {where: {id}} as UpdateOptions);
+        let newUser = await this.usersRepository.findOne<User>({where: {id}} as FindOptions);
         return new UpdateUserResponseDto(newUser);
     }
 
     async remove(id: number) {
-        let userInDB = await this.usersRepository.findOne<User>({where: {id}});
+        let userInDB = await this.usersRepository.findOne<User>({where: {id}} as FindOptions);
         if (userInDB) {
             await userInDB.destroy();
             let message = this.i18n.translate("message.deleted_user_success", {
