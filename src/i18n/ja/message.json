@@ -1,3 +1,4 @@
 {
-  "logout_success": "You have been successfully logged out!"
+  "logout_success": "You have been successfully logged out!",
+  "deleted_user_success": "You have been successfully deleted user!"
 }

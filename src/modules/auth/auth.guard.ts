@@ -63,7 +63,7 @@ export class AuthGuard implements CanActivate {
           secret: process.env.JWT_KEY
         }
       );
-      console.log(payload);
+      // console.log(payload);
       request["user"] = payload;
     } catch (error) {
       const errorResponse: IBaseExceptionMessage = {

@@ -2,10 +2,17 @@ import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Role } from "../../shared/enum/role";
 import { ROLES_KEY } from "../../core/constants";
+import { IBaseExceptionMessage } from "../../core/exception/app.exception.interface";
+import { I18nContext, I18nService } from "nestjs-i18n";
+import { AppExceptionService } from "../../core/exception/app.exception.service";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private reflector: Reflector) {
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly appExceptionService: AppExceptionService,
+    private readonly i18n: I18nService
+  ) {
   }
 
   canActivate(context: ExecutionContext): boolean {
@@ -17,10 +24,19 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     const { user } = context.switchToHttp().getRequest();
-    // console.log(" RolesGuard " + JSON.stringify(user));
     if (!user) {
       return true;
     }
-    return requiredRoles.some((role) => user.role?.includes(role));
+    let isValid = requiredRoles.some((role) => user.role?.includes(role));
+    if (!isValid) {
+      const errorResponse: IBaseExceptionMessage = {
+        message: this.i18n.translate("error.forbidden", {
+          lang: I18nContext.current().lang
+        }),
+        detail: []
+      };
+      this.appExceptionService.forbiddenException(errorResponse);
+    }
+    return isValid;
   }
 }
