@@ -81,8 +81,7 @@ CREATE TABLE IF NOT EXISTS `default_schema`.`offices`
     `name`       VARCHAR(255)   NOT NULL,
     `city`       VARCHAR(255)   NOT NULL,
     `address`    VARCHAR(255)   NOT NULL,
-    `lat`        DECIMAL(10, 2) NOT NULL,
-    `lon`        DECIMAL(10, 2) NOT NULL,
+    `coordinate` POINT          NOT NULL,
     `created_at` DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)

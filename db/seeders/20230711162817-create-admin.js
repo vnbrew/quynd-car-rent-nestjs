@@ -20,7 +20,7 @@ module.exports = {
   async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete("users", {
       email: {
-        [Sequelize.Op.in]: ["quyn@tech.est-rouge.com"]
+        [Sequelize.Op.in]: ["quynd@tech.est-rouge.com"]
       }
     });
   }

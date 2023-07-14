@@ -22,13 +22,9 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.STRING(255)
             },
-            lat: {
-                allowNull: false,
-                type: Sequelize.DECIMAL(10, 2)
-            },
-            lon: {
-                allowNull: false,
-                type: Sequelize.DECIMAL(10, 2)
+            coordinate: {
+                type: Sequelize.GEOMETRY('POINT'),
+                allowNull: false
             },
             created_at: {
                 allowNull: false,
