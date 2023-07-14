@@ -24,9 +24,8 @@ export class AuthController {
     return await this.authService.login(userLoginRequestDto);
   }
 
-  @SetPublic()
   @Post("logout")
-  @HttpCode(200)
+  @HttpCode(204)
   async logout(@Req() request): Promise<UserLogoutResponseDto> {
     const token = extractTokenFromHeader(request);
     return await this.authService.logout(token);

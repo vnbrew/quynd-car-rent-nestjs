@@ -2,10 +2,9 @@ import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Role } from "../../shared/enum/role";
 import { ROLES_KEY } from "../../core/constants";
-import { IBaseExceptionMessage } from "../../core/exception/app.exception.interface";
 import { I18nContext, I18nService } from "nestjs-i18n";
 import { AppExceptionService } from "../../core/exception/app.exception.service";
-import {createExceptionMessage} from "../../shared/utils/ultils";
+import { BadRequestCode } from "../../shared/enum/exception-code";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -33,7 +32,7 @@ export class RolesGuard implements CanActivate {
       let message = this.i18n.translate("error.method_not_allowed", {
         lang: I18nContext.current().lang
       });
-      this.appExceptionService.methodNotAllowedException(message, []);
+      this.appExceptionService.badRequestException(BadRequestCode.BA_PERMISSION,"",message, []);
     }
     return isValid;
   }

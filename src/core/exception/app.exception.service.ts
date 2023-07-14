@@ -1,64 +1,57 @@
 import {
-    BadRequestException,
-    Injectable,
-    InternalServerErrorException, MethodNotAllowedException, NotFoundException,
-    UnauthorizedException
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException, MethodNotAllowedException, NotFoundException,
+  UnauthorizedException
 } from "@nestjs/common";
-import {IBaseExceptionMessage, IDetailExceptionMessage} from "./app.exception.interface";
+import { IBaseExceptionMessage, IDetailExceptionMessage } from "./app.exception.interface";
 
 @Injectable()
 export class AppExceptionService {
 
-    badRequestException(message: string, errors: IDetailExceptionMessage[]): void {
-        const errorResponse: IBaseExceptionMessage = {
-            code: "N001",
-            title: "",
-            message: message,
-            errors: errors
-        };
-        throw new BadRequestException(errorResponse);
-    }
+  badRequestException(
+    code: string = "",
+    title: string = "",
+    message: string,
+    errors: IDetailExceptionMessage[]
+  ): void {
+    const errorResponse: IBaseExceptionMessage = {
+      code: code,
+      title: title,
+      message: message,
+      errors: errors
+    };
+    throw new BadRequestException(errorResponse);
+  }
 
-    unauthorizedException(message: string, errors: IDetailExceptionMessage[]): void {
-        const errorResponse: IBaseExceptionMessage = {
-            code: "",
-            title: "",
-            message: message,
-            errors: errors
-        };
-        throw new UnauthorizedException(errorResponse);
-    }
+  unauthorizedException(
+    code: string = "",
+    title: string = "",
+    message: string,
+    errors: IDetailExceptionMessage[]
+  ): void {
+    const errorResponse: IBaseExceptionMessage = {
+      code: code,
+      title: title,
+      message: message,
+      errors: errors
+    };
+    throw new UnauthorizedException(errorResponse);
+  }
 
-    notFoundException(message: string, errors: IDetailExceptionMessage[]): void {
-        const errorResponse: IBaseExceptionMessage = {
-            code: "",
-            title: "",
-            message: message,
-            errors: errors
-        };
-        throw new NotFoundException(errorResponse);
-    }
-
-    internalServerErrorException(message: string, errors: IDetailExceptionMessage[]): void {
-        const errorResponse: IBaseExceptionMessage = {
-            code: "",
-            title: "",
-            message: message,
-            errors: errors
-        };
-        throw new InternalServerErrorException(errorResponse);
-    }
-
-    methodNotAllowedException(message: string, errors: IDetailExceptionMessage[]): void {
-        const errorResponse: IBaseExceptionMessage = {
-            code: "",
-            title: "",
-            message: message,
-            errors: errors
-        };
-        throw new MethodNotAllowedException(errorResponse);
-    }
-
-
+  internalServerErrorException(
+    code: string = "",
+    title: string = "",
+    message: string,
+    errors: IDetailExceptionMessage[]
+  ): void {
+    const errorResponse: IBaseExceptionMessage = {
+      code: code,
+      title: title,
+      message: message,
+      errors: errors
+    };
+    throw new InternalServerErrorException(errorResponse);
+  }
 }
   
