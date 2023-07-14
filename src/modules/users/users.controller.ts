@@ -16,6 +16,7 @@ export class UsersController {
   }
 
   @SetPublic()
+  @HttpCode(204)
   @Post("users/register")
   async register(@Body() createUserDto: CreateUserDto): Promise<CreateUserResponseDto> {
     return await this.usersService.register(createUserDto);

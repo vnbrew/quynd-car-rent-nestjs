@@ -91,8 +91,8 @@ export class UsersService {
       user.phone_number = createUserDto.phone_number;
       const salt = await genSalt(10);
       user.password = await hash(createUserDto.password, salt);
-      const userData = await user.save();
-      return new CreateUserResponseDto(userData);
+      await user.save();
+      return new CreateUserResponseDto();
     } catch (error) {
       if (error.original.code === "ER_DUP_ENTRY") {
         if (error.errors.length > 0) {
