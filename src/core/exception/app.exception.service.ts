@@ -11,7 +11,7 @@ export class AppExceptionService {
 
     badRequestException(message: string, errors: IDetailExceptionMessage[]): void {
         const errorResponse: IBaseExceptionMessage = {
-            code: "",
+            code: "N001",
             title: "",
             message: message,
             errors: errors
