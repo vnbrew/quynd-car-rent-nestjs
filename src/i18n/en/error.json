@@ -2,9 +2,9 @@
   "existing_email": "This email address is already used",
   "data_type": "Incorrect data type",
   "internal_server_error": "Internal Server Error",
-  "invalid_email": "Email does not exist.",
+  "email_does_not_exist": "Email does not exist.",
   "invalid_password": "Incorrect password.",
   "unauthorized": "Unauthorized.",
   "method_not_allowed": "Method Not Allowed.",
-  "user_not_existing": "User not existing"
+  "user_does_not_exist": "User does not exist"
 }

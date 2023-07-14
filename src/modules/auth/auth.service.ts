@@ -11,6 +11,7 @@ import { UserLogoutResponseDto } from "./dto/user-logout-response.dto";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { Cache } from "cache-manager";
 import { TokenStatus } from "../../shared/enum/token-status";
+import { BadRequestCode, UnauthorizedCode } from "../../shared/enum/exception-code";
 
 @Injectable()
 export class AuthService {
@@ -19,7 +20,7 @@ export class AuthService {
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly exceptionService: AppExceptionService,
+    private readonly appExceptionService: AppExceptionService,
     private readonly i18n: I18nService
   ) {
   }
@@ -29,17 +30,19 @@ export class AuthService {
     let password = userLoginRequestDto.password;
     let userInDB = await this.usersService.getUserByEmail(email);
     if (!userInDB) {
-      let message = this.i18n.translate("error.invalid_email", {
+      let code = BadRequestCode.BA_EMAIL_DOES_NOT_EXIST;
+      let message = this.i18n.translate("error.email_does_not_exist", {
         lang: I18nContext.current().lang
       });
-      this.exceptionService.badRequestException(message, []);
+      this.appExceptionService.badRequestException(code, "", message, []);
     }
     const isMatch = await compare(password, userInDB.password);
     if (!isMatch) {
+      let code = BadRequestCode.BA_INVALID_PASSWORD;
       let message = this.i18n.translate("error.invalid_password", {
         lang: I18nContext.current().lang
       });
-      this.exceptionService.badRequestException(message, []);
+      this.appExceptionService.badRequestException(code, "", message, []);
     }
     let payload = {
       id: userInDB.id,
@@ -54,11 +57,8 @@ export class AuthService {
   async logout(token: string): Promise<UserLogoutResponseDto> {
     let tokenExisting = await this.usersService.removeTokenFromUserToken(token);
     if (tokenExisting) {
-      await this.cacheManager.set(token, TokenStatus.invalid, parseInt(process.env.JWT_EXP_TIME.replaceAll("s", "")));
+      await this.cacheManager.set(token, TokenStatus.invalid, parseInt(process.env.JWT_EXP_TIME) * 1000);
     }
-    let message = this.i18n.translate("message.logout_success", {
-      lang: I18nContext.current().lang
-    });
-    return new UserLogoutResponseDto(message);
+    return new UserLogoutResponseDto(token);
   }
 }

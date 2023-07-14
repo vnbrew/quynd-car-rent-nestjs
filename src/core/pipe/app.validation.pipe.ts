@@ -8,6 +8,7 @@ import { IBaseExceptionMessage, IDetailExceptionMessage } from "../exception/app
 import { AppExceptionService } from "../exception/app.exception.service";
 import { validate } from "class-validator";
 import { I18nContext, I18nService } from "nestjs-i18n";
+import { BadRequestCode } from "../../shared/enum/exception-code";
 
 @Injectable()
 export class AppValidationPipe implements PipeTransform<any> {
@@ -25,16 +26,16 @@ export class AppValidationPipe implements PipeTransform<any> {
     const errors = await validate(object);
     if (errors.length > 0) {
       const transformedErrors = errors.map((error) => {
-        const code = '';
+        const code = "";
         const field = error.property;
         const message = Object.values(error.constraints)[0];
-        let detail: IDetailExceptionMessage = {code, field, message };
+        let detail: IDetailExceptionMessage = { code, field, message };
         return detail;
       });
       let message = this.i18n.translate("error.data_type", {
         lang: I18nContext.current().lang
       });
-      this.exceptionService.badRequestException(message, transformedErrors);
+      this.exceptionService.badRequestException(BadRequestCode.BA_IN_CORRECT_DATA_TYPE, "", message, transformedErrors);
     }
     return value;
   }

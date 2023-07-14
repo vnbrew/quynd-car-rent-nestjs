@@ -1,6 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from "@nestjs/common";
 import { IBaseExceptionMessage } from "../exception/app.exception.interface";
 import { AppLogService } from "../logger/console/app.log.service";
+import { InternalServerErrorCode } from "../../shared/enum/exception-code";
 
 @Catch()
 export class AppAllExceptionFilter implements ExceptionFilter {
@@ -15,7 +16,12 @@ export class AppAllExceptionFilter implements ExceptionFilter {
     const error =
       exception instanceof HttpException
         ? (exception.getResponse() as IBaseExceptionMessage)
-        : { message: (exception as Error).message, code: '', title: '', errors: [] };
+        : {
+          code: InternalServerErrorCode.IN_COMMON_ERROR,
+          title: "",
+          message: (exception as Error).message,
+          errors: []
+        };
 
     let responseData = {
       ...{

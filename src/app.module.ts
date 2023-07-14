@@ -12,7 +12,6 @@ import { UsersModule } from "./modules/users/users.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { JwtModule } from "@nestjs/jwt";
 import { CacheModule } from "@nestjs/cache-manager";
-import { CarsModule } from "./modules/cars/cars.module";
 
 @Module({
   imports: [
@@ -28,7 +27,6 @@ import { CarsModule } from "./modules/cars/cars.module";
     AppLanguageModule,
     AuthModule,
     UsersModule,
-    CarsModule
   ],
   providers: [
     ...APP_INTERCEPTOR_PROVIDERS,
