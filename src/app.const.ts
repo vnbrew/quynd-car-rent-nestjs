@@ -1,5 +1,4 @@
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
-import { MembersModule } from "./exercises/members/members.module";
 import { AppAllExceptionFilter } from "./core/filter/app.exception.filter";
 import { AppValidationPipe } from "./core/pipe/app.validation.pipe";
 import { AppLoggingInterceptor } from "./core/interceptor/app.logging.interceptor";
@@ -38,8 +37,6 @@ export const APP_EXCEPTION_PROVIDERS = [
     useClass: AppAllExceptionFilter
   }
 ];
-
-export const EXERCISES_MODULES_IMPORT = [MembersModule];
 
 export const globalLogger = new AppLogFileService({
   level: "debug",

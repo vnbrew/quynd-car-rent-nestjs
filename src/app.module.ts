@@ -1,8 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import {
   APP_EXCEPTION_PROVIDERS,
-  APP_INTERCEPTOR_PROVIDERS,
-  EXERCISES_MODULES_IMPORT
+  APP_INTERCEPTOR_PROVIDERS
 } from "./app.const";
 import { AppMiddleware } from "./core/middleware/app.middleware";
 import { AppLogModule } from "./core/logger/console/app.log.module";
@@ -13,10 +12,10 @@ import { UsersModule } from "./modules/users/users.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { JwtModule } from "@nestjs/jwt";
 import { CacheModule } from "@nestjs/cache-manager";
+import { CarsModule } from "./modules/cars/cars.module";
 
 @Module({
   imports: [
-    ...EXERCISES_MODULES_IMPORT,
     JwtModule.register({
       global: true,
       secret: `${process.env.JWT_KEY}`,
@@ -28,7 +27,8 @@ import { CacheModule } from "@nestjs/cache-manager";
     AppExceptionModule,
     AppLanguageModule,
     AuthModule,
-    UsersModule
+    UsersModule,
+    CarsModule
   ],
   providers: [
     ...APP_INTERCEPTOR_PROVIDERS,
