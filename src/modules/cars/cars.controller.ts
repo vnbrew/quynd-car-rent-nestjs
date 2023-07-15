@@ -5,6 +5,7 @@ import { UpdateCarDto } from "./dto/update-car.dto";
 import { CreateCarResponseDto } from "./dto/create-car-response.dto";
 import { SetRoles } from "../../core/constants";
 import { Role } from "../../shared/enum/role";
+import { UpdateCarResponseDto } from "./dto/update-car-response.dto";
 
 @Controller("v1")
 export class CarsController {
@@ -30,13 +31,17 @@ export class CarsController {
     return this.carsService.findOne(+id);
   }
 
-  @Patch(":id")
-  update(@Param("id") id: string, @Body() updateCarDto: UpdateCarDto) {
-    return this.carsService.update(+id, updateCarDto);
+  @SetRoles(Role.admin)
+  @HttpCode(204)
+  @Patch("cars/:id")
+  async update(@Param("id") id: string, @Body() updateCarDto: UpdateCarDto): Promise<UpdateCarResponseDto> {
+    return await this.carsService.update(+id, updateCarDto);
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.carsService.remove(+id);
+  @SetRoles(Role.admin)
+  @HttpCode(204)
+  @Delete("cars/:id")
+  async remove(@Param("id") id: string) {
+    return await this.carsService.remove(+id);
   }
 }

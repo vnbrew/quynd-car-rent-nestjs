@@ -6,5 +6,6 @@
   "invalid_password": "Incorrect password.",
   "unauthorized": "Unauthorized.",
   "method_not_allowed": "Method Not Allowed.",
-  "user_does_not_exist": "User does not exist"
+  "user_does_not_exist": "User does not exist",
+  "car_does_not_exist": "Car does not exist"
 }
