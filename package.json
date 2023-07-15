@@ -35,6 +35,7 @@
     "@nestjs/jwt": "^10.1.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/sequelize": "^10.0.0",
     "@nestjs/swagger": "^7.1.1",
     "@nestjs/typeorm": "^10.0.0",
     "bcrypt": "^5.1.0",

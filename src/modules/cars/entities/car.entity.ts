@@ -1,9 +1,21 @@
-import { AutoIncrement, Model, PrimaryKey, Table, Column, DataType, ForeignKey, BelongsTo } from "sequelize-typescript";
+import {
+  AutoIncrement,
+  Model,
+  PrimaryKey,
+  Table,
+  Column,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+  HasOne, HasMany
+} from "sequelize-typescript";
 import { Office } from "./car-office.entity";
 import { CarStatus } from "./car-status.entity";
 import { CarSteering } from "./car-steering.entity";
 import { CarType } from "./car-type.entity";
 import { CarCapacity } from "./car-capacity.entity";
+import { UserToken } from "../../users/entities/user-token.entity";
+import { CarPrice } from "./car-price.entity";
 
 @Table({
   tableName: "cars"
@@ -58,4 +70,7 @@ export class Car extends Model<Car> {
 
   @BelongsTo(() => CarCapacity)
   capacity!: CarCapacity;
+
+  @HasOne(() => CarPrice)
+  carPrice: CarPrice;
 }
