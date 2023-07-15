@@ -430,9 +430,10 @@ CREATE TABLE IF NOT EXISTS `default_schema`.`car_prices`
 (
     `id`             INT(11)        NOT NULL AUTO_INCREMENT,
     `car_id`         INT(11)        NOT NULL,
-    `rental_price`   DECIMAL(10, 2) NOT NULL,
-    `original_price` DECIMAL(10, 2) NOT NULL,
-    `from_date_time` DATETIME       NOT NULL,
+    `status`         ENUM ('Old', 'New')     DEFAULT 'New' NOT NULL,
+    `rental_price`   DECIMAL(10, 2) NULL,
+    `original_price` DECIMAL(10, 2) NULL,
+    `from_date_time` DATETIME       NULL,
     `to_date_time`   DATETIME       NULL,
     `created_at`     DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at`     DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
