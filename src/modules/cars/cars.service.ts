@@ -11,6 +11,12 @@ import { IDetailExceptionMessage } from "../../core/exception/app.exception.inte
 import { BadRequestCode } from "../../shared/enum/exception-code";
 import { UpdateCarResponseDto } from "./dto/update-car-response.dto";
 import { Inject, Injectable } from "@nestjs/common";
+import { CarResponseDto } from "./dto/car-response.dto";
+import { CarType } from "./entities/car-type.entity";
+import { Office } from "./entities/car-office.entity";
+import { CarCapacity } from "./entities/car-capacity.entity";
+import { CarStatus } from "./entities/car-status.entity";
+import { CarSteering } from "./entities/car-steering.entity";
 
 @Injectable()
 export class CarsService {
@@ -50,8 +56,19 @@ export class CarsService {
     return `This action returns all cars`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} car`;
+  async findOne(id: number): Promise<CarResponseDto> {
+    let carInDB = await this.carsRepository.findOne({
+      where: { id }, include: [
+        Office, CarType, CarCapacity, CarStatus, CarSteering
+      ]
+    } as FindOptions);
+    if (!carInDB) {
+      let message = this.i18n.translate("error.car_does_not_exist", {
+        lang: I18nContext.current().lang
+      });
+      this.appExceptionService.badRequestException(BadRequestCode.BA_CAR_DOES_NOT_EXIST, "", message, []);
+    }
+    return new CarResponseDto(carInDB);
   }
 
   async update(id: number, updateCarDto: UpdateCarDto): Promise<UpdateCarResponseDto> {

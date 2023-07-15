@@ -3,9 +3,10 @@ import { CarsService } from "./cars.service";
 import { CreateCarDto } from "./dto/create-car.dto";
 import { UpdateCarDto } from "./dto/update-car.dto";
 import { CreateCarResponseDto } from "./dto/create-car-response.dto";
-import { SetRoles } from "../../core/constants";
+import { SetPublic, SetRoles } from "../../core/constants";
 import { Role } from "../../shared/enum/role";
 import { UpdateCarResponseDto } from "./dto/update-car-response.dto";
+import { CarResponseDto } from "./dto/car-response.dto";
 
 @Controller("v1")
 export class CarsController {
@@ -26,9 +27,10 @@ export class CarsController {
     return this.carsService.findAll();
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.carsService.findOne(+id);
+  @SetPublic()
+  @Get("cars/:id")
+  async findOne(@Param("id") id: string): Promise<CarResponseDto> {
+    return await this.carsService.findOne(+id);
   }
 
   @SetRoles(Role.admin)
