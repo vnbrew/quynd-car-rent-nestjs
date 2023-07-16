@@ -2,13 +2,17 @@ import { CreateCarDto } from "./dto/create-car.dto";
 import { UpdateCarDto } from "./dto/update-car.dto";
 import { CreateCarResponseDto } from "./dto/create-car-response.dto";
 import {
-  CAR_CAPACITIES_REPOSITORY, CAR_PRICES_REPOSITORY, CAR_STATUSES_REPOSITORY, CAR_STEERINGS_REPOSITORY,
+  CAR_CAPACITIES_REPOSITORY,
+  CAR_IMAGES_REPOSITORY,
+  CAR_PRICES_REPOSITORY,
+  CAR_STATUSES_REPOSITORY,
+  CAR_STEERINGS_REPOSITORY,
   CAR_TYPES_REPOSITORY,
   CARS_REPOSITORY,
   OFFICES_REPOSITORY,
   SEQUELIZE
 } from "../../core/constants";
-import { FindOptions } from "sequelize";
+import { DestroyOptions, FindOptions } from "sequelize";
 import { UpdateOptions } from "sequelize/types/model";
 import { Car } from "./entities/car.entity";
 import { AppExceptionService } from "../../core/exception/app.exception.service";
@@ -27,6 +31,8 @@ import { Sequelize } from "sequelize-typescript";
 import { Inject, Injectable } from "@nestjs/common";
 import { ECarPrice, ECarStatus } from "../../shared/enum/car.enum";
 import { isDateValid, isPriceValid, isSameDateTime } from "../../shared/utils/ultils";
+import { CarImage } from "./entities/car-image.entity";
+import { DeleteOptions } from "typeorm";
 
 @Injectable()
 export class CarsService {
@@ -40,6 +46,7 @@ export class CarsService {
     @Inject(CAR_STEERINGS_REPOSITORY) private readonly carSteeringRepository: typeof CarSteering,
     @Inject(CAR_STATUSES_REPOSITORY) private readonly carStatuesRepository: typeof CarStatus,
     @Inject(CAR_PRICES_REPOSITORY) private readonly carPricesRepository: typeof CarPrice,
+    @Inject(CAR_IMAGES_REPOSITORY) private readonly carImagesRepository: typeof CarImage,
     private readonly appExceptionService: AppExceptionService,
     private readonly i18n: I18nService
   ) {
@@ -109,6 +116,15 @@ export class CarsService {
         carPrice.from_date_time = createCarDto.from_date_time;
         carPrice.to_date_time = createCarDto.to_date_time;
         await carPrice.save(transactionHost);
+
+        let imageLength = createCarDto.images.length;
+        for (let i = 0; i < ((imageLength === 0 || imageLength < 4) ? 4 : imageLength); i++) {
+          let carImage = new CarImage();
+          carImage.car_id = newCar.id;
+          if ((imageLength !== 0))
+            carImage.image_url = createCarDto.images[i];
+          await carImage.save(transactionHost);
+        }
       });
       return new CreateCarResponseDto();
     } catch (error) {
@@ -148,7 +164,16 @@ export class CarsService {
   async findOne(id: number): Promise<CarResponseDto> {
     let carInDB = await this.carsRepository.findOne<Car>({
       where: { id }, include: [
-        Office, CarType, CarCapacity, CarStatus, CarSteering, CarPrice
+        Office, CarType, CarCapacity, CarStatus, CarSteering,
+        {
+          model: CarPrice,
+          where: { status: ECarPrice.new }
+        },
+        {
+          model: CarImage,
+          where: { car_id: id },
+          required: false
+        }
       ]
     } as FindOptions);
     if (!carInDB) {
@@ -255,6 +280,15 @@ export class CarsService {
               },
               { where: { id: carPriceInDB.id }, transactionHost } as UpdateOptions);
           }
+          await this.carImagesRepository.destroy<CarImage>({ where: { car_id: id }, transactionHost } as DestroyOptions);
+          let imageLength = updateCarDto.images.length;
+          for (let i = 0; i < ((imageLength === 0 || imageLength < 4) ? 4 : imageLength); i++) {
+            let carImage = new CarImage();
+            carImage.car_id = id;
+            if ((imageLength !== 0))
+              carImage.image_url = updateCarDto.images[i];
+            await carImage.save(transactionHost);
+          }
         }
       );
       return new UpdateCarResponseDto();
@@ -301,7 +335,6 @@ export class CarsService {
           });
           this.appExceptionService.badRequestException(BadRequestCode.BA_CAR_DOES_NOT_EXIST, "", message, []);
         }
-        await this.carPricesRepository.destroy<CarPrice>({ where: { car_id: id } });
         await carInDB.destroy(transactionHost);
       });
     } catch (error) {

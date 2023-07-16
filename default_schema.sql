@@ -329,16 +329,16 @@ CREATE TABLE IF NOT EXISTS `default_schema`.`car_images`
 (
     `id`         INT(11)      NOT NULL AUTO_INCREMENT,
     `car_id`     INT(11)      NOT NULL,
-    `image_url`  VARCHAR(120) NOT NULL,
-    `ordering`   INT(2)       NOT NULL,
+    `image_url`  VARCHAR(120) NULL     DEFAULT '',
     `created_at` DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_at`  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
-    INDEX `KEY` (`ordering` ASC) VISIBLE,
-    INDEX `pk_car_car_images` (`car_id` ASC) VISIBLE,
+    INDEX `car_id_index` (`car_id` ASC) VISIBLE,
     CONSTRAINT `pk_car_car_images`
         FOREIGN KEY (`car_id`)
             REFERENCES `default_schema`.`cars` (`id`)
+            ON UPDATE CASCADE
+            ON DELETE RESTRICT
 )
     ENGINE = InnoDB
     AUTO_INCREMENT = 1
@@ -438,10 +438,12 @@ CREATE TABLE IF NOT EXISTS `default_schema`.`car_prices`
     `created_at`     DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at`     DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
-    INDEX `pk_car_price` (`car_id` ASC) VISIBLE,
+    INDEX `car_id_index` (`car_id` ASC) VISIBLE,
     CONSTRAINT `pk_car_price`
         FOREIGN KEY (`car_id`)
             REFERENCES `default_schema`.`cars` (`id`)
+            ON UPDATE CASCADE
+            ON DELETE RESTRICT
 )
     ENGINE = InnoDB
     AUTO_INCREMENT = 1

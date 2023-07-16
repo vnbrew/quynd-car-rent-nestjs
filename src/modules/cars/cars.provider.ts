@@ -1,5 +1,9 @@
 import {
-  CAR_CAPACITIES_REPOSITORY, CAR_PRICES_REPOSITORY, CAR_STATUSES_REPOSITORY, CAR_STEERINGS_REPOSITORY,
+  CAR_CAPACITIES_REPOSITORY,
+  CAR_IMAGES_REPOSITORY,
+  CAR_PRICES_REPOSITORY,
+  CAR_STATUSES_REPOSITORY,
+  CAR_STEERINGS_REPOSITORY,
   CAR_TYPES_REPOSITORY,
   CARS_REPOSITORY,
   OFFICES_REPOSITORY,
@@ -13,6 +17,7 @@ import { CarCapacity } from "./entities/car-capacity.entity";
 import { CarSteering } from "./entities/car-steering.entity";
 import { CarStatus } from "./entities/car-status.entity";
 import { CarPrice } from "./entities/car-price.entity";
+import { CarImage } from "./entities/car-image.entity";
 
 export const carsProviders = [
   {
@@ -42,5 +47,9 @@ export const carsProviders = [
   {
     provide: CAR_PRICES_REPOSITORY,
     useValue: CarPrice
+  },
+  {
+    provide: CAR_IMAGES_REPOSITORY,
+    useValue: CarImage
   }
 ];
