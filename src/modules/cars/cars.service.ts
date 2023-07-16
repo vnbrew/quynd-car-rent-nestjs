@@ -10,7 +10,7 @@ import {
   CAR_TYPES_REPOSITORY,
   CARS_REPOSITORY,
   OFFICES_REPOSITORY,
-  SEQUELIZE
+  SEQUELIZE, USER_FAVORITE_CAR_REPOSITORY
 } from "../../core/constants";
 import { DestroyOptions, FindOptions } from "sequelize";
 import { UpdateOptions } from "sequelize/types/model";
@@ -32,7 +32,9 @@ import { Inject, Injectable } from "@nestjs/common";
 import { ECarPrice, ECarStatus } from "../../shared/enum/car.enum";
 import { isDateValid, isPriceValid, isSameDateTime } from "../../shared/utils/ultils";
 import { CarImage } from "./entities/car-image.entity";
-import { DeleteOptions } from "typeorm";
+import { CreateUserFavoriteCarResponseDto } from "./dto/create-user-favorite-car-response.dto";
+import { UserFavoriteCar } from "./entities/user-favorite-car.entity";
+import { CreateUserFavoriteCarDto } from "./dto/create-user-favorite-car.dto";
 
 @Injectable()
 export class CarsService {
@@ -47,6 +49,7 @@ export class CarsService {
     @Inject(CAR_STATUSES_REPOSITORY) private readonly carStatuesRepository: typeof CarStatus,
     @Inject(CAR_PRICES_REPOSITORY) private readonly carPricesRepository: typeof CarPrice,
     @Inject(CAR_IMAGES_REPOSITORY) private readonly carImagesRepository: typeof CarImage,
+    @Inject(USER_FAVORITE_CAR_REPOSITORY) private readonly userFavoriteCarRepository: typeof UserFavoriteCar,
     private readonly appExceptionService: AppExceptionService,
     private readonly i18n: I18nService
   ) {
@@ -356,5 +359,51 @@ export class CarsService {
       this.appExceptionService.internalServerErrorException(InternalServerErrorCode.IN_COMMON_ERROR, "", message, [error]);
     }
 
+  }
+
+  async favorite(userId: number, carId: number, createUserFavoriteCarDto: CreateUserFavoriteCarDto): Promise<CreateUserFavoriteCarResponseDto> {
+    if (createUserFavoriteCarDto.favorite) {
+      try {
+        let userFavoriteCar = new UserFavoriteCar();
+        userFavoriteCar.user_id = userId;
+        userFavoriteCar.car_id = carId;
+        await userFavoriteCar.save();
+      } catch (error) {
+        if (error.original.code === "ER_DUP_ENTRY") {
+          if (error.errors.length > 0) {
+            const transformedErrors = error.errors.map((e) => {
+              const code = "";
+              const field = e.path;
+              const message = e.message;
+              let detail: IDetailExceptionMessage = { code, field, message };
+              return detail;
+            });
+            let message = this.i18n.translate("error.data_type", {
+              lang: I18nContext.current().lang
+            });
+            this.appExceptionService.badRequestException(BadRequestCode.BA_USER_FAVORITE_CAR_MUST_ABE_UNIQUE, "", message, transformedErrors);
+          }
+        }
+        if (["ER_NO_REFERENCED_ROW_2"].includes(error.original.code)) {
+          let message = this.i18n.translate("error.data_type", {
+            lang: I18nContext.current().lang
+          });
+          const code = "";
+          const field = error.fields;
+          const filed_message = this.i18n.translate("error.foreign_key_constraint_fails", {
+            lang: I18nContext.current().lang
+          });
+          let detail: IDetailExceptionMessage = { code, field, message: filed_message };
+          this.appExceptionService.badRequestException(BadRequestCode.BA_IN_CORRECT_DATA_TYPE, "", message, [detail]);
+        }
+        let message = this.i18n.translate("error.internal_server_error", {
+          lang: I18nContext.current().lang
+        });
+        this.appExceptionService.internalServerErrorException(InternalServerErrorCode.IN_COMMON_ERROR, "", message, [error]);
+      }
+    } else {
+      await this.userFavoriteCarRepository.destroy({ where: { user_id: userId, car_id: carId } });
+    }
+    return new CreateUserFavoriteCarResponseDto();
   }
 }

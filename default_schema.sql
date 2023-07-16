@@ -356,13 +356,16 @@ CREATE TABLE IF NOT EXISTS `default_schema`.`favorites`
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`car_id`, `user_id`),
-    INDEX `pk_users_favorites` (`user_id` ASC) VISIBLE,
     CONSTRAINT `pk_cars_favorites`
         FOREIGN KEY (`car_id`)
-            REFERENCES `default_schema`.`cars` (`id`),
+            REFERENCES `default_schema`.`cars` (`id`)
+            ON DELETE CASCADE
+            ON UPDATE RESTRICT,
     CONSTRAINT `pk_users_favorites`
         FOREIGN KEY (`user_id`)
             REFERENCES `default_schema`.`users` (`id`)
+            ON DELETE CASCADE
+            ON UPDATE RESTRICT
 )
     ENGINE = InnoDB
     AUTO_INCREMENT = 1

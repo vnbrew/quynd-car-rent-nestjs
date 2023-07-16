@@ -6,7 +6,7 @@ import {
   CAR_STEERINGS_REPOSITORY,
   CAR_TYPES_REPOSITORY,
   CARS_REPOSITORY,
-  OFFICES_REPOSITORY,
+  OFFICES_REPOSITORY, USER_FAVORITE_CAR_REPOSITORY,
   USER_TOKENS_REPOSITORY,
   USERS_REPOSITORY
 } from "../../core/constants";
@@ -18,6 +18,7 @@ import { CarSteering } from "./entities/car-steering.entity";
 import { CarStatus } from "./entities/car-status.entity";
 import { CarPrice } from "./entities/car-price.entity";
 import { CarImage } from "./entities/car-image.entity";
+import { UserFavoriteCar } from "./entities/user-favorite-car.entity";
 
 export const carsProviders = [
   {
@@ -51,5 +52,9 @@ export const carsProviders = [
   {
     provide: CAR_IMAGES_REPOSITORY,
     useValue: CarImage
+  },
+  {
+    provide: USER_FAVORITE_CAR_REPOSITORY,
+    useValue: UserFavoriteCar
   }
 ];

@@ -10,6 +10,7 @@ import { CarSteering } from "../../modules/cars/entities/car-steering.entity";
 import { CarStatus } from "../../modules/cars/entities/car-status.entity";
 import { CarPrice } from "../../modules/cars/entities/car-price.entity";
 import { CarImage } from "../../modules/cars/entities/car-image.entity";
+import { UserFavoriteCar } from "../../modules/cars/entities/user-favorite-car.entity";
 
 export const SEQUELIZE = "SEQUELIZE";
 export const DEVELOPMENT = "development";
@@ -25,12 +26,15 @@ export const CAR_STEERINGS_REPOSITORY = "CAR_STEERINGS_REPOSITORY";
 export const CAR_STATUSES_REPOSITORY = "CAR_STATUSES_REPOSITORY";
 export const CAR_PRICES_REPOSITORY = "CAR_PRICES_REPOSITORY";
 export const CAR_IMAGES_REPOSITORY = "CAR_IMAGES_REPOSITORY";
+export const USER_FAVORITE_CAR_REPOSITORY = "USER_FAVORITE_CAR_REPOSITORY";
 export const CARS_REPOSITORY = "CARS_REPOSITORY";
 export const SEQUELIZE_MODELS = [
   User, UserToken,
-  Office, CarType, CarCapacity, CarSteering, CarStatus, CarPrice, CarImage, Car
+  Office, CarType,
+  CarCapacity, CarSteering,
+  CarStatus, CarPrice,
+  UserFavoriteCar, CarImage, Car
 ];
-
 
 export const IS_PUBLIC_KEY = "isPublic";
 export const SetPublic = () => SetMetadata(IS_PUBLIC_KEY, true);
