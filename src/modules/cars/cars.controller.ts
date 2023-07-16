@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Req } from "@nestjs/common";
 import { CarsService } from "./cars.service";
 import { CreateCarDto } from "./dto/create-car.dto";
 import { UpdateCarDto } from "./dto/update-car.dto";
@@ -7,6 +7,8 @@ import { SetPublic, SetRoles } from "../../core/constants";
 import { Role } from "../../shared/enum/role";
 import { UpdateCarResponseDto } from "./dto/update-car-response.dto";
 import { CarResponseDto } from "./dto/car-response.dto";
+import { CreateUserFavoriteCarResponseDto } from "./dto/create-user-favorite-car-response.dto";
+import { CreateUserFavoriteCarDto } from "./dto/create-user-favorite-car.dto";
 
 @Controller("v1")
 export class CarsController {
@@ -45,5 +47,12 @@ export class CarsController {
   @Delete("cars/:id")
   async remove(@Param("id") id: string) {
     return await this.carsService.remove(+id);
+  }
+
+  @HttpCode(204)
+  @Post("cars/favorite/:id")
+  async favorite(@Req() request, @Param("id") id: string, @Body() createUserFavoriteCarDto: CreateUserFavoriteCarDto): Promise<CreateUserFavoriteCarResponseDto> {
+    let userId = request.user.id;
+    return this.carsService.favorite(userId, +id, createUserFavoriteCarDto);
   }
 }

@@ -6,6 +6,7 @@ export enum BadRequestCode {
   BA_EMAIL_MUST_BE_UNIQUE = "BA-005", //Email must be unique
   BA_USER_DOES_NOT_EXIST = "BA-006", //User does not exist
   BA_CAR_DOES_NOT_EXIST = "BA-007", //Car does not exist
+  BA_USER_FAVORITE_CAR_MUST_ABE_UNIQUE = "BA-008", //User favorite car must be unique
 }
 
 export enum InternalServerErrorCode {
