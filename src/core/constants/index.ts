@@ -8,6 +8,7 @@ import { CarType } from "../../modules/cars/entities/car-type.entity";
 import { CarCapacity } from "../../modules/cars/entities/car-capacity.entity";
 import { CarSteering } from "../../modules/cars/entities/car-steering.entity";
 import { CarStatus } from "../../modules/cars/entities/car-status.entity";
+import { CarPrice } from "../../modules/cars/entities/car-price.entity";
 
 export const SEQUELIZE = "SEQUELIZE";
 export const DEVELOPMENT = "development";
@@ -21,10 +22,11 @@ export const CAR_TYPES_REPOSITORY = "CAR_TYPES_REPOSITORY";
 export const CAR_CAPACITIES_REPOSITORY = "CAR_CAPACITIES_REPOSITORY";
 export const CAR_STEERINGS_REPOSITORY = "CAR_STEERINGS_REPOSITORY";
 export const CAR_STATUSES_REPOSITORY = "CAR_STATUSES_REPOSITORY";
+export const CAR_PRICES_REPOSITORY = "CAR_PRICES_REPOSITORY";
 export const CARS_REPOSITORY = "CARS_REPOSITORY";
 export const SEQUELIZE_MODELS = [
   User, UserToken,
-  Office, CarType, CarCapacity, CarSteering, CarStatus, Car
+  Office, CarType, CarCapacity, CarSteering, CarStatus, CarPrice, Car
 ];
 
 

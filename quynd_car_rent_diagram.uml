@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.add_charges</OriginalElement>
+  <nodes>
+    <node x="312.2290428911794" y="973.8193735849559">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.users_cars_coupons</node>
+    <node x="15.659680963726487" y="-104.0">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.car_statuses</node>
+    <node x="1683.3900958872887" y="1252.8517258735967">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.payments</node>
+    <node x="873.3073746568547" y="-104.0">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.car_types</node>
+    <node x="352.72904289117935" y="164.1745572283794">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.cars</node>
+    <node x="69.65968096372649" y="533.8377731759407">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.coupons_cars</node>
+    <node x="494.97904289117946" y="-137.0">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.offices</node>
+    <node x="1023.9993453469183" y="452.3491144567588">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.reviews</node>
+    <node x="1064.2663990979688" y="-148.0">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.car_prices</node>
+    <node x="1301.2254235390828" y="-126.0">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.car_images</node>
+    <node x="683.138723854906" y="-104.0">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.car_steerings</node>
+    <node x="309.819361927453" y="-104.0">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.car_capacities</node>
+    <node x="1618.0109171082963" y="614.185196565162">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.users</node>
+    <node x="471.72904289117935" y="636.185196565162">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.car_reservations</node>
+    <node x="1532.8968292785705" y="-115.0">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.rental_statuses</node>
+    <node x="-182.0" y="340.6852273334081">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.coupons</node>
+    <node x="1876.0224888696744" y="422.8111935265715">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.user_tokens</node>
+    <node x="1316.2254235390828" y="385.91693170582334">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.favorites</node>
+    <node x="-194.5" y="-104.0">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.coupon_types</node>
+    <node x="1904.0224888696744" y="1005.0">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.notifications</node>
+    <node x="2111.218700815523" y="64.64263954035209">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.rentals</node>
+    <node x="1056.5671697317607" y="1285.8517258735967">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.add_charges</node>
+    <node x="1023.9993453469184" y="880.1004201651778">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.reservation_types</node>
+    <node x="1343.4786328095247" y="1296.8517258735967">5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.payment_add_charges</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.cars" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.car_steerings" relationship="REFERENCES">
+      <point x="193.0" y="-137.0" />
+      <point x="-20.9096809637266" y="71.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.cars" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.offices" relationship="REFERENCES">
+      <point x="27.250000000000114" y="-137.0" />
+      <point x="580.4790428911795" y="181.71900918189823" />
+      <point x="0.0" y="104.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.reviews" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.users" relationship="REFERENCES">
+      <point x="0.0" y="82.0" />
+      <point x="1107.9993453469183" y="751.185196565162" />
+      <point x="-105.5" y="0.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.coupons_cars" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.coupons" relationship="REFERENCES">
+      <point x="-111.5" y="0.0" />
+      <point x="-98.0" y="626.8377731759407" />
+      <point x="0.0" y="71.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.cars" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.car_capacities" relationship="REFERENCES">
+      <point x="-159.40968096372637" y="-137.0" />
+      <point x="0.0" y="71.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.cars" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.car_statuses" relationship="REFERENCES">
+      <point x="-200.5" y="-15.0" />
+      <point x="239.38432765694597" y="286.1745572283794" />
+      <point x="85.22464669321948" y="71.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.car_reservations" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.reservation_types" relationship="REFERENCES">
+      <point x="0.0" y="115.0" />
+      <point x="612.7290428911793" y="951.1004201651778" />
+      <point x="-93.49999999999989" y="0.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.rentals" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.rental_statuses" relationship="REFERENCES">
+      <point x="0.0" y="-137.0" />
+      <point x="2213.718700815523" y="-44.0" />
+      <point x="84.0" y="0.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.favorites" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.cars" relationship="REFERENCES">
+      <point x="-7.5" y="-71.0" />
+      <point x="1392.7254235390828" y="302.04773239115445" />
+      <point x="200.5" y="0.8731751627750555" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.car_reservations" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.cars" relationship="REFERENCES">
+      <point x="-59.5" y="-115.0" />
+      <point x="0.0" y="137.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.payment_add_charges" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.add_charges" relationship="REFERENCES">
+      <point x="-112.5" y="0.0" />
+      <point x="86.0" y="0.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.payments" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.users" relationship="REFERENCES">
+      <point x="-54.879178778992355" y="-104.0" />
+      <point x="0.0" y="137.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.car_reservations" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.users" relationship="REFERENCES">
+      <point x="141.0" y="30.0" />
+      <point x="-105.5" y="30.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.payments" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.rentals" relationship="REFERENCES">
+      <point x="95.0" y="0.0" />
+      <point x="2228.718700815523" y="1356.8517258735967" />
+      <point x="15.0" y="137.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.users_cars_coupons" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.cars" relationship="REFERENCES">
+      <point x="0.0" y="-71.0" />
+      <point x="-137.49999999999994" y="137.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.rentals" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.users" relationship="REFERENCES">
+      <point x="-15.0" y="137.0" />
+      <point x="2198.718700815523" y="706.1851703346589" />
+      <point x="105.5" y="-45.00002623050307" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.notifications" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.users" relationship="REFERENCES">
+      <point x="0.0" y="-82.0" />
+      <point x="1988.0224888696744" y="736.1851703346589" />
+      <point x="105.5" y="-15.000026230503067" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.favorites" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.users" relationship="REFERENCES">
+      <point x="84.0" y="0.0" />
+      <point x="1708.5109171082963" y="456.91693170582334" />
+      <point x="-15.0" y="-137.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.users_cars_coupons" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.users" relationship="REFERENCES">
+      <point x="103.49999999999994" y="-6.356099502513871" />
+      <point x="1708.5109171082963" y="1038.463274082442" />
+      <point x="-15.0" y="137.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.users_cars_coupons" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.coupons" relationship="REFERENCES">
+      <point x="-103.5" y="0.0" />
+      <point x="-113.0" y="1044.8193735849559" />
+      <point x="-15.0" y="71.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.car_prices" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.cars" relationship="REFERENCES">
+      <point x="0.0" y="104.0" />
+      <point x="1171.2663990979688" y="256.1745572283794" />
+      <point x="200.5" y="-45.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.reviews" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.cars" relationship="REFERENCES">
+      <point x="0.0" y="-82.0" />
+      <point x="1107.9993453469183" y="317.04773239115445" />
+      <point x="200.5" y="15.873175162775055" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.coupons_cars" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.cars" relationship="REFERENCES">
+      <point x="0.0" y="-93.0" />
+      <point x="181.1596809637265" y="301.1745572283794" />
+      <point x="-200.5" y="0.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.user_tokens" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.users" relationship="REFERENCES">
+      <point x="-98.0" y="0.0" />
+      <point x="1723.5109171082963" y="504.8111935265715" />
+      <point x="0.0" y="-137.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.payment_add_charges" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.payments" relationship="REFERENCES">
+      <point x="112.5" y="0.0" />
+      <point x="-95.0" y="0.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.cars" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.car_types" relationship="REFERENCES">
+      <point x="200.5" y="-60.0" />
+      <point x="957.3073746568547" y="241.1745572283794" />
+      <point x="0.0" y="71.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.car_images" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.cars" relationship="REFERENCES">
+      <point x="0.0" y="82.0" />
+      <point x="1392.7254235390828" y="271.1745572283794" />
+      <point x="200.5" y="-30.0" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.rentals" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.cars" relationship="REFERENCES">
+      <point x="-102.5" y="85.40509285080236" />
+      <point x="200.5" y="-14.126824837224945" />
+    </edge>
+    <edge source="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.coupons" target="5a702a00-7e03-43ea-8fa2-1cacd4bf707c.TABLE:default_schema.coupon_types" relationship="REFERENCES">
+      <point x="0.0" y="-71.0" />
+      <point x="0.0" y="71.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.44980780107979396" showDependencies="false" x="641.6120067605922" y="421.1319701113558" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Key columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+

@@ -5,6 +5,7 @@ export enum BadRequestCode {
   BA_PERMISSION = "BA-004", //Do not have permission
   BA_EMAIL_MUST_BE_UNIQUE = "BA-005", //Email must be unique
   BA_USER_DOES_NOT_EXIST = "BA-006", //User does not exist
+  BA_CAR_DOES_NOT_EXIST = "BA-007", //Car does not exist
 }
 
 export enum InternalServerErrorCode {
