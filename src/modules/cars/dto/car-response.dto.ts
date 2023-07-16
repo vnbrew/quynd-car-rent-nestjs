@@ -6,22 +6,25 @@ import { CarCapacity } from "../entities/car-capacity.entity";
 import { CarStatus } from "../entities/car-status.entity";
 import { CarSteering } from "../entities/car-steering.entity";
 import { CarPrice } from "../entities/car-price.entity";
+import { CarImage } from "../entities/car-image.entity";
 
 export class CarResponseDto extends CarDto {
   readonly office: Office;
-  readonly carType: CarType;
-  readonly carCapacity: CarCapacity;
-  readonly carStatus: CarStatus;
-  readonly carSteering: CarSteering;
-  readonly carPrice: CarPrice;
+  readonly car_type: CarType;
+  readonly car_capacity: CarCapacity;
+  readonly car_status: CarStatus;
+  readonly car_steering: CarSteering;
+  readonly car_price: CarPrice;
+  readonly car_images: CarImage[];
 
   constructor(car: Car) {
     super(car);
     this.office = car.office;
-    this.carType = car.type;
-    this.carCapacity = car.capacity;
-    this.carStatus = car.status;
-    this.carSteering = car.steering;
-    this.carPrice = car.carPrice
+    this.car_type = car.type;
+    this.car_capacity = car.capacity;
+    this.car_status = car.status;
+    this.car_steering = car.steering;
+    this.car_price = car.carPrice
+    this.car_images = car.carImages;
   }
 }

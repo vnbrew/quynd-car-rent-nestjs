@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsArray, IsDate, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateCarDto {
   @IsNumber()
@@ -38,4 +38,7 @@ export class CreateCarDto {
   readonly from_date_time?: Date;
 
   readonly to_date_time?: Date;
+
+  @IsArray()
+  readonly images: string[];
 }

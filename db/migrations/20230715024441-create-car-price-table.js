@@ -60,12 +60,14 @@ module.exports = {
         table: "cars",
         field: "id"
       },
-      name: "car_id_pk"
+      name: "pk_car_car_prices",
+      onDelete: "CASCADE",
+      onUpdate: "RESTRICT"
     });
   },
 
   async down(queryInterface) {
-    await queryInterface.removeConstraint("car_prices", "car_id_pk");
+    await queryInterface.removeConstraint("car_prices", "pk_car_car_prices");
     await queryInterface.removeIndex("car_prices", "car_id_index");
     await queryInterface.dropTable("car_prices");
   }

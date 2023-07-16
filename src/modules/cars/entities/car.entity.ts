@@ -16,6 +16,7 @@ import { CarType } from "./car-type.entity";
 import { CarCapacity } from "./car-capacity.entity";
 import { UserToken } from "../../users/entities/user-token.entity";
 import { CarPrice } from "./car-price.entity";
+import { CarImage } from "./car-image.entity";
 
 @Table({
   tableName: "cars"
@@ -73,4 +74,7 @@ export class Car extends Model<Car> {
 
   @HasOne(() => CarPrice)
   carPrice: CarPrice;
+
+  @HasMany(() => CarImage)
+  carImages: CarImage[];
 }
