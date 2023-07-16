@@ -10,7 +10,7 @@ import {
   CAR_TYPES_REPOSITORY,
   CARS_REPOSITORY,
   OFFICES_REPOSITORY,
-  SEQUELIZE, USER_FAVORITE_CAR_REPOSITORY
+  SEQUELIZE, USER_FAVORITE_CAR_REPOSITORY, USER_REVIEWS_CAR_REPOSITORY
 } from "../../core/constants";
 import { DestroyOptions, FindOptions } from "sequelize";
 import { UpdateOptions } from "sequelize/types/model";
@@ -35,6 +35,11 @@ import { CarImage } from "./entities/car-image.entity";
 import { CreateUserFavoriteCarResponseDto } from "./dto/create-user-favorite-car-response.dto";
 import { UserFavoriteCar } from "./entities/user-favorite-car.entity";
 import { CreateUserFavoriteCarDto } from "./dto/create-user-favorite-car.dto";
+import { CreateUserReviewCarDto } from "./dto/create-user-review-car.dto";
+import { CreateUserReviewCarResponseDto } from "./dto/create-user-review-car-response.dto";
+import { UserReviewCar } from "./entities/user-review-car.entity";
+import { UpdateUserReviewCarDto } from "./dto/update-user-review-car.dto";
+import { UpdateUserReviewCarResponseDto } from "./dto/update-user-review-car-response.dto";
 
 @Injectable()
 export class CarsService {
@@ -50,6 +55,7 @@ export class CarsService {
     @Inject(CAR_PRICES_REPOSITORY) private readonly carPricesRepository: typeof CarPrice,
     @Inject(CAR_IMAGES_REPOSITORY) private readonly carImagesRepository: typeof CarImage,
     @Inject(USER_FAVORITE_CAR_REPOSITORY) private readonly userFavoriteCarRepository: typeof UserFavoriteCar,
+    @Inject(USER_REVIEWS_CAR_REPOSITORY) private readonly userReviewCarRepository: typeof UserReviewCar,
     private readonly appExceptionService: AppExceptionService,
     private readonly i18n: I18nService
   ) {
@@ -405,5 +411,117 @@ export class CarsService {
       await this.userFavoriteCarRepository.destroy({ where: { user_id: userId, car_id: carId } });
     }
     return new CreateUserFavoriteCarResponseDto();
+  }
+
+  async createReview(userId: number, carId: number, createUserReviewCarDto: CreateUserReviewCarDto): Promise<CreateUserReviewCarResponseDto> {
+    try {
+      let userReviewCar = new UserReviewCar();
+      userReviewCar.user_id = userId;
+      userReviewCar.car_id = carId;
+      if (createUserReviewCarDto.rate < 1)
+        userReviewCar.rate = 1;
+      else if (createUserReviewCarDto.rate > 5)
+        userReviewCar.rate = 5;
+      else
+        userReviewCar.rate = createUserReviewCarDto.rate;
+      userReviewCar.comment = createUserReviewCarDto.comment;
+      await userReviewCar.save();
+    } catch (error) {
+      if (error.original.code === "ER_DUP_ENTRY") {
+        if (error.errors.length > 0) {
+          const transformedErrors = error.errors.map((e) => {
+            const code = "";
+            const field = e.path;
+            const message = e.message;
+            let detail: IDetailExceptionMessage = { code, field, message };
+            return detail;
+          });
+          let message = this.i18n.translate("error.data_type", {
+            lang: I18nContext.current().lang
+          });
+          this.appExceptionService.badRequestException(BadRequestCode.BA_USER_FAVORITE_CAR_MUST_ABE_UNIQUE, "", message, transformedErrors);
+        }
+      }
+      if (["ER_BAD_FIELD_ERROR"].includes(error.original.code)) {
+        let message = this.i18n.translate("error.data_type", {
+          lang: I18nContext.current().lang
+        });
+        const code = "";
+        const field = error.fields;
+        const filed_message = this.i18n.translate("error.foreign_key_constraint_fails", {
+          lang: I18nContext.current().lang
+        });
+        let detail: IDetailExceptionMessage = { code, field, message: filed_message };
+        this.appExceptionService.badRequestException(BadRequestCode.BA_IN_CORRECT_DATA_TYPE, "", message, [detail]);
+      }
+      let message = this.i18n.translate("error.internal_server_error", {
+        lang: I18nContext.current().lang
+      });
+      this.appExceptionService.internalServerErrorException(InternalServerErrorCode.IN_COMMON_ERROR, "", message, [error]);
+    }
+    return new CreateUserReviewCarResponseDto();
+  }
+
+  async updateReview(userId: number, carId: number, updateUserReviewCarDto: UpdateUserReviewCarDto): Promise<UpdateUserReviewCarResponseDto> {
+    let reviewInDB = await this.userReviewCarRepository.findOne({
+      where: {
+        user_id: userId,
+        car_id: carId
+      }
+    } as FindOptions);
+    if (!reviewInDB) {
+      let message = this.i18n.translate("error.data_type", {
+        lang: I18nContext.current().lang
+      });
+      const code = "";
+      const field = "";
+      const filed_message = this.i18n.translate("error.foreign_key_constraint_fails", {
+        lang: I18nContext.current().lang
+      });
+      let detail: IDetailExceptionMessage = { code, field, message: filed_message };
+      this.appExceptionService.badRequestException(BadRequestCode.BA_IN_CORRECT_DATA_TYPE, "", message, [detail]);
+    }
+    try {
+      let rate = updateUserReviewCarDto.rate;
+      if (updateUserReviewCarDto.rate < 1) rate = 1;
+      else if (updateUserReviewCarDto.rate > 5) rate = 5;
+      await this.userReviewCarRepository.update({
+        rate: rate,
+        comment: updateUserReviewCarDto.comment
+      }, { where: { user_id: userId, car_id: carId } } as UpdateOptions);
+    } catch (error) {
+      if (error.original.code === "ER_DUP_ENTRY") {
+        if (error.errors.length > 0) {
+          const transformedErrors = error.errors.map((e) => {
+            const code = "";
+            const field = e.path;
+            const message = e.message;
+            let detail: IDetailExceptionMessage = { code, field, message };
+            return detail;
+          });
+          let message = this.i18n.translate("error.data_type", {
+            lang: I18nContext.current().lang
+          });
+          this.appExceptionService.badRequestException(BadRequestCode.BA_USER_FAVORITE_CAR_MUST_ABE_UNIQUE, "", message, transformedErrors);
+        }
+      }
+      if (["ER_BAD_FIELD_ERROR"].includes(error.original.code)) {
+        let message = this.i18n.translate("error.data_type", {
+          lang: I18nContext.current().lang
+        });
+        const code = "";
+        const field = error.fields;
+        const filed_message = this.i18n.translate("error.foreign_key_constraint_fails", {
+          lang: I18nContext.current().lang
+        });
+        let detail: IDetailExceptionMessage = { code, field, message: filed_message };
+        this.appExceptionService.badRequestException(BadRequestCode.BA_IN_CORRECT_DATA_TYPE, "", message, [detail]);
+      }
+      let message = this.i18n.translate("error.internal_server_error", {
+        lang: I18nContext.current().lang
+      });
+      this.appExceptionService.internalServerErrorException(InternalServerErrorCode.IN_COMMON_ERROR, "", message, []);
+    }
+    return new UpdateUserReviewCarResponseDto();
   }
 }

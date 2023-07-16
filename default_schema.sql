@@ -466,13 +466,16 @@ CREATE TABLE IF NOT EXISTS `default_schema`.`reviews`
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`car_id`, `user_id`),
-    INDEX `pk_users_reviews` (`user_id` ASC) VISIBLE,
-    CONSTRAINT `pk_cars_reviews`
+    CONSTRAINT `pk_reviews_car_id`
         FOREIGN KEY (`car_id`)
-            REFERENCES `default_schema`.`cars` (`id`),
-    CONSTRAINT `pk_users_reviews`
+            REFERENCES `default_schema`.`cars` (`id`)
+            ON UPDATE RESTRICT
+            ON DELETE CASCADE,
+    CONSTRAINT `pk_reviews_user_id`
         FOREIGN KEY (`user_id`)
             REFERENCES `default_schema`.`users` (`id`)
+            ON UPDATE RESTRICT
+            ON DELETE CASCADE
 )
     ENGINE = InnoDB
     AUTO_INCREMENT = 1

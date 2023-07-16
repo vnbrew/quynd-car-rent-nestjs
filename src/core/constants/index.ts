@@ -11,6 +11,7 @@ import { CarStatus } from "../../modules/cars/entities/car-status.entity";
 import { CarPrice } from "../../modules/cars/entities/car-price.entity";
 import { CarImage } from "../../modules/cars/entities/car-image.entity";
 import { UserFavoriteCar } from "../../modules/cars/entities/user-favorite-car.entity";
+import { UserReviewCar } from "../../modules/cars/entities/user-review-car.entity";
 
 export const SEQUELIZE = "SEQUELIZE";
 export const DEVELOPMENT = "development";
@@ -27,13 +28,14 @@ export const CAR_STATUSES_REPOSITORY = "CAR_STATUSES_REPOSITORY";
 export const CAR_PRICES_REPOSITORY = "CAR_PRICES_REPOSITORY";
 export const CAR_IMAGES_REPOSITORY = "CAR_IMAGES_REPOSITORY";
 export const USER_FAVORITE_CAR_REPOSITORY = "USER_FAVORITE_CAR_REPOSITORY";
+export const USER_REVIEWS_CAR_REPOSITORY = "USER_REVIEWS_CAR_REPOSITORY";
 export const CARS_REPOSITORY = "CARS_REPOSITORY";
 export const SEQUELIZE_MODELS = [
   User, UserToken,
   Office, CarType,
   CarCapacity, CarSteering,
   CarStatus, CarPrice,
-  UserFavoriteCar, CarImage, Car
+  UserFavoriteCar, CarImage, UserReviewCar, Car
 ];
 
 export const IS_PUBLIC_KEY = "isPublic";
