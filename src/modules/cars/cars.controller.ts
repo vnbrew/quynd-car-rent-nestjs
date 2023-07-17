@@ -14,6 +14,7 @@ import { CreateUserReviewCarResponseDto } from "./dto/create-user-review-car-res
 import { UpdateUserReviewCarDto } from "./dto/update-user-review-car.dto";
 import { UpdateUserReviewCarResponseDto } from "./dto/update-user-review-car-response.dto";
 import { UserFavoriteCarResponseDto } from "./dto/user-favorite-car-response.dto";
+import { UserFavoriteCarsResponseDto } from "./dto/user-favorite-cars-response.dto";
 
 @Controller("v1")
 export class CarsController {
@@ -79,5 +80,11 @@ export class CarsController {
   async updateReview(@Req() request, @Param("id") id: string, @Body() updateUserReviewCarDto: UpdateUserReviewCarDto): Promise<UpdateUserReviewCarResponseDto> {
     let userId = request.user.id;
     return await this.carsService.updateReview(userId, +id, updateUserReviewCarDto);
+  }
+
+  @Get("cars/users/favorite")
+  async getFavoriteCarByUser(@Req() request): Promise<UserFavoriteCarsResponseDto> {
+    let userId = request.user.id;
+    return await this.carsService.getFavoriteCarByUser(userId);
   }
 }

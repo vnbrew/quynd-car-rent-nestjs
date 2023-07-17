@@ -42,6 +42,7 @@ import { UpdateUserReviewCarDto } from "./dto/update-user-review-car.dto";
 import { UpdateUserReviewCarResponseDto } from "./dto/update-user-review-car-response.dto";
 import { UserFavoriteCarResponseDto } from "./dto/user-favorite-car-response.dto";
 import { User } from "../users/entities/user.entity";
+import { UserFavoriteCarsResponseDto } from "./dto/user-favorite-cars-response.dto";
 
 @Injectable()
 export class CarsService {
@@ -544,5 +545,17 @@ export class CarsService {
       return new UserFavoriteCarResponseDto(false);
     }
     return new UserFavoriteCarResponseDto(true);
+  }
+
+  async getFavoriteCarByUser(userId: number): Promise<UserFavoriteCarsResponseDto> {
+    let userFavoriteCarInDB = await this.userFavoriteCarRepository.findAll<UserFavoriteCar>({
+      where: {
+        user_id: userId
+      }
+    } as FindOptions);
+    if (!userFavoriteCarInDB) {
+      return new UserFavoriteCarsResponseDto([]);
+    }
+    return new UserFavoriteCarsResponseDto(userFavoriteCarInDB.map((item) => item.car_id));
   }
 }
