@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `default_schema`.`rental_statuses`
 (
     `id`          INT(11)     NOT NULL AUTO_INCREMENT,
     `status`      VARCHAR(30) NOT NULL,
-    `description` TEXT        NOT NULL,
+    `description` TEXT        NULL     DEFAULT '',
     `created_at`  DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at`  DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
@@ -231,32 +231,29 @@ CREATE TABLE IF NOT EXISTS `default_schema`.`rentals`
 (
     `id`               INT(11)  NOT NULL AUTO_INCREMENT,
     `car_id`           INT(11)  NOT NULL,
-    `customer_id`      INT(11)  NOT NULL,
+    `user_id`          INT(11)  NOT NULL,
     `rental_status_id` INT(11)  NOT NULL,
-    `admin_id`         INT(11)  NULL     DEFAULT NULL,
     `pick_date_time`   DATETIME NOT NULL,
     `drop_date_time`   DATETIME NOT NULL,
-    `rental_date_time` DATETIME NULL     DEFAULT NULL,
-    `detail`           TEXT     NOT NULL,
+    `detail`           TEXT     NULL     DEFAULT '',
     `created_at`       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at`       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
-    INDEX `pk_rental_statuses_rentals` (`rental_status_id` ASC) VISIBLE,
-    INDEX `pk_cars_rentals` (`car_id` ASC) VISIBLE,
-    INDEX `pk_user_customer_rentals` (`customer_id` ASC) VISIBLE,
-    INDEX `pk_user_admin_rentals` (`admin_id` ASC) VISIBLE,
     CONSTRAINT `pk_rental_statuses_rentals`
         FOREIGN KEY (`rental_status_id`)
-            REFERENCES `default_schema`.`rental_statuses` (`id`),
+            REFERENCES `default_schema`.`rental_statuses` (`id`)
+            ON UPDATE RESTRICT
+            ON DELETE RESTRICT,
     CONSTRAINT `pk_cars_rentals`
         FOREIGN KEY (`car_id`)
-            REFERENCES `default_schema`.`cars` (`id`),
+            REFERENCES `default_schema`.`cars` (`id`)
+            ON UPDATE RESTRICT
+            ON DELETE CASCADE,
     CONSTRAINT `pk_user_customer_rentals`
-        FOREIGN KEY (`customer_id`)
-            REFERENCES `default_schema`.`users` (`id`),
-    CONSTRAINT `pk_user_admin_rentals`
-        FOREIGN KEY (`admin_id`)
+        FOREIGN KEY (`user_id`)
             REFERENCES `default_schema`.`users` (`id`)
+            ON UPDATE RESTRICT
+            ON DELETE CASCADE
 )
     ENGINE = InnoDB
     AUTO_INCREMENT = 1
@@ -372,29 +369,44 @@ CREATE TABLE IF NOT EXISTS `default_schema`.`favorites`
     DEFAULT CHARSET = utf8mb4
     COLLATE = utf8mb4_unicode_ci;
 
+-- auto-generated definition
+CREATE TABLE IF NOT EXISTS `default_schema`.`payment_statuses`
+(
+    `id`          INT(11)     NOT NULL AUTO_INCREMENT,
+    `status`      VARCHAR(30) NOT NULL,
+    `description` TEXT        NULL     DEFAULT '',
+    `created_at`  DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`  DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+)
+    ENGINE = InnoDB
+    AUTO_INCREMENT = 1
+    DEFAULT CHARSET = utf8mb4
+    COLLATE = utf8mb4_unicode_ci;
 
 -- -----------------------------------------------------
 -- Table `default_schema`.`payments`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `default_schema`.`payments`
 (
-    `id`            INT(11)        NOT NULL AUTO_INCREMENT,
-    `rental_id`     INT(11)        NOT NULL,
-    `admin_id`      INT(11)        NOT NULL,
-    `tax`           FLOAT          NOT NULL,
-    `pay_date_time` DATETIME       NOT NULL,
-    `amount`        DECIMAL(10, 2) NOT NULL,
-    `created_at`    DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at`    DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `id`                INT(11)        NOT NULL AUTO_INCREMENT,
+    `rental_id`         INT(11)        NOT NULL,
+    `payment_status_id` INT(11)        NOT NULL,
+    `tax`               FLOAT          NOT NULL,
+    `pay_date_time`     DATETIME       NOT NULL,
+    `amount`            DECIMAL(10, 2) NOT NULL,
+    `created_at`        DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`        DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
-    INDEX `pk_rentals_payments` (`rental_id` ASC) VISIBLE,
-    INDEX `pk_users_payments` (`admin_id` ASC) VISIBLE,
     CONSTRAINT `pk_rentals_payments`
         FOREIGN KEY (`rental_id`)
-            REFERENCES `default_schema`.`rentals` (`id`),
-    CONSTRAINT `pk_users_payments`
-        FOREIGN KEY (`admin_id`)
-            REFERENCES `default_schema`.`users` (`id`)
+            REFERENCES `default_schema`.`rentals` (`id`)
+            ON DELETE CASCADE
+            ON UPDATE RESTRICT,
+    CONSTRAINT `pk_payment_status_payments`
+        FOREIGN KEY (`payment_status_id`)
+            REFERENCES `default_schema`.`payment_statuses` (`id`)
+            ON DELETE RESTRICT
+            ON UPDATE RESTRICT
 )
     ENGINE = InnoDB
     AUTO_INCREMENT = 1
