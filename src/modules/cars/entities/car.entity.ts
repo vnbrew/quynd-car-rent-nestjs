@@ -7,7 +7,7 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-  HasOne, HasMany
+  HasOne, HasMany, BelongsToMany
 } from "sequelize-typescript";
 import { Office } from "./car-office.entity";
 import { CarStatus } from "./car-status.entity";
@@ -17,6 +17,8 @@ import { CarCapacity } from "./car-capacity.entity";
 import { UserToken } from "../../users/entities/user-token.entity";
 import { CarPrice } from "./car-price.entity";
 import { CarImage } from "./car-image.entity";
+import { UserReviewCar } from "./user-review-car.entity";
+import { User } from "../../users/entities/user.entity";
 
 @Table({
   tableName: "cars"
@@ -77,4 +79,8 @@ export class Car extends Model<Car> {
 
   @HasMany(() => CarImage)
   carImages: CarImage[];
+
+  @HasMany(() => UserReviewCar)
+  // users: Array<User & { UserReviewCar: UserReviewCar }>;
+  userReviewCars: UserReviewCar[];
 }

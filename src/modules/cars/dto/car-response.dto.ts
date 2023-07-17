@@ -7,6 +7,9 @@ import { CarStatus } from "../entities/car-status.entity";
 import { CarSteering } from "../entities/car-steering.entity";
 import { CarPrice } from "../entities/car-price.entity";
 import { CarImage } from "../entities/car-image.entity";
+import { UserReviewCar } from "../entities/user-review-car.entity";
+import { User } from "../../users/entities/user.entity";
+import { UserReviewCarResponseDto } from "./user-review-car.response.dto";
 
 export class CarResponseDto extends CarDto {
   readonly office: Office;
@@ -16,6 +19,7 @@ export class CarResponseDto extends CarDto {
   readonly car_steering: CarSteering;
   readonly car_price: CarPrice;
   readonly car_images: CarImage[];
+  readonly reviews: UserReviewCarResponseDto[];
 
   constructor(car: Car) {
     super(car);
@@ -24,7 +28,8 @@ export class CarResponseDto extends CarDto {
     this.car_capacity = car.capacity;
     this.car_status = car.status;
     this.car_steering = car.steering;
-    this.car_price = car.carPrice
+    this.car_price = car.carPrice;
     this.car_images = car.carImages;
+    this.reviews = car.userReviewCars.map((userReviewCar) => new UserReviewCarResponseDto(userReviewCar));
   }
 }
