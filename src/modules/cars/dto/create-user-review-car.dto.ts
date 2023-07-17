@@ -5,5 +5,8 @@ export class CreateUserReviewCarDto {
   readonly rate: number;
 
   @IsString()
+  readonly title: string;
+
+  @IsString()
   readonly comment: string;
 }
