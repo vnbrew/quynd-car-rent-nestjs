@@ -13,6 +13,8 @@ import { AuthModule } from "./modules/auth/auth.module";
 import { JwtModule } from "@nestjs/jwt";
 import { CacheModule } from "@nestjs/cache-manager";
 import { CarsModule } from './modules/cars/cars.module';
+import { RentalModule } from './modules/rental/rental.module';
+import { PaymentModule } from './modules/payment/payment.module';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { CarsModule } from './modules/cars/cars.module';
     AuthModule,
     UsersModule,
     CarsModule,
+    RentalModule,
+    PaymentModule,
   ],
   providers: [
     ...APP_INTERCEPTOR_PROVIDERS,
