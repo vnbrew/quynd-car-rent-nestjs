@@ -433,6 +433,7 @@ export class CarsService {
         userReviewCar.rate = 5;
       else
         userReviewCar.rate = createUserReviewCarDto.rate;
+      userReviewCar.title = createUserReviewCarDto.title;
       userReviewCar.comment = createUserReviewCarDto.comment;
       await userReviewCar.save();
     } catch (error) {
@@ -496,6 +497,7 @@ export class CarsService {
       else if (updateUserReviewCarDto.rate > 5) rate = 5;
       await this.userReviewCarRepository.update({
         rate: rate,
+        title: updateUserReviewCarDto.title,
         comment: updateUserReviewCarDto.comment
       }, { where: { user_id: userId, car_id: carId } } as UpdateOptions);
     } catch (error) {

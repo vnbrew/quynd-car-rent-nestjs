@@ -1,6 +1,7 @@
-import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, Model, Sequelize, Table } from "sequelize-typescript";
 import { Car } from "./car.entity";
 import { User } from "../../users/entities/user.entity";
+import { Exclude } from "class-transformer";
 
 @Table({
   tableName: "reviews"
@@ -38,11 +39,17 @@ export class UserReviewCar extends Model<UserReviewCar> {
     type: DataType.TEXT,
     allowNull: true
   })
+  title!: string;
+
+  @Column({
+    type: DataType.TEXT,
+    allowNull: true
+  })
   comment!: string;
 
   @Column({
     type: DataType.DATE,
-    allowNull: false
+    allowNull: true,
   })
   updated_at: Date;
 }
