@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Req } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query, Req } from "@nestjs/common";
 import { CarsService } from "./cars.service";
 import { CreateCarDto } from "./dto/create-car.dto";
 import { UpdateCarDto } from "./dto/update-car.dto";
@@ -15,6 +15,8 @@ import { UpdateUserReviewCarDto } from "./dto/update-user-review-car.dto";
 import { UpdateUserReviewCarResponseDto } from "./dto/update-user-review-car-response.dto";
 import { UserFavoriteCarResponseDto } from "./dto/user-favorite-car-response.dto";
 import { UserFavoriteCarsResponseDto } from "./dto/user-favorite-cars-response.dto";
+import { AllCarResponseDto } from "./dto/all-car-response.dto";
+import { PagingCarDto } from "./dto/paging-car.dto";
 
 @Controller("v1")
 export class CarsController {
@@ -30,9 +32,10 @@ export class CarsController {
     return this.carsService.create(createCarDto);
   }
 
-  @Get()
-  findAll() {
-    return this.carsService.findAll();
+  @SetPublic()
+  @Get('cars')
+  async findAll(@Query() pagingCarDto: PagingCarDto): Promise<AllCarResponseDto> {
+    return await this.carsService.findAll(pagingCarDto);
   }
 
   @SetPublic()

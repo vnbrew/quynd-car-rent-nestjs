@@ -12,8 +12,8 @@ import {
   OFFICES_REPOSITORY,
   SEQUELIZE, USER_FAVORITE_CAR_REPOSITORY, USER_REVIEWS_CAR_REPOSITORY
 } from "../../core/constants";
-import { DestroyOptions, FindOptions } from "sequelize";
-import { UpdateOptions } from "sequelize/types/model";
+import { DestroyOptions, FindOptions, Op } from "sequelize";
+import { FindAndCountOptions, UpdateOptions } from "sequelize/types/model";
 import { Car } from "./entities/car.entity";
 import { AppExceptionService } from "../../core/exception/app.exception.service";
 import { I18nContext, I18nService } from "nestjs-i18n";
@@ -43,6 +43,8 @@ import { UpdateUserReviewCarResponseDto } from "./dto/update-user-review-car-res
 import { UserFavoriteCarResponseDto } from "./dto/user-favorite-car-response.dto";
 import { User } from "../users/entities/user.entity";
 import { UserFavoriteCarsResponseDto } from "./dto/user-favorite-cars-response.dto";
+import { AllCarResponseDto } from "./dto/all-car-response.dto";
+import { PagingCarDto } from "./dto/paging-car.dto";
 
 @Injectable()
 export class CarsService {
@@ -169,8 +171,85 @@ export class CarsService {
     }
   }
 
-  findAll() {
-    return `This action returns all cars`;
+  async findAll(pagingCarDto: PagingCarDto): Promise<AllCarResponseDto> {
+    // console.log(pagingCarDto);
+    let { limit, offset, types, capacities, price } = pagingCarDto;
+    console.log({ limit, offset, types, capacities, price });
+    let carInDB;
+    if (limit && offset && +limit > 0 && +offset >= 0) {
+      carInDB = await this.carsRepository.findAndCountAll({
+        where: {
+          car_type_id: { [Op.or]: !types ? [] : types.toString().split(",").map(Number) },
+          car_capacity_id: { [Op.or]: !capacities ? [] : capacities.toString().split(",").map(Number) }
+        },
+        group: ["Car.id", "CarPrice.id"],
+        include: [
+          Office,
+          {
+            model: CarType
+            // where: { id: { [Op.or]: !types ? [] : types.toString().split(',').map(Number)} }
+          },
+          {
+            model: CarCapacity
+            // where: { id: { [Op.or]: !capacities ? [] : capacities.toString().split(',').map(Number)} }
+          },
+          {
+            model: CarStatus,
+            where: { status: ECarStatus.available }
+          },
+          CarSteering,
+          {
+            model: CarPrice,
+            where: {
+              status: ECarPrice.new,
+              rental_price: {
+                [Op.lte]: +price
+              }
+            }
+          },
+          {
+            model: CarImage,
+            required: false
+          },
+          {
+            model: UserReviewCar,
+            include: [User],
+            required: false
+          }
+        ],
+        offset: +offset,
+        limit: +limit
+      });
+      return new AllCarResponseDto(carInDB.rows.map((car) => new CarResponseDto(car)), carInDB.count.length, +offset, +limit);
+    } else {
+      carInDB = await this.carsRepository.findAll({
+        include: [
+          Office,
+          CarType,
+          CarCapacity,
+          {
+            model: CarStatus
+            // where: { status: ECarStatus.available }
+          },
+          CarSteering,
+          {
+            model: CarPrice,
+            where: { status: ECarPrice.new }
+          },
+          {
+            model: CarImage,
+            required: false
+          },
+          {
+            model: UserReviewCar,
+            include: [User],
+            required: false
+          }
+        ]
+      });
+      return new AllCarResponseDto(carInDB.map((car) => new CarResponseDto(car)), carInDB.length, 0, carInDB.length);
+    }
+
   }
 
   async findOne(id: number): Promise<CarResponseDto> {
