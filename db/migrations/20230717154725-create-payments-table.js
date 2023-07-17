@@ -14,6 +14,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false
       },
+      coupon_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
       payment_status_id: {
         type: Sequelize.INTEGER,
         allowNull: false
@@ -67,11 +71,23 @@ module.exports = {
       onDelete: "RESTRICT",
       onUpdate: "RESTRICT"
     });
+    await queryInterface.addConstraint("payments", {
+      fields: ["coupon_id"],
+      type: "foreign key",
+      name: "fk_coupons_payments",
+      references: {
+        table: "coupons",
+        field: "id"
+      },
+      onDelete: "RESTRICT",
+      onUpdate: "RESTRICT"
+    });
   },
 
   async down(queryInterface, Sequelize) {
     await queryInterface.removeConstraint("payments", "fk_payment_statuses_payments");
     await queryInterface.removeConstraint("payments", "fk_rentals_payments");
+    await queryInterface.removeConstraint("payments", "fk_coupons_payments");
     await queryInterface.dropTable("payments");
   }
 };
