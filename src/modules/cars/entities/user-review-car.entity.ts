@@ -39,4 +39,10 @@ export class UserReviewCar extends Model<UserReviewCar> {
     allowNull: true
   })
   comment!: string;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: false
+  })
+  updated_at: Date;
 }

@@ -1,4 +1,4 @@
-import { Column, DataType, HasOne, Index, IsEmail, Model, Table, Unique } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, HasOne, Index, IsEmail, Model, Table, Unique } from "sequelize-typescript";
 import { Role } from "../../../shared/enum/role";
 import { TableName } from "../../../shared/enum/table";
 import { UserToken } from "./user-token.entity";

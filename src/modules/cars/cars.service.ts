@@ -40,6 +40,8 @@ import { CreateUserReviewCarResponseDto } from "./dto/create-user-review-car-res
 import { UserReviewCar } from "./entities/user-review-car.entity";
 import { UpdateUserReviewCarDto } from "./dto/update-user-review-car.dto";
 import { UpdateUserReviewCarResponseDto } from "./dto/update-user-review-car-response.dto";
+import { UserFavoriteCarResponseDto } from "./dto/user-favorite-car-response.dto";
+import { User } from "../users/entities/user.entity";
 
 @Injectable()
 export class CarsService {
@@ -181,6 +183,12 @@ export class CarsService {
         {
           model: CarImage,
           where: { car_id: id },
+          required: false
+        },
+        {
+          model: UserReviewCar,
+          where: { car_id: id },
+          include: [User],
           required: false
         }
       ]
@@ -523,5 +531,18 @@ export class CarsService {
       this.appExceptionService.internalServerErrorException(InternalServerErrorCode.IN_COMMON_ERROR, "", message, []);
     }
     return new UpdateUserReviewCarResponseDto();
+  }
+
+  async isFavorite(userId: number, carId: number): Promise<UserFavoriteCarResponseDto> {
+    let userFavoriteCarInDB = await this.userFavoriteCarRepository.findOne<UserFavoriteCar>({
+      where: {
+        user_id: userId,
+        car_id: carId
+      }
+    } as FindOptions);
+    if (!userFavoriteCarInDB) {
+      return new UserFavoriteCarResponseDto(false);
+    }
+    return new UserFavoriteCarResponseDto(true);
   }
 }

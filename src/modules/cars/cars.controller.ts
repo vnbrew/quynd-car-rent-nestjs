@@ -13,6 +13,7 @@ import { CreateUserReviewCarDto } from "./dto/create-user-review-car.dto";
 import { CreateUserReviewCarResponseDto } from "./dto/create-user-review-car-response.dto";
 import { UpdateUserReviewCarDto } from "./dto/update-user-review-car.dto";
 import { UpdateUserReviewCarResponseDto } from "./dto/update-user-review-car-response.dto";
+import { UserFavoriteCarResponseDto } from "./dto/user-favorite-car-response.dto";
 
 @Controller("v1")
 export class CarsController {
@@ -60,6 +61,12 @@ export class CarsController {
     return this.carsService.favorite(userId, +id, createUserFavoriteCarDto);
   }
 
+  @Get("cars/favorite/:id")
+  async isFavorite(@Req() request, @Param("id") id: string): Promise<UserFavoriteCarResponseDto> {
+    let userId = request.user.id;
+    return await this.carsService.isFavorite(userId, +id);
+  }
+
   @HttpCode(204)
   @Post("cars/review/:id")
   async createReview(@Req() request, @Param("id") id: string, @Body() createUserReviewCarDto: CreateUserReviewCarDto): Promise<CreateUserReviewCarResponseDto> {
@@ -71,6 +78,6 @@ export class CarsController {
   @Patch("cars/review/:id")
   async updateReview(@Req() request, @Param("id") id: string, @Body() updateUserReviewCarDto: UpdateUserReviewCarDto): Promise<UpdateUserReviewCarResponseDto> {
     let userId = request.user.id;
-    return this.carsService.updateReview(userId, +id, updateUserReviewCarDto);
+    return await this.carsService.updateReview(userId, +id, updateUserReviewCarDto);
   }
 }
