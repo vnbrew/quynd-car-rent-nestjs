@@ -7,8 +7,6 @@ import { CarStatus } from "../entities/car-status.entity";
 import { CarSteering } from "../entities/car-steering.entity";
 import { CarPrice } from "../entities/car-price.entity";
 import { CarImage } from "../entities/car-image.entity";
-import { UserReviewCar } from "../entities/user-review-car.entity";
-import { User } from "../../users/entities/user.entity";
 import { UserReviewCarResponseDto } from "./user-review-car.response.dto";
 
 export class CarResponseDto extends CarDto {

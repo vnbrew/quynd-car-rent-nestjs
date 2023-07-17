@@ -1,6 +1,7 @@
 import { Car } from "../entities/car.entity";
 
 export class CarDto {
+  readonly id: number;
   readonly office_id!: number;
   readonly car_type_id!: number;
   readonly car_capacity_id!: number;
@@ -11,6 +12,7 @@ export class CarDto {
   readonly description?: string;
 
   constructor(car: Car) {
+    this.id = car.id;
     this.office_id = car.office_id;
     this.car_type_id = car.car_type_id;
     this.car_capacity_id = car.car_capacity_id;

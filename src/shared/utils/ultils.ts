@@ -27,3 +27,11 @@ export const isSameDateTime = (dateTimeA?: Date, dateTimeB?: Date)  => {
   let b = new Date(dateTimeB).toISOString();
   return a === b;
 }
+
+export const toNumber = (value: string) => {
+  if (isNaN(+value)) {
+    return 'NA';
+  }
+  let newValue: number = parseInt(value);
+  return newValue;
+}
