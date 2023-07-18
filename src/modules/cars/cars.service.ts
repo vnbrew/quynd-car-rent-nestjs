@@ -13,7 +13,7 @@ import {
   SEQUELIZE, USER_FAVORITE_CAR_REPOSITORY, USER_REVIEWS_CAR_REPOSITORY
 } from "../../core/constants";
 import { DestroyOptions, FindOptions, Op } from "sequelize";
-import { FindAndCountOptions, UpdateOptions } from "sequelize/types/model";
+import { UpdateOptions } from "sequelize/types/model";
 import { Car } from "./entities/car.entity";
 import { AppExceptionService } from "../../core/exception/app.exception.service";
 import { I18nContext, I18nService } from "nestjs-i18n";

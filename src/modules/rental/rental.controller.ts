@@ -3,31 +3,31 @@ import { RentalService } from './rental.service';
 import { CreateRentalDto } from './dto/create-rental.dto';
 import { UpdateRentalDto } from './dto/update-rental.dto';
 
-@Controller('rental')
+@Controller('v1')
 export class RentalController {
   constructor(private readonly rentalService: RentalService) {}
 
-  @Post()
+  @Post('rental')
   create(@Body() createRentalDto: CreateRentalDto) {
     return this.rentalService.create(createRentalDto);
   }
 
-  @Get()
+  @Get('rental')
   findAll() {
     return this.rentalService.findAll();
   }
 
-  @Get(':id')
+  @Get('rental/:id')
   findOne(@Param('id') id: string) {
     return this.rentalService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('rental/:id')
   update(@Param('id') id: string, @Body() updateRentalDto: UpdateRentalDto) {
     return this.rentalService.update(+id, updateRentalDto);
   }
 
-  @Delete(':id')
+  @Delete('rental/:id')
   remove(@Param('id') id: string) {
     return this.rentalService.remove(+id);
   }

@@ -30,6 +30,7 @@ export class Car extends Model<Car> {
   id!: number;
 
   @ForeignKey(() => Office)
+  @Column
   office_id!: number;
 
   @ForeignKey(() => CarType)
