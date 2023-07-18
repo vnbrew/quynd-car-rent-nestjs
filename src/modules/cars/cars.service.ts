@@ -13,7 +13,7 @@ import {
   SEQUELIZE, USER_FAVORITE_CAR_REPOSITORY, USER_REVIEWS_CAR_REPOSITORY
 } from "../../core/constants";
 import { DestroyOptions, FindOptions, Op } from "sequelize";
-import { FindAndCountOptions, UpdateOptions } from "sequelize/types/model";
+import { UpdateOptions } from "sequelize/types/model";
 import { Car } from "./entities/car.entity";
 import { AppExceptionService } from "../../core/exception/app.exception.service";
 import { I18nContext, I18nService } from "nestjs-i18n";
@@ -64,6 +64,23 @@ export class CarsService {
     private readonly appExceptionService: AppExceptionService,
     private readonly i18n: I18nService
   ) {
+  }
+
+  async isCarAvailable(carId: number): Promise<boolean> {
+    let isCarAvailable = await this.carsRepository.findOne<Car>({
+      where: {
+        id: carId
+      },
+      include: [
+        {
+          model: CarStatus,
+          where: {
+            status: ECarStatus.available
+          }
+        }
+      ]
+    } as FindOptions);
+    return !!isCarAvailable;
   }
 
   async create(createCarDto: CreateCarDto): Promise<CreateCarResponseDto> {
