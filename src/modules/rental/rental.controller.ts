@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, HttpCode } from "@nestjs/common";
 import { RentalService } from './rental.service';
 import { CreateRentalDto } from './dto/create-rental.dto';
 import { UpdateRentalDto } from './dto/update-rental.dto';
@@ -7,9 +7,11 @@ import { UpdateRentalDto } from './dto/update-rental.dto';
 export class RentalController {
   constructor(private readonly rentalService: RentalService) {}
 
+  @HttpCode(204)
   @Post('rental')
-  create(@Body() createRentalDto: CreateRentalDto) {
-    return this.rentalService.create(createRentalDto);
+  async create(@Req() request, @Body() createRentalDto: CreateRentalDto) {
+    let userId = request.user.id;
+    return await this.rentalService.create(userId, createRentalDto);
   }
 
   @Get('rental')
