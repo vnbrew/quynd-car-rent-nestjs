@@ -18,7 +18,5 @@ export class CreateRentalDto {
   @Type(() => Date)
   readonly drop_date_time: Date;
 
-  @Optional()
-  @IsString()
   readonly detail?: string;
 }

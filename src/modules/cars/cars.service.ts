@@ -269,9 +269,9 @@ export class CarsService {
 
   }
 
-  async findOne(id: number): Promise<CarResponseDto> {
+  async findCarById(carId: number): Promise<Car> {
     let carInDB = await this.carsRepository.findOne<Car>({
-      where: { id }, include: [
+      where: { id:carId }, include: [
         Office, CarType, CarCapacity, CarStatus, CarSteering,
         {
           model: CarPrice,
@@ -279,17 +279,22 @@ export class CarsService {
         },
         {
           model: CarImage,
-          where: { car_id: id },
+          where: { car_id: carId },
           required: false
         },
         {
           model: UserReviewCar,
-          where: { car_id: id },
+          where: { car_id: carId },
           include: [User],
           required: false
         }
       ]
     } as FindOptions);
+    return carInDB;
+  }
+
+  async findOne(id: number): Promise<CarResponseDto> {
+    let carInDB = await this.findCarById(id);
     if (!carInDB) {
       let message = this.i18n.translate("error.car_does_not_exist", {
         lang: I18nContext.current().lang

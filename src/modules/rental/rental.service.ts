@@ -13,6 +13,13 @@ import { IDetailExceptionMessage } from "../../core/exception/app.exception.inte
 import { BadRequestCode, InternalServerErrorCode } from "../../shared/enum/exception-code";
 import { CarsService } from "../cars/cars.service";
 import { RentalResponseDto } from "./dto/rental-response.dto";
+import { User } from "../users/entities/user.entity";
+import { Car } from "../cars/entities/car.entity";
+import { Office } from "../cars/entities/car-office.entity";
+import { CarType } from "../cars/entities/car-type.entity";
+import { CarSteering } from "../cars/entities/car-steering.entity";
+import { CarCapacity } from "../cars/entities/car-capacity.entity";
+import { CarStatus } from "../cars/entities/car-status.entity";
 
 @Injectable()
 export class RentalService {
@@ -93,6 +100,19 @@ export class RentalService {
     return !carInRentalDB;
   }
 
+  async isUserHasRentalInEffective(userId: number, rentalId: number): Promise<Rental> {
+    let userHasRentalInEffective = await this.rentalsRepository.findOne<Rental>(
+      {
+        where: {
+          id: rentalId,
+          user_id: userId,
+          rental_status_id: 1
+        }
+      } as FindOptions
+    );
+    return userHasRentalInEffective;
+  }
+
   async create(userId: number, createRentalDto: CreateRentalDto) {
     console.log({ userId, ...createRentalDto });
     let isCarAvailable = await this.carService.isCarAvailable(createRentalDto.car_id);
@@ -128,7 +148,18 @@ export class RentalService {
       {
         where: { user_id: userId },
         include: [
-          RentalStatus
+          RentalStatus,
+          User,
+          {
+            model: Car,
+            include: [
+              Office,
+              CarType,
+              CarSteering,
+              CarCapacity,
+              CarStatus
+            ]
+          }
         ]
       }
     );
@@ -136,12 +167,25 @@ export class RentalService {
   }
 
   async findOne(id: number, userId: number): Promise<RentalResponseDto> {
-    let rentalInDB = await this.rentalsRepository.findOne({
+    let rentalInDB = await this.rentalsRepository.findOne<Rental>({
       where: {
         id: id,
         user_id: userId
       },
-      include: [RentalStatus]
+      include: [
+        RentalStatus,
+        User,
+        {
+          model: Car,
+          include: [
+            Office,
+            CarType,
+            CarSteering,
+            CarCapacity,
+            CarStatus
+          ]
+        }
+      ]
     } as FindOptions);
     if (!rentalInDB) {
       this.rentalIsNotAvailable();
@@ -164,8 +208,8 @@ export class RentalService {
       await rentalInDB.update(
         {
           rental_status_id: updateRentalDto.rental_status_id
-        },
-        { where: { id: id } }
+        }
+        // { where: { id: id } }
       );
     } catch (error) {
       this.rentalIsInternalError();
