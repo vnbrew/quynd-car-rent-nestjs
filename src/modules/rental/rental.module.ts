@@ -10,7 +10,7 @@ import { CarsModule } from "../cars/cars.module";
   imports: [AppExceptionModule, CarsModule],
   controllers: [RentalController],
   providers: [RentalService, ...rentalsProviders, ...databaseProvider],
-  exports: []
+  exports: [RentalService]
 })
 export class RentalModule {
 }

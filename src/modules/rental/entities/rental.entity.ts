@@ -20,6 +20,7 @@ export class Rental extends Model<Rental> {
   @ForeignKey(() => Car)
   @Column
   car_id!: number;
+
   @BelongsTo(() => Car)
   car!: Car;
 
@@ -27,12 +28,15 @@ export class Rental extends Model<Rental> {
   @Column
   user_id!: number;
 
+  @BelongsTo(() => User)
+  user!: User;
+
   @ForeignKey(() => RentalStatus)
   @Column
   rental_status_id!: number;
 
   @BelongsTo(() => RentalStatus)
-  status!: RentalStatus;
+  rental_status!: RentalStatus;
 
   @Column({
     type: DataType.DATE,

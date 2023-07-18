@@ -14,6 +14,11 @@ import { UserFavoriteCar } from "../../modules/cars/entities/user-favorite-car.e
 import { UserReviewCar } from "../../modules/cars/entities/user-review-car.entity";
 import { RentalStatus } from "../../modules/rental/entities/rental-status.entity";
 import { Rental } from "../../modules/rental/entities/rental.entity";
+import { PaymentStatus } from "../../modules/payment/entities/payment-status.entity";
+import { Payment } from "../../modules/payment/entities/payment.entity";
+import { Coupon } from "../../modules/payment/entities/coupon.entity";
+import { CouponType } from "../../modules/payment/entities/coupon-types.entity";
+import { PaymentType } from "../../modules/payment/entities/payment-type.entity";
 
 export const SEQUELIZE = "SEQUELIZE";
 export const DEVELOPMENT = "development";
@@ -37,6 +42,13 @@ export const CARS_REPOSITORY = "CARS_REPOSITORY";
 export const RENTAL_STATUSES_REPOSITORY = "RENTAL_STATUSES_REPOSITORY";
 export const RENTALS_REPOSITORY = "RENTALS_REPOSITORY";
 
+export const PAYMENT_STATUSES_REPOSITORY = "PAYMENT_STATUSES_REPOSITORY";
+export const PAYMENT_TYPES_REPOSITORY = "PAYMENT_TYPES_REPOSITORY";
+export const PAYMENTS_REPOSITORY = "PAYMENTS_REPOSITORY";
+
+export const COUPON_TYPES_REPOSITORY = "COUPON_TYPES_REPOSITORY";
+export const COUPONS_REPOSITORY = "COUPONS_REPOSITORY";
+
 export const SEQUELIZE_MODELS = [
   User, UserToken,
   Office, CarType,
@@ -44,8 +56,9 @@ export const SEQUELIZE_MODELS = [
   CarStatus, CarPrice,
   UserFavoriteCar, CarImage,
   UserReviewCar, Car,
-  RentalStatus,
-  Rental
+  RentalStatus, Rental,
+  PaymentStatus, PaymentType, Payment,
+  CouponType, Coupon
 ];
 
 export const IS_PUBLIC_KEY = "isPublic";
