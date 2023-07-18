@@ -1,4 +1,4 @@
-import { AutoIncrement, Column, DataType, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { Car } from "../../cars/entities/car.entity";
 import { User } from "../../users/entities/user.entity";
 import { RentalStatus } from "./rental-status.entity";
@@ -20,6 +20,8 @@ export class Rental extends Model<Rental> {
   @ForeignKey(() => Car)
   @Column
   car_id!: number;
+  @BelongsTo(() => Car)
+  car!: Car;
 
   @ForeignKey(() => User)
   @Column
@@ -28,6 +30,9 @@ export class Rental extends Model<Rental> {
   @ForeignKey(() => RentalStatus)
   @Column
   rental_status_id!: number;
+
+  @BelongsTo(() => RentalStatus)
+  status!: RentalStatus;
 
   @Column({
     type: DataType.DATE,

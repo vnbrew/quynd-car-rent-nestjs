@@ -8,7 +8,8 @@ import { databaseProvider } from "../../core/database/database.provider";
 @Module({
   imports: [AppExceptionModule],
   controllers: [CarsController],
-  providers: [CarsService, ...carsProviders, ...databaseProvider]
+  providers: [CarsService, ...carsProviders, ...databaseProvider],
+  exports: [CarsService]
 })
 export class CarsModule {
 }

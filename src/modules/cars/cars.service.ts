@@ -66,6 +66,23 @@ export class CarsService {
   ) {
   }
 
+  async isCarAvailable(carId: number): Promise<boolean> {
+    let isCarAvailable = await this.carsRepository.findOne<Car>({
+      where: {
+        id: carId
+      },
+      include: [
+        {
+          model: CarStatus,
+          where: {
+            status: ECarStatus.available
+          }
+        }
+      ]
+    } as FindOptions);
+    return !!isCarAvailable;
+  }
+
   async create(createCarDto: CreateCarDto): Promise<CreateCarResponseDto> {
     let carStatusInDB = await this.carStatuesRepository.findOne({ where: { id: createCarDto.car_status_id } } as FindOptions);
     if (carStatusInDB && carStatusInDB.status === ECarStatus.available) {

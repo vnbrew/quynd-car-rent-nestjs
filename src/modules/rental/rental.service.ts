@@ -4,9 +4,15 @@ import { UpdateRentalDto } from "./dto/update-rental.dto";
 import { RENTAL_STATUSES_REPOSITORY, RENTALS_REPOSITORY, SEQUELIZE } from "../../core/constants";
 import { RentalStatus } from "./entities/rental-status.entity";
 import { AppExceptionService } from "../../core/exception/app.exception.service";
-import { I18nService } from "nestjs-i18n";
+import { I18nContext, I18nService } from "nestjs-i18n";
 import { Rental } from "./entities/rental.entity";
 import { Sequelize } from "sequelize-typescript";
+import { AllRentalResponseDto } from "./dto/all-rental-response.dto";
+import { FindOptions, Op } from "sequelize";
+import { IDetailExceptionMessage } from "../../core/exception/app.exception.interface";
+import { BadRequestCode, InternalServerErrorCode } from "../../shared/enum/exception-code";
+import { CarsService } from "../cars/cars.service";
+import { RentalResponseDto } from "./dto/rental-response.dto";
 
 @Injectable()
 export class RentalService {
@@ -15,13 +21,90 @@ export class RentalService {
     @Inject(SEQUELIZE) private readonly sequelize: Sequelize,
     @Inject(RENTAL_STATUSES_REPOSITORY) readonly rentalStatusesRepository: typeof RentalStatus,
     @Inject(RENTALS_REPOSITORY) readonly rentalsRepository: typeof Rental,
+    private readonly carService: CarsService,
     private readonly appExceptionService: AppExceptionService,
     private readonly i18n: I18nService
   ) {
   }
 
+  private carIsNotAvailable() {
+    let message = this.i18n.translate("error.data_type", {
+      lang: I18nContext.current().lang
+    });
+    const code = "";
+    const field = "";
+    const filed_message = this.i18n.translate("error.car_is_not_available", {
+      lang: I18nContext.current().lang
+    });
+    let detail: IDetailExceptionMessage = { code, field, message: filed_message };
+    this.appExceptionService.badRequestException(BadRequestCode.BA_IN_CORRECT_DATA_TYPE, "", message, [detail]);
+  }
+
+  private rentalIsInternalError() {
+    let message = this.i18n.translate("error.internal_server_error", {
+      lang: I18nContext.current().lang
+    });
+    this.appExceptionService.internalServerErrorException(InternalServerErrorCode.IN_COMMON_ERROR, "", message, []);
+  }
+
+  private rentalIsNotAvailable() {
+    let message = this.i18n.translate("error.data_type", {
+      lang: I18nContext.current().lang
+    });
+    const code = "";
+    const field = "";
+    const filed_message = this.i18n.translate("error.rental_is_not_available", {
+      lang: I18nContext.current().lang
+    });
+    let detail: IDetailExceptionMessage = { code, field, message: filed_message };
+    this.appExceptionService.badRequestException(BadRequestCode.BA_IN_CORRECT_DATA_TYPE, "", message, [detail]);
+  }
+
+  private async isCarInRental(carId: number) {
+    let carInRentalDB = await this.rentalsRepository.findOne<Rental>({
+      where: {
+        car_id: carId
+      }
+    } as FindOptions);
+    return !!carInRentalDB;
+  }
+
+  private async canBookCar(createRentalDto: CreateRentalDto): Promise<boolean> {
+    let carInRental = await this.isCarInRental(createRentalDto.car_id);
+    if (!carInRental) return true;
+    let carInRentalDB = await this.rentalsRepository.findOne<Rental>({
+      where: {
+        car_id: createRentalDto.car_id,
+        rental_status_id: { [Op.or]: [1, 2, 4] },
+        pick_date_time: {
+          [Op.and]: {
+            [Op.lte]: createRentalDto.drop_date_time,
+            [Op.gte]: createRentalDto.pick_date_time
+          }
+        },
+        drop_date_time: {
+          [Op.and]: {
+            [Op.gte]: createRentalDto.pick_date_time,
+            [Op.lte]: createRentalDto.drop_date_time
+          }
+        }
+      }
+    } as FindOptions);
+    return !carInRentalDB;
+  }
+
   async create(userId: number, createRentalDto: CreateRentalDto) {
     console.log({ userId, ...createRentalDto });
+    let isCarAvailable = await this.carService.isCarAvailable(createRentalDto.car_id);
+    console.log({ "isCarAvailable": isCarAvailable });
+    if (!isCarAvailable) {
+      this.carIsNotAvailable();
+    }
+    let canBookCar = await this.canBookCar(createRentalDto);
+    console.log({ "canBookCar": canBookCar });
+    if (!canBookCar) {
+      this.carIsNotAvailable();
+    }
     try {
       await this.sequelize.transaction(async t => {
         let transactionHost = { transaction: t };
@@ -34,22 +117,60 @@ export class RentalService {
         rental.detail = createRentalDto.detail;
         await rental.save(transactionHost);
       });
-    } catch (e) {
-
+    } catch (error) {
+      this.rentalIsInternalError();
     }
     return { userId, ...createRentalDto };
   }
 
-  findAll() {
-    return `This action returns all rental`;
+  async findAll(userId: number): Promise<AllRentalResponseDto> {
+    let rentals = await this.rentalsRepository.findAll<Rental>(
+      {
+        where: { user_id: userId },
+        include: [
+          RentalStatus
+        ]
+      }
+    );
+    return new AllRentalResponseDto(rentals);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} rental`;
+  async findOne(id: number, userId: number): Promise<RentalResponseDto> {
+    let rentalInDB = await this.rentalsRepository.findOne({
+      where: {
+        id: id,
+        user_id: userId
+      },
+      include: [RentalStatus]
+    } as FindOptions);
+    if (!rentalInDB) {
+      this.rentalIsNotAvailable();
+    }
+    return new RentalResponseDto(rentalInDB);
   }
 
-  update(id: number, updateRentalDto: UpdateRentalDto) {
-    return `This action updates a #${id} rental`;
+  async update(id: number, userId: number, updateRentalDto: UpdateRentalDto) {
+    let rentalInDB = await this.rentalsRepository.findOne({
+      where: {
+        id: id,
+        user_id: userId
+      },
+      include: [RentalStatus]
+    } as FindOptions);
+    if (!rentalInDB) {
+      this.rentalIsNotAvailable();
+    }
+    try {
+      await rentalInDB.update(
+        {
+          rental_status_id: updateRentalDto.rental_status_id
+        },
+        { where: { id: id } }
+      );
+    } catch (error) {
+      this.rentalIsInternalError();
+    }
+    return { rentalInDB };
   }
 
   remove(id: number) {

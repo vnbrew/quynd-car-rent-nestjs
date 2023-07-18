@@ -1,4 +1,6 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateRentalDto } from './create-rental.dto';
+import { IsNumber } from "class-validator";
 
-export class UpdateRentalDto extends PartialType(CreateRentalDto) {}
+export class UpdateRentalDto {
+  @IsNumber()
+  readonly rental_status_id: number;
+}
