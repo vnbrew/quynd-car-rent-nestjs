@@ -12,9 +12,11 @@ import { UsersModule } from "./modules/users/users.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { JwtModule } from "@nestjs/jwt";
 import { CacheModule } from "@nestjs/cache-manager";
-import { CarsModule } from './modules/cars/cars.module';
-import { RentalModule } from './modules/rental/rental.module';
-import { PaymentModule } from './modules/payment/payment.module';
+import { CarsModule } from "./modules/cars/cars.module";
+import { RentalModule } from "./modules/rental/rental.module";
+import { PaymentModule } from "./modules/payment/payment.module";
+import { SendgridModule } from "./modules/sendgrid/sendgrid.module";
+
 
 @Module({
   imports: [
@@ -33,6 +35,7 @@ import { PaymentModule } from './modules/payment/payment.module';
     CarsModule,
     RentalModule,
     PaymentModule,
+    SendgridModule
   ],
   providers: [
     ...APP_INTERCEPTOR_PROVIDERS,
