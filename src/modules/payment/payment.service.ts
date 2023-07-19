@@ -12,12 +12,13 @@ import { I18nContext, I18nService } from "nestjs-i18n";
 import { PaymentStatus } from "./entities/payment-status.entity";
 import { Payment } from "./entities/payment.entity";
 import { RentalService } from "../rental/rental.service";
-import { InternalServerErrorCode } from "../../shared/enum/exception-code";
+import { BadRequestCode, InternalServerErrorCode } from "../../shared/enum/exception-code";
 import { CouponType } from "./entities/coupon-types.entity";
 import { Coupon } from "./entities/coupon.entity";
 import { FindOptions, Op } from "sequelize";
 import { PaymentType } from "./entities/payment-type.entity";
 import { CarsService } from "../cars/cars.service";
+import { IDetailExceptionMessage } from "../../core/exception/app.exception.interface";
 
 @Injectable()
 export class PaymentService {
@@ -36,22 +37,22 @@ export class PaymentService {
   ) {
   }
 
-  private rentalIsInternalError() {
+  private rentalIsInternalError(error) {
     let message = this.i18n.translate("error.internal_server_error", {
       lang: I18nContext.current().lang
     });
-    this.appExceptionService.internalServerErrorException(InternalServerErrorCode.IN_COMMON_ERROR, "", message, []);
+    this.appExceptionService.internalServerErrorException(InternalServerErrorCode.IN_COMMON_ERROR, "", message, [error]);
   }
 
   async create(userId: number, createPaymentDto: CreatePaymentDto) {
-    try {
-      await this.sequelize.transaction(async t => {
-        let transactionHost = { transaction: t };
-        let userHasRentalInEffective = await this.rentalService.isUserHasRentalInEffective(userId, createPaymentDto.rental_id);
-        if (userHasRentalInEffective) {
-          let carInDB = await this.carsService.findCarById(userHasRentalInEffective.car_id);
-          let currentDate = new Date();
-          if (carInDB) {
+    let userHasRentalInEffective = await this.rentalService.isUserHasRentalInEffective(userId, createPaymentDto.rental_id);
+    if (userHasRentalInEffective) {
+      let carInDB = await this.carsService.findCarById(userHasRentalInEffective.car_id);
+      let currentDate = new Date();
+      if (carInDB) {
+        try {
+          await this.sequelize.transaction(async t => {
+            let transactionHost = { transaction: t };
             let payment = new Payment();
             payment.rental_id = createPaymentDto.rental_id;
             payment.payment_type_id = createPaymentDto.payment_type_id;
@@ -66,9 +67,9 @@ export class PaymentService {
               },
               include: [CouponType]
             } as FindOptions);
+            let discount: number = 0;
             if (couponInDB) {
               payment.coupon_id = couponInDB.id;
-              let discount;
               switch (couponInDB.coupon_type_id) {
                 case 1:
                   discount = couponInDB.value;
@@ -81,23 +82,26 @@ export class PaymentService {
                   discount = 0;
                   break;
               }
-
-              let amount = carInDB.carPrice.rental_price - discount;
-              payment.amount = amount + amount * createPaymentDto.tax / 100;
-              console.log({ "amount": amount, "value": payment.amount, "discount": discount });
-            } else {
-              payment.amount = carInDB.carPrice.rental_price + carInDB.carPrice.rental_price * createPaymentDto.tax / 100;
             }
+            let amount = carInDB.carPrice.rental_price - discount;
+            let totalAmount = amount + amount * createPaymentDto.tax / 100;
+            payment.amount = totalAmount;
+            console.log(amount);
+            console.log(totalAmount);
             await userHasRentalInEffective.update(
               { rental_status_id: 2 },
               transactionHost
             );
             await payment.save(transactionHost);
-          }
+          });
+        } catch (error) {
+          this.rentalIsInternalError(error);
         }
-      });
-    } catch (error) {
-      this.rentalIsInternalError();
+      } else {
+        this.rentalService.carIsNotAvailable();
+      }
+    } else {
+      this.rentalService.rentalIsNotAvailable();
     }
     return {};
   }
