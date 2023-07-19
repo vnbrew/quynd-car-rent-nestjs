@@ -26,6 +26,10 @@ import { CarPrice } from "../cars/entities/car-price.entity";
 import { Payment } from "../payment/entities/payment.entity";
 import { Coupon } from "../payment/entities/coupon.entity";
 import { CouponType } from "../payment/entities/coupon-types.entity";
+import { InjectQueue } from "@nestjs/bull";
+import { EProcessName, EQueueName } from "../../shared/enum/queue.enum";
+import { Queue } from "bull";
+import { UsersService } from "../users/users.service";
 
 @Injectable()
 export class RentalService {
@@ -34,9 +38,11 @@ export class RentalService {
     @Inject(SEQUELIZE) private readonly sequelize: Sequelize,
     @Inject(RENTAL_STATUSES_REPOSITORY) readonly rentalStatusesRepository: typeof RentalStatus,
     @Inject(RENTALS_REPOSITORY) readonly rentalsRepository: typeof Rental,
+    private readonly userService: UsersService,
     private readonly carService: CarsService,
     private readonly appExceptionService: AppExceptionService,
-    private readonly i18n: I18nService
+    private readonly i18n: I18nService,
+    @InjectQueue(EQueueName.rental) private readonly rentalQueue: Queue
   ) {
   }
 
@@ -71,6 +77,15 @@ export class RentalService {
     });
     let detail: IDetailExceptionMessage = { code, field, message: filed_message };
     this.appExceptionService.badRequestException(BadRequestCode.BA_IN_CORRECT_DATA_TYPE, "", message, [detail]);
+  }
+
+  async findAllRentalAsAffective(): Promise<Rental[]> {
+    let rentals = await this.rentalsRepository.findAll(
+      {
+        where: { rental_status_id: 1 }
+      }
+    );
+    return rentals;
   }
 
   private async isCarInRental(carId: number) {
@@ -120,7 +135,7 @@ export class RentalService {
   }
 
   async create(userId: number, createRentalDto: CreateRentalDto) {
-    console.log({ userId, ...createRentalDto });
+    // console.log({ userId, ...createRentalDto });
     let isCarAvailable = await this.carService.isCarAvailable(createRentalDto.car_id);
     console.log({ "isCarAvailable": isCarAvailable });
     if (!isCarAvailable) {
@@ -142,6 +157,15 @@ export class RentalService {
         rental.drop_date_time = createRentalDto.drop_date_time;
         rental.detail = createRentalDto.detail;
         await rental.save(transactionHost);
+        let user = await this.userService.getUserInformation(userId);
+        if(user) {
+          await this.rentalQueue.add(EProcessName.booking_success,
+            {
+              "user_name": user.name,
+              "pick_date_time": createRentalDto.pick_date_time,
+              "drop_date_time": createRentalDto.drop_date_time
+            });
+        }
       });
     } catch (error) {
       this.rentalIsInternalError();

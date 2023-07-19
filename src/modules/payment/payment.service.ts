@@ -12,13 +12,16 @@ import { I18nContext, I18nService } from "nestjs-i18n";
 import { PaymentStatus } from "./entities/payment-status.entity";
 import { Payment } from "./entities/payment.entity";
 import { RentalService } from "../rental/rental.service";
-import { BadRequestCode, InternalServerErrorCode } from "../../shared/enum/exception-code";
+import { InternalServerErrorCode } from "../../shared/enum/exception-code";
 import { CouponType } from "./entities/coupon-types.entity";
 import { Coupon } from "./entities/coupon.entity";
 import { FindOptions, Op } from "sequelize";
 import { PaymentType } from "./entities/payment-type.entity";
 import { CarsService } from "../cars/cars.service";
-import { IDetailExceptionMessage } from "../../core/exception/app.exception.interface";
+import { InjectQueue } from "@nestjs/bull";
+import { EProcessName, EQueueName } from "../../shared/enum/queue.enum";
+import { Queue } from "bull";
+import { UsersService } from "../users/users.service";
 
 @Injectable()
 export class PaymentService {
@@ -30,8 +33,10 @@ export class PaymentService {
     @Inject(PAYMENTS_REPOSITORY) readonly paymentsRepository: typeof Payment,
     @Inject(COUPON_TYPES_REPOSITORY) readonly couponTypesRepository: typeof CouponType,
     @Inject(COUPONS_REPOSITORY) readonly couponsRepository: typeof Coupon,
+    @InjectQueue(EQueueName.payment) private readonly paymentQueue: Queue,
     private readonly rentalService: RentalService,
     private readonly carsService: CarsService,
+    private readonly userService: UsersService,
     private readonly appExceptionService: AppExceptionService,
     private readonly i18n: I18nService
   ) {
@@ -88,11 +93,18 @@ export class PaymentService {
             payment.amount = totalAmount;
             console.log(amount);
             console.log(totalAmount);
-            await userHasRentalInEffective.update(
+            let newRental = await userHasRentalInEffective.update(
               { rental_status_id: 2 },
               transactionHost
             );
             await payment.save(transactionHost);
+            let user = await this.userService.getUserInformation(userId);
+            if(user) {
+              await this.paymentQueue.add(EProcessName.payment_completed, {
+                "user_name": user.name,
+                "pay_date_time": currentDate
+              })
+            }
           });
         } catch (error) {
           this.rentalIsInternalError(error);
