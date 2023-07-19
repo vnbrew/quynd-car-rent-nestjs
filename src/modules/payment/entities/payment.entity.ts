@@ -1,4 +1,4 @@
-import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, HasOne, Model, Table } from "sequelize-typescript";
 import { Coupon } from "./coupon.entity";
 import { Rental } from "../../rental/entities/rental.entity";
 import { PaymentStatus } from "./payment-status.entity";
@@ -28,6 +28,9 @@ export class Payment extends Model<Payment> {
     allowNull: true
   })
   coupon_id: number;
+
+  @BelongsTo(() => Coupon)
+  coupon?: Coupon;
 
   @ForeignKey(() => PaymentStatus)
   @Column({

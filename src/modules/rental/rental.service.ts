@@ -20,6 +20,12 @@ import { CarType } from "../cars/entities/car-type.entity";
 import { CarSteering } from "../cars/entities/car-steering.entity";
 import { CarCapacity } from "../cars/entities/car-capacity.entity";
 import { CarStatus } from "../cars/entities/car-status.entity";
+import { UserReviewCar } from "../cars/entities/user-review-car.entity";
+import { CarImage } from "../cars/entities/car-image.entity";
+import { CarPrice } from "../cars/entities/car-price.entity";
+import { Payment } from "../payment/entities/payment.entity";
+import { Coupon } from "../payment/entities/coupon.entity";
+import { CouponType } from "../payment/entities/coupon-types.entity";
 
 @Injectable()
 export class RentalService {
@@ -34,7 +40,7 @@ export class RentalService {
   ) {
   }
 
-  private carIsNotAvailable() {
+  carIsNotAvailable() {
     let message = this.i18n.translate("error.data_type", {
       lang: I18nContext.current().lang
     });
@@ -54,7 +60,7 @@ export class RentalService {
     this.appExceptionService.internalServerErrorException(InternalServerErrorCode.IN_COMMON_ERROR, "", message, []);
   }
 
-  private rentalIsNotAvailable() {
+  rentalIsNotAvailable() {
     let message = this.i18n.translate("error.data_type", {
       lang: I18nContext.current().lang
     });
@@ -157,7 +163,14 @@ export class RentalService {
               CarType,
               CarSteering,
               CarCapacity,
-              CarStatus
+              CarStatus,
+              CarImage,
+              CarPrice,
+              {
+                model: UserReviewCar,
+                include: [User],
+                required: false
+              }
             ]
           }
         ]
@@ -182,7 +195,30 @@ export class RentalService {
             CarType,
             CarSteering,
             CarCapacity,
-            CarStatus
+            CarStatus,
+            CarImage,
+            CarPrice,
+            {
+              model: UserReviewCar,
+              include: [User],
+              required: false
+            }
+          ]
+        },
+        {
+          model: Payment,
+          required: false,
+          include: [
+            {
+              model: Coupon,
+              required: false,
+              include: [
+                {
+                  model: CouponType,
+                  required: false
+                }
+              ]
+            }
           ]
         }
       ]

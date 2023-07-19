@@ -1,7 +1,18 @@
-import { AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
+import {
+  AutoIncrement,
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  HasOne,
+  Model,
+  PrimaryKey,
+  Table
+} from "sequelize-typescript";
 import { Car } from "../../cars/entities/car.entity";
 import { User } from "../../users/entities/user.entity";
 import { RentalStatus } from "./rental-status.entity";
+import { Payment } from "../../payment/entities/payment.entity";
 
 @Table({
   tableName: "rentals"
@@ -55,4 +66,7 @@ export class Rental extends Model<Rental> {
     allowNull: true
   })
   detail?: string;
+
+  @HasOne(() => Payment)
+  payment: Payment;
 }
