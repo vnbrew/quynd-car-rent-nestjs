@@ -8,9 +8,11 @@ import { databaseProvider } from "../../core/database/database.provider";
 import { CarsModule } from "../cars/cars.module";
 import { CouponController } from "./coupon.controller";
 import { CouponService } from "./coupon.service";
+import { QueueModule } from "../queue/queue.module";
+import { UsersModule } from "../users/users.module";
 
 @Module({
-  imports: [AppExceptionModule, RentalModule, CarsModule],
+  imports: [AppExceptionModule, RentalModule, CarsModule, QueueModule, UsersModule],
   controllers: [PaymentController, CouponController],
   providers: [PaymentService, CouponService, ...paymentsProviders, ...databaseProvider]
 })

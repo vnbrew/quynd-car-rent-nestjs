@@ -1,9 +1,11 @@
-import { Module } from '@nestjs/common';
-import { SendgridService } from './sendgrid.service';
-import { SendgridController } from './sendgrid.controller';
+import { Module } from "@nestjs/common";
+import { SendgridService } from "./sendgrid.service";
+import { SendgridController } from "./sendgrid.controller";
 
 @Module({
   controllers: [SendgridController],
-  providers: [SendgridService]
+  providers: [SendgridService],
+  exports: [SendgridService]
 })
-export class SendgridModule {}
+export class SendgridModule {
+}

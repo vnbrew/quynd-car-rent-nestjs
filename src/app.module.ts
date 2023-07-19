@@ -16,7 +16,8 @@ import { CarsModule } from "./modules/cars/cars.module";
 import { RentalModule } from "./modules/rental/rental.module";
 import { PaymentModule } from "./modules/payment/payment.module";
 import { SendgridModule } from "./modules/sendgrid/sendgrid.module";
-
+import { QueueModule } from './modules/queue/queue.module';
+import { TaskScheduleModule } from './modules/task_schedule/task_schedule.module';
 
 @Module({
   imports: [
@@ -35,7 +36,9 @@ import { SendgridModule } from "./modules/sendgrid/sendgrid.module";
     CarsModule,
     RentalModule,
     PaymentModule,
-    SendgridModule
+    SendgridModule,
+    QueueModule,
+    // TaskScheduleModule,
   ],
   providers: [
     ...APP_INTERCEPTOR_PROVIDERS,

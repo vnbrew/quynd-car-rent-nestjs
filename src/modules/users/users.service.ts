@@ -14,6 +14,9 @@ import { FindOptions } from "sequelize";
 import { UpdateOptions } from "sequelize/types/model";
 import { AllUsersResponseDto } from "./dto/all-users-response.dto";
 import { BadRequestCode, InternalServerErrorCode } from "../../shared/enum/exception-code";
+import { InjectQueue } from "@nestjs/bull";
+import { EProcessName, EQueueName } from "../../shared/enum/queue.enum";
+import { Queue } from "bull";
 
 @Injectable()
 export class UsersService {
@@ -22,7 +25,8 @@ export class UsersService {
     @Inject(USERS_REPOSITORY) private readonly usersRepository: typeof User,
     @Inject(USER_TOKENS_REPOSITORY) private readonly userTokensRepository: typeof UserToken,
     private readonly exceptionService: AppExceptionService,
-    private readonly i18n: I18nService
+    private readonly i18n: I18nService,
+    @InjectQueue(EQueueName.register) private readonly registerQueue: Queue
   ) {
   }
 
@@ -81,6 +85,17 @@ export class UsersService {
     return false;
   }
 
+  async getUserInformation(id: number): Promise<User | null> {
+    const options: FindOptions = {
+      where: { id: id }
+    };
+    let userInDB = await this.usersRepository.findOne<User>(options);
+    if (!userInDB) {
+      return null;
+    }
+    return userInDB;
+  }
+
   async register(createUserDto: CreateUserDto): Promise<CreateUserResponseDto> {
     try {
       const user = new User();
@@ -92,6 +107,10 @@ export class UsersService {
       const salt = await genSalt(10);
       user.password = await hash(createUserDto.password, salt);
       await user.save();
+      await this.registerQueue.add(EProcessName.register_completed,
+        {
+          "user_name": user.name
+        });
       return new CreateUserResponseDto();
     } catch (error) {
       if (error.original.code === "ER_DUP_ENTRY") {
