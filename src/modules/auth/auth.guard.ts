@@ -11,7 +11,7 @@ import { I18nContext, I18nService } from "nestjs-i18n";
 import { extractTokenFromHeader } from "../../shared/utils/ultils";
 import { UnauthorizedCode } from "../../shared/enum/exception-code";
 import { UsersService } from "../users/users.service";
-import { RedisCacheService } from "../rediscache/rediscache.service";
+import { RedisCacheService } from "../cache/rediscache.service";
 
 @Injectable()
 export class AuthGuard implements CanActivate {

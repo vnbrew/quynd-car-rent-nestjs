@@ -3,7 +3,7 @@ import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { UsersModule } from "../users/users.module";
 import { AppExceptionModule } from "../../core/exception/app.exception.module";
-import { RedisCacheModule } from "../rediscache/rediscache.module";
+import { RedisCacheModule } from "../cache/rediscache.module";
 
 @Module({
   imports: [
