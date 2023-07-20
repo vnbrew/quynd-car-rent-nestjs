@@ -11,8 +11,8 @@ import { PaymentProcessor } from "./payment.processor";
     SendgridModule,
     BullModule.forRoot({
       redis: {
-        host: "localhost",
-        port: 6379
+        host: process.env.REDIS_HOST,
+        port: parseInt(process.env.REDIS_PORT)
       }
     }),
     BullModule.registerQueue({ name: EQueueName.register }),

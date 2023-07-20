@@ -10,7 +10,7 @@ import { I18nContext, I18nService } from "nestjs-i18n";
 import { genSalt, hash } from "bcrypt";
 import { UserToken } from "./entities/user-token.entity";
 import { UpdateUserResponseDto } from "./dto/update-user-response.dto";
-import { FindOptions } from "sequelize";
+import { FindOptions, Op } from "sequelize";
 import { UpdateOptions } from "sequelize/types/model";
 import { AllUsersResponseDto } from "./dto/all-users-response.dto";
 import { BadRequestCode, InternalServerErrorCode } from "../../shared/enum/exception-code";
@@ -30,6 +30,14 @@ export class UsersService {
   ) {
   }
 
+  async getAllUserTokenExpired(): Promise<UserToken[]> {
+    return await this.userTokensRepository.findAll({
+      where: {
+        expiration_time: { [Op.lt]: new Date() }
+      }
+    });
+  }
+
   async getUserByEmail(email: string) {
     const options: FindOptions = {
       where: { email: email }
@@ -42,6 +50,16 @@ export class UsersService {
       where: { user_id: userId }
     };
     return await this.userTokensRepository.findOne<UserToken>(options);
+  }
+
+  async addAccessTokenToDB(userId: number, access_token: string) {
+    let expiration_time: Date = new Date();
+    expiration_time.setSeconds(expiration_time.getSeconds() + parseInt(process.env.JWT_EXP_TIME));
+    let userToken = new UserToken();
+    userToken.user_id = userId;
+    userToken.token = access_token;
+    userToken.expiration_time = expiration_time;
+    await userToken.save();
   }
 
   async addOrUpdateUserAccessToken(userId: number, access_token: string) {
@@ -65,7 +83,7 @@ export class UsersService {
     }
   }
 
-  async hasTokenInUserToken(token: string): Promise<boolean> {
+  async hasTokenInDB(token: string): Promise<boolean> {
     const options: FindOptions = {
       where: { token: token }
     };
@@ -73,7 +91,7 @@ export class UsersService {
     return !!userTokenInDB;
   }
 
-  async removeTokenFromUserToken(token: string): Promise<boolean> {
+  async removeTokenInDB(token: string): Promise<boolean> {
     const options: FindOptions = {
       where: { token: token }
     };
