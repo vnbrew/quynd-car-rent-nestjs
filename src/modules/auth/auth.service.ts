@@ -12,7 +12,7 @@ import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { Cache } from "cache-manager";
 import { TokenStatus } from "../../shared/enum/token-status";
 import { BadRequestCode, UnauthorizedCode } from "../../shared/enum/exception-code";
-import { RedisCacheService } from "../rediscache/rediscache.service";
+import { RedisCacheService } from "../cache/rediscache.service";
 
 @Injectable()
 export class AuthService {

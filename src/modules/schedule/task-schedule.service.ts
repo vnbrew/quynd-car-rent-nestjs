@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Cron } from "@nestjs/schedule";
 import { UsersService } from "../users/users.service";
-import { RedisCacheService } from "../rediscache/rediscache.service";
+import { RedisCacheService } from "../cache/rediscache.service";
 
 @Injectable()
 export class TaskScheduleService {

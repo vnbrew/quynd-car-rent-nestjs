@@ -16,7 +16,7 @@ import { RentalModule } from "./modules/rental/rental.module";
 import { PaymentModule } from "./modules/payment/payment.module";
 import { SendgridModule } from "./modules/sendgrid/sendgrid.module";
 import { QueueModule } from './modules/queue/queue.module';
-import { RedisCacheModule } from "./modules/rediscache/rediscache.module";
+import { RedisCacheModule } from "./modules/cache/rediscache.module";
 import { RedisModule } from "nestjs-redis";
 import { TaskScheduleModule } from "./modules/schedule/task-schedule.module";
 
