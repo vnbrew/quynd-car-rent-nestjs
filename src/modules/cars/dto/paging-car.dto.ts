@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, Min } from "class-validator";
+import { IsNumber, IsOptional, IsString, Min } from "class-validator";
 import { Transform, Type } from "class-transformer";
 
 export class PagingCarDto {
@@ -15,12 +15,12 @@ export class PagingCarDto {
   readonly offset?: number;
 
   @IsOptional()
-  @Transform((params) => params.value.split(',').map(Number))
+  @Transform((params) => params.value.split(",").map(Number))
   @IsNumber({}, { each: true })
   public types?: number[];
 
   @IsOptional()
-  @Transform((params) => params.value.split(',').map(Number))
+  @Transform((params) => params.value.split(",").map(Number))
   @IsNumber({}, { each: true })
   public capacities?: number[];
 
@@ -29,4 +29,9 @@ export class PagingCarDto {
   @IsNumber()
   @Min(0)
   public price?: number;
+
+  @IsOptional()
+  @Type(() => String)
+  @IsString()
+  public name?: string;
 }

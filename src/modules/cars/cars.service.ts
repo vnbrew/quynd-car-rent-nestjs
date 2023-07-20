@@ -190,25 +190,24 @@ export class CarsService {
 
   async findAll(pagingCarDto: PagingCarDto): Promise<AllCarResponseDto> {
     // console.log(pagingCarDto);
-    let { limit, offset, types, capacities, price } = pagingCarDto;
-    console.log({ limit, offset, types, capacities, price });
+    let { limit, offset, types, capacities, price, name } = pagingCarDto;
+    console.log({ limit, offset, types, capacities, price, name });
     let carInDB;
     if (limit && offset && +limit > 0 && +offset >= 0) {
       carInDB = await this.carsRepository.findAndCountAll({
         where: {
-          car_type_id: { [Op.or]: !types ? [] : types.toString().split(",").map(Number) },
-          car_capacity_id: { [Op.or]: !capacities ? [] : capacities.toString().split(",").map(Number) }
+          ...(types && { car_type_id: { [Op.or]: !types ? [] : types.toString().split(",").map(Number) } }),
+          ...(capacities && { car_capacity_id: { [Op.or]: !capacities ? [] : capacities.toString().split(",").map(Number) } }),
+          ...(name && { name: { [Op.like]: `%${name}%` } })
         },
         group: ["Car.id", "CarPrice.id"],
         include: [
           Office,
           {
             model: CarType
-            // where: { id: { [Op.or]: !types ? [] : types.toString().split(',').map(Number)} }
           },
           {
             model: CarCapacity
-            // where: { id: { [Op.or]: !capacities ? [] : capacities.toString().split(',').map(Number)} }
           },
           {
             model: CarStatus,
@@ -219,9 +218,7 @@ export class CarsService {
             model: CarPrice,
             where: {
               status: ECarPrice.new,
-              rental_price: {
-                [Op.lte]: +price
-              }
+              ...(price && { rental_price: { [Op.lte]: +price } })
             }
           },
           {
@@ -240,18 +237,30 @@ export class CarsService {
       return new AllCarResponseDto(carInDB.rows.map((car) => new CarResponseDto(car)), carInDB.count.length, +offset, +limit);
     } else {
       carInDB = await this.carsRepository.findAll({
+        where: {
+          ...(types && { car_type_id: { [Op.or]: !types ? [] : types.toString().split(",").map(Number) } }),
+          ...(capacities && { car_capacity_id: { [Op.or]: !capacities ? [] : capacities.toString().split(",").map(Number) } }),
+          ...(name && { name: { [Op.like]: `%${name}%` } })
+        },
         include: [
           Office,
-          CarType,
-          CarCapacity,
           {
-            model: CarStatus
-            // where: { status: ECarStatus.available }
+            model: CarType
+          },
+          {
+            model: CarCapacity
+          },
+          {
+            model: CarStatus,
+            where: { status: ECarStatus.available }
           },
           CarSteering,
           {
             model: CarPrice,
-            where: { status: ECarPrice.new }
+            where: {
+              status: ECarPrice.new,
+              ...(price && { rental_price: { [Op.lte]: +price } })
+            }
           },
           {
             model: CarImage,
@@ -271,7 +280,7 @@ export class CarsService {
 
   async findCarById(carId: number): Promise<Car> {
     let carInDB = await this.carsRepository.findOne<Car>({
-      where: { id:carId }, include: [
+      where: { id: carId }, include: [
         Office, CarType, CarCapacity, CarStatus, CarSteering,
         {
           model: CarPrice,
