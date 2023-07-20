@@ -1,3 +1,4 @@
 export enum TokenStatus {
-  invalid = 'invalid'
+  blacklist = 'blacklist',
+  whitelist = 'whitelist',
 }

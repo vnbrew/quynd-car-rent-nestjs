@@ -11,13 +11,14 @@ import { AppLanguageModule } from "./core/language/app.language.module";
 import { UsersModule } from "./modules/users/users.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { JwtModule } from "@nestjs/jwt";
-import { CacheModule } from "@nestjs/cache-manager";
 import { CarsModule } from "./modules/cars/cars.module";
 import { RentalModule } from "./modules/rental/rental.module";
 import { PaymentModule } from "./modules/payment/payment.module";
 import { SendgridModule } from "./modules/sendgrid/sendgrid.module";
 import { QueueModule } from './modules/queue/queue.module';
-import { TaskScheduleModule } from './modules/task_schedule/task_schedule.module';
+import { RedisCacheModule } from "./modules/rediscache/rediscache.module";
+import { RedisModule } from "nestjs-redis";
+import { TaskScheduleModule } from "./modules/schedule/task-schedule.module";
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { TaskScheduleModule } from './modules/task_schedule/task_schedule.module
       secret: `${process.env.JWT_KEY}`,
       signOptions: { expiresIn: process.env.JWT_EXP_TIME }
     }),
-    CacheModule.register({ isGlobal: true }),
+    // CacheModule.register({ isGlobal: true }),
+    RedisCacheModule,
     AppLogModule,
     DatabaseModule,
     AppExceptionModule,
@@ -38,7 +40,7 @@ import { TaskScheduleModule } from './modules/task_schedule/task_schedule.module
     PaymentModule,
     SendgridModule,
     QueueModule,
-    // TaskScheduleModule,
+    TaskScheduleModule,
   ],
   providers: [
     ...APP_INTERCEPTOR_PROVIDERS,

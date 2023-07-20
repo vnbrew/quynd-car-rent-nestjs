@@ -1,12 +1,14 @@
 import { Module } from "@nestjs/common";
-import { TaskScheduleService } from "./task_schedule.service";
+import { TaskScheduleService } from "./task-schedule.service";
 import { ScheduleModule } from "@nestjs/schedule";
-import { RentalModule } from "../rental/rental.module";
+import { UsersModule } from "../users/users.module";
+import { RedisCacheModule } from "../rediscache/rediscache.module";
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    RentalModule
+    UsersModule,
+    RedisCacheModule,
   ],
   controllers: [],
   providers: [TaskScheduleService]
