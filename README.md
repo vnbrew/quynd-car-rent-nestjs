@@ -5,39 +5,51 @@
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-
 ## Author
-
 ```bash
 Nguyen Duc Quy
 ```
 
 ## Description
-
 ```bash
 Simple api for CarRent project by NestJS
 ```
 
+## Create Mysql database
 
+## Clone code
+```
+git clone git@github.com:vnbrew/quynd-car-rent-nestjs.git
+cd quynd-car-rent-nestjs
+```
+
+## setup .env by rename templeta.env to .env and fill your information
+```
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+DB_NAME=development_database_name
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DIALECT=mysql
+JWT_KEY=random_secret_key
+JWT_EXP_TIME=1h
+BEARER=Bearer
+NODE_ENV=development/staging/production
+SENDGRID_KEY=https://app.sendgrid.com/settings/api_keys
+REDIS_HOST=localhost
+REDIS_PORT=6379
+```
 
 ## Installation
-
 ```bash
 $ npm install
+```
+
+## Migration
+
+```bash
+$ npm run migrate:up
+$ npm run seed:up:all
 ```
 
 ## Running the app
@@ -53,50 +65,15 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+## Api document (Not finished yet)
 
-```bash
-# unit tests
-$ npm run test
+[Google driver link](https://docs.google.com/spreadsheets/d/1sgKW7hwX0Z_JrDOjPHQniRuIJvCUOVtgtpDPC1furL8/edit?usp=sharing)
 
-# e2e tests
-$ npm run test:e2e
+## Module Architecture
+![Module Architecture](ModuleArchitecture.drawio.png)
 
-# test coverage
-$ npm run test:cov
-```
-
-## Migration
-
-```bash
-$ npm run migrate:generate 
-# npm run migrate:generate create-users-table
-$ npm run migrate:up
-$ npm run migrate:down
-
-$ npm run seed:generate
-# npm run seed:generate create-demo-users
-$ npm run seed:up:all
-$ npm run seed:down 
-# npm run seed:down 20230711063341-demo-user.js
-$ npm run seed:down:all
-```
-
-## sequelize-auto
-
-```bash
-$ sequelize-auto -h localhost -d quynd_car_rent_nestjs -u root -x er-quynd-123 -p 3306  --dialect mysql -o ./db/models -t user_roles
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Database Diagram
+![Database Diagram](quynd_car_rent_diagram.png)
 
 ## License
 
