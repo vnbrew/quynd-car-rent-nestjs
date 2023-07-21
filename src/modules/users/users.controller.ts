@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Req } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
@@ -22,14 +22,14 @@ export class UsersController {
     return await this.usersService.register(createUserDto);
   }
 
-  @SetRoles(Role.user)
+  @SetRoles(Role.user, Role.admin)
   @Get("users/me")
   async findMe(@Req() request): Promise<User> {
     let user = request.user;
     return await this.usersService.findMe(user);
   }
 
-  @SetRoles(Role.user)
+  @SetRoles(Role.user, Role.admin)
   @HttpCode(204)
   @Patch("users/me")
   async updateMe(@Req() request, @Body() updateUserDto: UpdateUserDto): Promise<UpdateUserResponseDto> {
