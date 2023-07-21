@@ -12,7 +12,5 @@ export interface IDatabaseConfigAttributes {
 }
 
 export interface IDatabaseConfig {
-  development: IDatabaseConfigAttributes;
-  staging: IDatabaseConfigAttributes;
-  production: IDatabaseConfigAttributes;
+  config: IDatabaseConfigAttributes;
 }
