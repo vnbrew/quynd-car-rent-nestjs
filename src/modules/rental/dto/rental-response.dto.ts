@@ -6,6 +6,7 @@ import { CarResponseDto } from "../../cars/dto/car-response.dto";
 import { UserDto } from "../../users/dto/user.dto";
 import { Payment } from "../../payment/entities/payment.entity";
 import { PaymentResponseDto } from "../../payment/dto/payment-response.dto";
+import { CouponResponseDto } from "../../payment/dto/coupon-response.dto";
 
 export class RentalResponseDto {
   readonly id: number;
@@ -18,7 +19,7 @@ export class RentalResponseDto {
   readonly car: CarResponseDto;
   readonly user: UserDto;
   readonly rental_status: RentalStatus;
-  readonly payment: PaymentResponseDto;
+  readonly payment: PaymentResponseDto | {};
 
   constructor(rental: Rental) {
     this.id = rental.id;
@@ -31,6 +32,6 @@ export class RentalResponseDto {
     this.car = new CarResponseDto(rental.car);
     this.user = new UserDto(rental.user);
     this.rental_status = rental.rental_status;
-    this.payment = new PaymentResponseDto(rental.payment);
+    this.payment = (rental.payment ? new PaymentResponseDto(rental.payment) : {});
   }
 }
