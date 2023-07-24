@@ -10,7 +10,9 @@ export class AppLogService extends Logger implements IAppLog {
   }
 
   log(context: string, message: string) {
-    super.log(`[INFO] ${message}`, context);
+    if (process.env.NODE_ENV !== "production") {
+      super.log(`[INFO] ${message}`, context);
+    }
   }
 
   error(context: string, message: string, trace?: string) {

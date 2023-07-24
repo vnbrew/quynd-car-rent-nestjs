@@ -14,5 +14,6 @@ export const databaseConfig: IDatabaseConfig = {
     define: {
       timestamps: false,
     },
+    logging: process.env.NODE_ENV !== "production"
   },
 };

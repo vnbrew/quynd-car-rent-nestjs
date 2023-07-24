@@ -81,7 +81,7 @@ export class PaymentService {
                   break;
                 case 2:
                   discount = carInDB.carPrice.rental_price * couponInDB.value / 100;
-                  console.log({ "1": carInDB.carPrice.rental_price, "2": couponInDB.value, "3": discount });
+                  // console.log({ "1": carInDB.carPrice.rental_price, "2": couponInDB.value, "3": discount });
                   break;
                 default:
                   discount = 0;
@@ -91,8 +91,8 @@ export class PaymentService {
             let amount = carInDB.carPrice.rental_price - discount;
             let totalAmount = amount + amount * createPaymentDto.tax / 100;
             payment.amount = totalAmount;
-            console.log(amount);
-            console.log(totalAmount);
+            // console.log(amount);
+            // console.log(totalAmount);
             let newRental = await userHasRentalInEffective.update(
               { rental_status_id: 2 },
               transactionHost

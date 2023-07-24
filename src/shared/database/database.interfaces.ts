@@ -9,6 +9,7 @@ export interface IDatabaseConfigAttributes {
   define: {
     timestamps: boolean;
   };
+  logging: boolean
 }
 
 export interface IDatabaseConfig {

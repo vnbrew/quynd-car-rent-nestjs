@@ -7,10 +7,7 @@ import { CACHE_MANAGER } from "@nestjs/cache-manager";
 export class RedisCacheService {
   constructor(
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
-  ) {
-    console.log("RedisCacheService created");
-
-  }
+  ) {}
 
   async addTokenToBlackList(token: string) {
     await this.cacheManager.set(token, TokenStatus.blacklist, {ttl: parseInt(process.env.JWT_EXP_TIME) * 1000});
@@ -27,9 +24,9 @@ export class RedisCacheService {
   }
 
   async isTokenInWhiteList(token: string): Promise<boolean> {
-    console.log(token);
+    // console.log(token);
     let tokenStatus = await this.cacheManager.get<String>(token);
-    console.log(tokenStatus);
+    // console.log(tokenStatus);
     return tokenStatus === TokenStatus.whitelist;
   }
 }

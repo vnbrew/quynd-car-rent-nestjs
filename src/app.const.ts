@@ -13,10 +13,10 @@ export const APP_INTERCEPTOR_PROVIDERS = [
     provide: APP_INTERCEPTOR,
     useClass: AppResponseInterceptor
   },
-  {
-    provide: APP_INTERCEPTOR,
-    useClass: AppLoggingInterceptor
-  },
+  // {
+  //   provide: APP_INTERCEPTOR,
+  //   useClass: AppLoggingInterceptor
+  // },
   {
     provide: APP_PIPE,
     useClass: AppValidationPipe
