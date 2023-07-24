@@ -7,7 +7,7 @@ import {
   CAR_TYPES_REPOSITORY,
   CARS_REPOSITORY,
   OFFICES_REPOSITORY, USER_FAVORITE_CAR_REPOSITORY, USER_REVIEWS_CAR_REPOSITORY,
-} from "../../core/constants";
+} from "../../shared/constants";
 import { Car } from "./entities/car.entity";
 import { Office } from "./entities/car-office.entity";
 import { CarType } from "./entities/car-type.entity";

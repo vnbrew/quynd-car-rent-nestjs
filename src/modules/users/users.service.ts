@@ -2,21 +2,26 @@ import { Inject, Injectable } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { CreateUserResponseDto } from "./dto/create-user-response.dto";
-import { USER_TOKENS_REPOSITORY, USERS_REPOSITORY } from "../../core/constants";
+import { USER_TOKENS_REPOSITORY, USERS_REPOSITORY } from "../../shared/constants";
 import { User } from "./entities/user.entity";
-import { AppExceptionService } from "../../core/exception/app.exception.service";
-import { IDetailExceptionMessage } from "../../core/exception/app.exception.interface";
+import { AppExceptionService } from "../../shared/exception/app.exception.service";
+import { IDetailExceptionMessage } from "../../shared/exception/app.exception.interface";
 import { I18nContext, I18nService } from "nestjs-i18n";
-import { genSalt, hash } from "bcrypt";
+import {compare, genSalt, hash} from "bcrypt";
 import { UserToken } from "./entities/user-token.entity";
 import { UpdateUserResponseDto } from "./dto/update-user-response.dto";
 import { FindOptions, Op } from "sequelize";
 import { UpdateOptions } from "sequelize/types/model";
 import { AllUsersResponseDto } from "./dto/all-users-response.dto";
-import { BadRequestCode, InternalServerErrorCode } from "../../shared/enum/exception-code";
+import { BadRequestCode, InternalServerErrorCode } from "../../common/enum/exception-code";
 import { InjectQueue } from "@nestjs/bull";
-import { EProcessName, EQueueName } from "../../shared/enum/queue.enum";
+import { EProcessName, EQueueName } from "../../common/enum/queue.enum";
 import { Queue } from "bull";
+import {UserLoginRequestDto} from "./dto/user-login-request.dto";
+import {UserLoginResponseDto} from "./dto/user-login-response.dto";
+import {UserLogoutResponseDto} from "./dto/user-logout-response.dto";
+import {JwtService} from "@nestjs/jwt";
+import {RedisCacheService} from "../../shared/cache/rediscache.service";
 
 @Injectable()
 export class UsersService {
@@ -26,7 +31,9 @@ export class UsersService {
     @Inject(USER_TOKENS_REPOSITORY) private readonly userTokensRepository: typeof UserToken,
     private readonly exceptionService: AppExceptionService,
     private readonly i18n: I18nService,
-    @InjectQueue(EQueueName.register) private readonly registerQueue: Queue
+    @InjectQueue(EQueueName.register) private readonly registerQueue: Queue,
+    private readonly jwtService: JwtService,
+    private readonly redisCacheService: RedisCacheService
   ) {
   }
 
@@ -151,6 +158,42 @@ export class UsersService {
       });
       this.exceptionService.internalServerErrorException(InternalServerErrorCode.IN_COMMON_ERROR, "", message, []);
     }
+  }
+
+  async login(userLoginRequestDto: UserLoginRequestDto): Promise<UserLoginResponseDto> {
+    let email = userLoginRequestDto.email;
+    let password = userLoginRequestDto.password;
+    let userInDB = await this.getUserByEmail(email);
+    if (!userInDB) {
+      let code = BadRequestCode.BA_EMAIL_DOES_NOT_EXIST;
+      let message = this.i18n.translate("error.email_does_not_exist", {
+        lang: I18nContext.current().lang
+      });
+      this.exceptionService.badRequestException(code, "", message, []);
+    }
+    const isMatch = await compare(password, userInDB.password);
+    if (!isMatch) {
+      let code = BadRequestCode.BA_INVALID_PASSWORD;
+      let message = this.i18n.translate("error.invalid_password", {
+        lang: I18nContext.current().lang
+      });
+      this.exceptionService.badRequestException(code, "", message, []);
+    }
+    let payload = {
+      id: userInDB.id,
+      email: userInDB.email,
+      role: userInDB.role
+    };
+    let access_token = await this.jwtService.signAsync(payload);
+    await this.addAccessTokenToDB(userInDB.id, access_token);
+    await this.redisCacheService.addTokenToWhiteList(access_token);
+    return new UserLoginResponseDto(access_token);
+  }
+
+  async logout(token: string): Promise<UserLogoutResponseDto> {
+    await this.removeTokenInDB(token);
+    await this.redisCacheService.addTokenToBlackList(token);
+    return new UserLogoutResponseDto(token);
   }
 
   async findMe(user: any): Promise<User> {

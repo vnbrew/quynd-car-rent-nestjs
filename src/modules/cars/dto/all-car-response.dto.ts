@@ -1,5 +1,5 @@
 import { CarResponseDto } from "./car-response.dto";
-import { PaginationDto } from "../../../shared/dto/pagination.dto";
+import { PaginationDto } from "../../../common/dto/pagination.dto";
 
 export class AllCarResponseDto {
   readonly items: CarResponseDto[];

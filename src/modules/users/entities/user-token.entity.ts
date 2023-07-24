@@ -1,5 +1,5 @@
 import { BelongsTo, Column, DataType, ForeignKey, Model, Table, Unique } from "sequelize-typescript";
-import { TableName } from "../../../shared/enum/table";
+import { TableName } from "../../../common/enum/table";
 import { User } from "./user.entity";
 
 @Table({

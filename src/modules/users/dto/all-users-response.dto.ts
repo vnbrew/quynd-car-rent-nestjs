@@ -1,6 +1,6 @@
 import { UserDto } from "./user.dto";
 import { User } from "../entities/user.entity";
-import { PaginationDto } from "../../../shared/dto/pagination.dto";
+import { PaginationDto } from "../../../common/dto/pagination.dto";
 
 export class AllUsersResponseDto {
   readonly items: UserDto[];

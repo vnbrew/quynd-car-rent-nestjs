@@ -3,11 +3,15 @@ import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { CreateUserResponseDto } from "./dto/create-user-response.dto";
-import { SetPublic, SetRoles } from "../../core/constants";
-import { Role } from "../../shared/enum/role";
+import { SetPublic, SetRoles } from "../../shared/constants";
+import { Role } from "../../common/enum/role";
 import { UpdateUserResponseDto } from "./dto/update-user-response.dto";
 import { AllUsersResponseDto } from "./dto/all-users-response.dto";
 import { User } from "./entities/user.entity";
+import {UserLoginRequestDto} from "./dto/user-login-request.dto";
+import {UserLoginResponseDto} from "./dto/user-login-response.dto";
+import {UserLogoutResponseDto} from "./dto/user-logout-response.dto";
+import {extractTokenFromHeader} from "../../common/utils/ultils";
 
 @Controller("v1")
 export class UsersController {
@@ -20,6 +24,22 @@ export class UsersController {
   @Post("users/register")
   async register(@Body() createUserDto: CreateUserDto): Promise<CreateUserResponseDto> {
     return await this.usersService.register(createUserDto);
+  }
+
+  @SetPublic()
+  @HttpCode(200)
+  @Post("users/login")
+  async login(
+      @Body() userLoginRequestDto: UserLoginRequestDto
+  ): Promise<UserLoginResponseDto> {
+    return await this.usersService.login(userLoginRequestDto);
+  }
+
+  @Post("users/logout")
+  @HttpCode(204)
+  async logout(@Req() request): Promise<UserLogoutResponseDto> {
+    const token = extractTokenFromHeader(request);
+    return await this.usersService.logout(token);
   }
 
   @SetRoles(Role.user, Role.admin)
