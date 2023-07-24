@@ -192,7 +192,7 @@ export class CarsService {
   async findAll(pagingCarDto: PagingCarDto): Promise<AllCarResponseDto> {
     // console.log(pagingCarDto);
     let { limit, offset, types, capacities, price, name, city, pick_date_time, drop_date_time } = pagingCarDto;
-    console.log({ limit, offset, types, capacities, price, name, city, pick_date_time, drop_date_time });
+    // console.log({ limit, offset, types, capacities, price, name, city, pick_date_time, drop_date_time });
     let carInDB;
     if (limit && offset && +limit > 0 && +offset >= 0) {
       carInDB = await this.carsRepository.findAndCountAll({

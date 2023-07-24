@@ -137,12 +137,12 @@ export class RentalService {
   async create(userId: number, createRentalDto: CreateRentalDto) {
     // console.log({ userId, ...createRentalDto });
     let isCarAvailable = await this.carService.isCarAvailable(createRentalDto.car_id);
-    console.log({ "isCarAvailable": isCarAvailable });
+    // console.log({ "isCarAvailable": isCarAvailable });
     if (!isCarAvailable) {
       this.carIsNotAvailable();
     }
     let canBookCar = await this.canBookCar(createRentalDto);
-    console.log({ "canBookCar": canBookCar });
+    // console.log({ "canBookCar": canBookCar });
     if (!canBookCar) {
       this.carIsNotAvailable();
     }

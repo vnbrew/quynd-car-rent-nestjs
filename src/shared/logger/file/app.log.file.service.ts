@@ -32,7 +32,9 @@ export class AppLogFileService extends ConsoleLogger {
   }
 
   log(message: string) {
-    this.logger.info(message);
+    if (process.env.NODE_ENV !== "production") {
+      this.logger.info(message);
+    }
   }
 
   error(message: string) {
@@ -44,10 +46,14 @@ export class AppLogFileService extends ConsoleLogger {
   }
 
   debug(message: string) {
-    this.logger.debug(message);
+    if (process.env.NODE_ENV !== "production") {
+      this.logger.debug(message);
+    }
   }
 
   verbose(message: string) {
-    this.logger.verbose(message);
+    if (process.env.NODE_ENV !== "production") {
+      this.logger.verbose(message);
+    }
   }
 }
