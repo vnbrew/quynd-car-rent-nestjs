@@ -196,6 +196,22 @@ export class RentalService {
                 required: false
               }
             ]
+          },
+          {
+            model: Payment,
+            required: false,
+            include: [
+              {
+                model: Coupon,
+                required: false,
+                include: [
+                  {
+                    model: CouponType,
+                    required: false
+                  }
+                ]
+              }
+            ]
           }
         ]
       }
