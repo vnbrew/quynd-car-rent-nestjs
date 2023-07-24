@@ -45,6 +45,7 @@ import { User } from "../users/entities/user.entity";
 import { UserFavoriteCarsResponseDto } from "./dto/user-favorite-cars-response.dto";
 import { AllCarResponseDto } from "./dto/all-car-response.dto";
 import { PagingCarDto } from "./dto/paging-car.dto";
+import { Rental } from "../rental/entities/rental.entity";
 
 @Injectable()
 export class CarsService {
@@ -190,8 +191,8 @@ export class CarsService {
 
   async findAll(pagingCarDto: PagingCarDto): Promise<AllCarResponseDto> {
     // console.log(pagingCarDto);
-    let { limit, offset, types, capacities, price, name } = pagingCarDto;
-    console.log({ limit, offset, types, capacities, price, name });
+    let { limit, offset, types, capacities, price, name, city, pick_date_time, drop_date_time } = pagingCarDto;
+    console.log({ limit, offset, types, capacities, price, name, city, pick_date_time, drop_date_time });
     let carInDB;
     if (limit && offset && +limit > 0 && +offset >= 0) {
       carInDB = await this.carsRepository.findAndCountAll({
@@ -202,7 +203,12 @@ export class CarsService {
         },
         group: ["Car.id", "CarPrice.id"],
         include: [
-          Office,
+          {
+            model: Office,
+            where: {
+              ...(city && { city: { [Op.like]: `%${city}%` } })
+            }
+          },
           {
             model: CarType
           },
@@ -229,6 +235,27 @@ export class CarsService {
             model: UserReviewCar,
             include: [User],
             required: false
+          },
+          {
+            model: Rental,
+            where: {
+              ...(pick_date_time && drop_date_time && {
+                [Op.and]: [
+                  {
+                    [Op.or]: [
+                      { rental_status_id: 3 },
+                      { rental_status_id: [1, 2, 4] }
+                    ]
+                  },
+                  {
+                    [Op.or]: [
+                      { pick_date_time: { [Op.gt]: drop_date_time } },
+                      { drop_date_time: { [Op.lt]: pick_date_time } }
+                    ]
+                  }
+                ]
+              })
+            }
           }
         ],
         offset: +offset,

@@ -19,6 +19,7 @@ import { CarPrice } from "./car-price.entity";
 import { CarImage } from "./car-image.entity";
 import { UserReviewCar } from "./user-review-car.entity";
 import { User } from "../../users/entities/user.entity";
+import { Rental } from "../../rental/entities/rental.entity";
 
 @Table({
   tableName: "cars"
@@ -84,4 +85,7 @@ export class Car extends Model<Car> {
   @HasMany(() => UserReviewCar)
   // users: Array<User & { UserReviewCar: UserReviewCar }>;
   userReviewCars: UserReviewCar[];
+
+  @HasMany(() => Rental)
+  rentals: Rental[];
 }

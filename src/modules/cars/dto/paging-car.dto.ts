@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString, Min } from "class-validator";
+import { IsDate, IsNumber, IsOptional, IsString, Min } from "class-validator";
 import { Transform, Type } from "class-transformer";
 
 export class PagingCarDto {
@@ -34,4 +34,19 @@ export class PagingCarDto {
   @Type(() => String)
   @IsString()
   public name?: string;
+
+  @IsOptional()
+  @Type(() => String)
+  @IsString()
+  public city?: string;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  public pick_date_time?: Date
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  public drop_date_time?: Date
 }
