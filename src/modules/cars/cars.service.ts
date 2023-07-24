@@ -12,7 +12,7 @@ import {
   OFFICES_REPOSITORY,
   SEQUELIZE, USER_FAVORITE_CAR_REPOSITORY, USER_REVIEWS_CAR_REPOSITORY
 } from "../../core/constants";
-import { DestroyOptions, FindOptions, Op } from "sequelize";
+import sequelize, { DestroyOptions, FindOptions, Op } from "sequelize";
 import { UpdateOptions } from "sequelize/types/model";
 import { Car } from "./entities/car.entity";
 import { AppExceptionService } from "../../core/exception/app.exception.service";
@@ -197,6 +197,25 @@ export class CarsService {
     if (limit && offset && +limit > 0 && +offset >= 0) {
       carInDB = await this.carsRepository.findAndCountAll({
         where: {
+          ...( pick_date_time && drop_date_time &&
+              {
+                id: {
+                  [Op.notIn]: sequelize.literal(
+                `(SELECT car_id FROM rentals WHERE 
+                        (rental_status_id IN (1, 2, 4) AND
+                          (
+                            (pick_date_time <= '${drop_date_time}' AND drop_date_time >= '${pick_date_time}')
+                            OR (pick_date_time >= '${pick_date_time}' AND drop_date_time <= '${drop_date_time}')
+                            OR (pick_date_time <= '${pick_date_time}' AND drop_date_time >= '${pick_date_time}')
+                            OR (pick_date_time <= '${drop_date_time}' AND drop_date_time >= '${drop_date_time}')
+                          )
+                        )
+                      )
+                      `
+                  )
+                }
+              }
+          ),
           ...(types && { car_type_id: { [Op.or]: !types ? [] : types.toString().split(",").map(Number) } }),
           ...(capacities && { car_capacity_id: { [Op.or]: !capacities ? [] : capacities.toString().split(",").map(Number) } }),
           ...(name && { name: { [Op.like]: `%${name}%` } })
@@ -238,23 +257,19 @@ export class CarsService {
           },
           {
             model: Rental,
+            required: false,
             where: {
               ...(pick_date_time && drop_date_time && {
-                [Op.and]: [
-                  {
-                    [Op.or]: [
-                      { rental_status_id: 3 },
-                      { rental_status_id: [1, 2, 4] }
-                    ]
-                  },
-                  {
-                    [Op.or]: [
-                      { pick_date_time: { [Op.gt]: drop_date_time } },
-                      { drop_date_time: { [Op.lt]: pick_date_time } }
-                    ]
-                  }
-                ]
-              })
+                  [Op.or]: [
+                    {
+                      pick_date_time: { [Op.gt]: drop_date_time }
+                    },
+                    {
+                      drop_date_time: { [Op.lt]: pick_date_time }
+                    }
+                  ]
+                }
+              )
             }
           }
         ],
