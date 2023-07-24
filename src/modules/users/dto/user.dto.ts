@@ -6,7 +6,7 @@ export class UserDto {
   readonly address: string;
   readonly city: string;
   readonly phone_number: string;
-  readonly imageUrl: string;
+  readonly image_url: string;
 
   constructor(user: User) {
     this.email = user.email;
@@ -14,6 +14,6 @@ export class UserDto {
     this.address = user.address;
     this.city = user.city;
     this.phone_number = user.phone_number;
-    this.imageUrl = user.image_url;
+    this.image_url = user.image_url;
   }
 }
