@@ -1,0 +1,1075 @@
+{
+	"info": {
+		"_postman_id": "f449efc9-9c1d-4158-aeda-bdbf8849f2ad",
+		"name": "ERU-NestJS-Fresher",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1117988"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"testing5@gmail.com\",\n    \"password\": \"Testing!@#123\",\n    \"name\": \"Testing 2\",\n    \"address\": \"137/7 To Hieu\",\n    \"city\": \"Da Nang\",\n    \"phone_number\": \"+84972699300\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/users/register",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    // \"email\": \"quynd@tech.est-rouge.com\",\n    \"email\": \"testing1@gmail.com\",\n    \"password\": \"Testing!@#123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/auth/login",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJ0ZXN0aW5nMUBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTY4OTgyOTc0NywiZXhwIjoxNjg5ODI5ODA3fQ.lHIV_suBNDUMTAHQ6fFHcJPnMUQSYXWs1z-J2-ZJBEw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/auth/logout",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user profile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJxdXluZEB0ZWNoLmVzdC1yb3VnZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2OTAxNjQ5NTMsImV4cCI6MTY5MDI1MTM1M30.GZZyxd-qCQzX5xe5HMoKQUXR2hXmevhl0gC0Sy9sFy4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/users/me",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"users",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user information",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJxdXluZEB0ZWNoLmVzdC1yb3VnZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2ODk4NDU2NTMsImV4cCI6MTY4OTkzMjA1M30._2ehZbrt0dbzo_AKNvDgtAw7xcnkbC29LtSV6GvoURg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Nguyen Duc Quy\",\n    \"city\": \"Da Nang\",\n    \"address\": \"137/7 To Hieu\",\n    \"phone_number\": \"+84972699300\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/users/me",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"users",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJxdXluZEB0ZWNoLmVzdC1yb3VnZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2OTAxNjQ5NTMsImV4cCI6MTY5MDI1MTM1M30.GZZyxd-qCQzX5xe5HMoKQUXR2hXmevhl0gC0Sy9sFy4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/users/all",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"users",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin get user profile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJxdXluZEB0ZWNoLmVzdC1yb3VnZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2OTAxNjQ5NTMsImV4cCI6MTY5MDI1MTM1M30.GZZyxd-qCQzX5xe5HMoKQUXR2hXmevhl0gC0Sy9sFy4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/users/3",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"users",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin update user information",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJxdXluZEB0ZWNoLmVzdC1yb3VnZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2OTAxNjQ5NTMsImV4cCI6MTY5MDI1MTM1M30.GZZyxd-qCQzX5xe5HMoKQUXR2hXmevhl0gC0Sy9sFy4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Testing\",\n    \"city\": \"Da Nang\",\n    \"address\": \"137/7 To Hieu\",\n    \"phone_number\": \"+84972699301\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/users/2",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"users",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin delete user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJxdXluZEB0ZWNoLmVzdC1yb3VnZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2ODk0Nzk5NjUsImV4cCI6MTY4OTU2NjM2NX0.Mvui5hAVYRwFlfAlmms4n71fUHaYGKMD0wrolFK8BtY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/users/5",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"users",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin create new car",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJxdXluZEB0ZWNoLmVzdC1yb3VnZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2ODk5MTIyODksImV4cCI6MTY4OTk5ODY4OX0.4OE2Vyv_FFEc1-LV0r3z0hlEkoI7yhW-tT_13HvvjzE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"office_id\": 1,\n    \"car_type_id\": 1,\n    \"car_capacity_id\": 1,\n    \"car_steering_id\": 1,\n    \"car_status_id\": 1,\n    \"name\": \"car testing\",\n    \"gasoline\": 20,\n    // \"description\":\"\",\n    \"from_date_time\": \"2023-01-01 01:00:02\",\n    \"to_date_time\": \"2025-01-01 01:00:02\",\n    \"original_price\": 20,\n    \"rental_price\": 21.1,\n    \"images\": [\n        // \"https://www-asia.nissan-cdn.net/content/dam/Nissan/in/Home/Spotlight/Comparo-300X168.jpg.ximg.l_4_h.smart.jpg\",\n        // \"https://www-asia.nissan-cdn.net/content/dam/Nissan/in/Home/Spotlight/Comparo-300X168%20(1)-v1.jpg.ximg.l_4_h.smart.jpg\",\n        // \"https://www-asia.nissan-cdn.net/content/dam/Nissan/in/Home/Spotlight/Comparo-300X168%20(1)-v1.jpg.ximg.l_4_h.smart.jpg\",\n        // \"https://www-asia.nissan-cdn.net/content/dam/Nissan/in/Home/Spotlight/270-x-151.jpg.ximg.l_4_h.smart.jpg\",\n        // \"https://www-asia.nissan-cdn.net/content/dam/Nissan/in/Home/hpi/Magnite_side_400x213-pix-v1.jpg.ximg.l_4_h.smart.jpg\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/cars",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"cars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get car by id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/cars/6",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"cars",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin edit car information",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJxdXluZEB0ZWNoLmVzdC1yb3VnZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2OTAxNjQ5NTMsImV4cCI6MTY5MDI1MTM1M30.GZZyxd-qCQzX5xe5HMoKQUXR2hXmevhl0gC0Sy9sFy4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"office_id\": 2,\n    \"car_type_id\": 2,\n    \"car_capacity_id\": 2,\n    \"car_steering_id\": 2,\n    \"car_status_id\": 1,\n    \"name\": \"car testing\",\n    \"gasoline\": 10,\n    \"from_date_time\": \"2023-01-01 01:00:02\",\n    \"to_date_time\": \"2025-01-01 01:00:02\",\n    \"original_price\": 20,\n    \"rental_price\": 21.1,\n    \"images\": [\n        \"https://www-asia.nissan-cdn.net/content/dam/Nissan/in/Home/Spotlight/Comparo-300X168.jpg.ximg.l_4_h.smart.jpg\",\n        // \"https://www-asia.nissan-cdn.net/content/dam/Nissan/in/Home/Spotlight/Comparo-300X168%20(1)-v1.jpg.ximg.l_4_h.smart.jpg\",\n        \"https://www-asia.nissan-cdn.net/content/dam/Nissan/in/Home/Spotlight/Comparo-300X168%20(1)-v1.jpg.ximg.l_4_h.smart.jpg\",\n        // \"https://www-asia.nissan-cdn.net/content/dam/Nissan/in/Home/Spotlight/270-x-151.jpg.ximg.l_4_h.smart.jpg\",\n        \"https://www-asia.nissan-cdn.net/content/dam/Nissan/in/Home/hpi/Magnite_side_400x213-pix-v1.jpg.ximg.l_4_h.smart.jpg\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/cars/6",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"cars",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin delete a car",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJxdXluZEB0ZWNoLmVzdC1yb3VnZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2OTAxNjQ5NTMsImV4cCI6MTY5MDI1MTM1M30.GZZyxd-qCQzX5xe5HMoKQUXR2hXmevhl0gC0Sy9sFy4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/cars/10",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"cars",
+						"10"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User favorite car ",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJ0ZXN0aW5nQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjkwMTgxMjIzLCJleHAiOjE2OTAyNjc2MjN9.72mmFg5evQXNHjuvIVdyQoV59dTZI4tm3XjeGMLnKls",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"favorite\": true\n    // \"favorite\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/cars/favorite/7",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"cars",
+						"favorite",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User review car",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJ0ZXN0aW5nQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjkwMTgxMjIzLCJleHAiOjE2OTAyNjc2MjN9.72mmFg5evQXNHjuvIVdyQoV59dTZI4tm3XjeGMLnKls",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rate\": 1,\n    \"comment\": \"Too bad\",\n    \"title\": \"Bad\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/cars/review/9",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"cars",
+						"review",
+						"9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User update review",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJ0ZXN0aW5nQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjkwMTgxMjIzLCJleHAiOjE2OTAyNjc2MjN9.72mmFg5evQXNHjuvIVdyQoV59dTZI4tm3XjeGMLnKls",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rate\": 5,\n    \"title\": \"Good\",\n    \"comment\": \"So Good\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/cars/review/9",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"cars",
+						"review",
+						"9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user check favorite with car or not",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJ0ZXN0aW5nQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjkwMTgxMjIzLCJleHAiOjE2OTAyNjc2MjN9.72mmFg5evQXNHjuvIVdyQoV59dTZI4tm3XjeGMLnKls",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/cars/favorite/9",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"cars",
+						"favorite",
+						"9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get car favorited by user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJ0ZXN0aW5nQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjkwMTgxMjIzLCJleHAiOjE2OTAyNjc2MjN9.72mmFg5evQXNHjuvIVdyQoV59dTZI4tm3XjeGMLnKls",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/cars/users/favorite",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"cars",
+						"users",
+						"favorite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cars?offset=0&limit=50&capacities=1,2&price=50&types=1,2",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/cars?offset=0&limit=100&capacities=1,2&price=25&types=1,2&name=testing&city=Hà Nội&pick_date_time=2023-07-21 11:20:00&drop_date_time=2023-07-25 15:20:00",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"cars"
+					],
+					"query": [
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "limit",
+							"value": "100"
+						},
+						{
+							"key": "capacities",
+							"value": "1,2"
+						},
+						{
+							"key": "price",
+							"value": "25"
+						},
+						{
+							"key": "types",
+							"value": "1,2"
+						},
+						{
+							"key": "name",
+							"value": "testing"
+						},
+						{
+							"key": "city",
+							"value": "Hà Nội"
+						},
+						{
+							"key": "pick_date_time",
+							"value": "2023-07-21 11:20:00"
+						},
+						{
+							"key": "drop_date_time",
+							"value": "2023-07-25 15:20:00"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User create rental",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJ0ZXN0aW5nQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjkwMTgxMjIzLCJleHAiOjE2OTAyNjc2MjN9.72mmFg5evQXNHjuvIVdyQoV59dTZI4tm3XjeGMLnKls",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"car_id\": 6,\n    \"rental_status_id\": 1,\n    \"pick_date_time\": \"2023-07-22 02:20:00\",\n    \"drop_date_time\": \"2023-07-22 03:20:00\",\n    \"detail\": \"\"\n}\n// {\n//     \"car_id\": 5,\n//     \"rental_status_id\": 1,\n//     \"pick_date_time\": \"2023-07-18 01:20:00\",\n//     \"drop_date_time\": \"2023-07-18 08:20:00\",\n//     \"detail\": \"\"\n    \n// }\n// {\n//     \"car_id\": 5,\n//     \"rental_status_id\": 1,\n//     \"pick_date_time\": \"2023-07-20 08:20:01\",\n//     \"drop_date_time\": \"2023-07-21 08:20:00\",\n//     \"detail\": \"\"\n    \n// }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/rental",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"rental"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User get all rentals",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJ0ZXN0aW5nMUBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTY5MDE4NjI0MiwiZXhwIjoxNjkwMjcyNjQyfQ.MtKq46edtxhomYw34BktD1FtsnB1CNAsRJd2mxF0WXE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/rental",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"rental"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user get rental information",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJ0ZXN0aW5nMUBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTY5MDE4NjI0MiwiZXhwIjoxNjkwMjcyNjQyfQ.MtKq46edtxhomYw34BktD1FtsnB1CNAsRJd2mxF0WXE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/rental/2",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"rental",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "change rental status",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJ0ZXN0aW5nMUBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTY5MDE4NjI0MiwiZXhwIjoxNjkwMjcyNjQyfQ.MtKq46edtxhomYw34BktD1FtsnB1CNAsRJd2mxF0WXE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rental_status_id\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/rental/2",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"rental",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add coupon",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJxdXluZEB0ZWNoLmVzdC1yb3VnZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2ODk2Njk5NjcsImV4cCI6MTY4OTc1NjM2N30.zQ2B5eirPiLrgsuyG412EnrV597zOj_JRiO4lwdqM18",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"coupon_type_id\": 1,\n    \"code\": \"22222222\",\n    \"value\": 10,\n    \"expiration_time\": \"2024-01-02 10:10:19\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/coupon",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"coupon"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "payment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJ0ZXN0aW5nMUBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTY4OTc1MDk1MSwiZXhwIjoxNjg5ODM3MzUxfQ.s7fr4QTX1bNea7k4-Ikq0EKjsTpkW6_Tay1s7mPPOCw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rental_id\": 18,\n    \"coupon_code\": \"22222222\",\n    \"payment_status_id\": 1,\n    \"payment_type_id\": 1,\n    \"tax\": 10\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/payment",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "send-email",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJxdXluZEB0ZWNoLmVzdC1yb3VnZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2ODk3NDMxNzYsImV4cCI6MTY4OTgyOTU3Nn0.pZJWKkfYdwje8vAzA-I7wicHDxWtaFUYCfdsLx1qHxA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-lang",
+						"value": "en",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"to\" : [\n        \"nguyenducquy.qt@gmail.com\"\n    ],\n    \"from\" : \"quynd@tech.est-rouge.com\",\n    \"text\": \"Nestjs use sendgrid\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/{{api}}/{{v1}}/sendgrid/send-email",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{api}}",
+						"{{v1}}",
+						"sendgrid",
+						"send-email"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
