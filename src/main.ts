@@ -6,7 +6,7 @@ import {
   morganRequestLogger,
   morganResponseLogger,
   AppLogFileInterceptor
-} from "./core/logger/file";
+} from "./shared/logger/file";
 import { globalLogger } from "./app.const";
 import { VersioningType } from "@nestjs/common";
 

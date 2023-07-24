@@ -1,7 +1,7 @@
 import { AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { Car } from "./car.entity";
-import { Role } from "../../../shared/enum/role";
-import { ECarPrice } from "../../../shared/enum/car.enum";
+import { Role } from "../../../common/enum/role";
+import { ECarPrice } from "../../../common/enum/car.enum";
 
 @Table({
   tableName: "car_prices"

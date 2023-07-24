@@ -1,7 +1,7 @@
 import {
   RENTAL_STATUSES_REPOSITORY,
   RENTALS_REPOSITORY
-} from "../../core/constants";
+} from "../../shared/constants";
 import { RentalStatus } from "./entities/rental-status.entity";
 import { Rental } from "./entities/rental.entity";
 

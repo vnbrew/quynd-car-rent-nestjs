@@ -11,14 +11,14 @@ import {
   CARS_REPOSITORY,
   OFFICES_REPOSITORY,
   SEQUELIZE, USER_FAVORITE_CAR_REPOSITORY, USER_REVIEWS_CAR_REPOSITORY
-} from "../../core/constants";
+} from "../../shared/constants";
 import sequelize, { DestroyOptions, FindOptions, Op } from "sequelize";
 import { UpdateOptions } from "sequelize/types/model";
 import { Car } from "./entities/car.entity";
-import { AppExceptionService } from "../../core/exception/app.exception.service";
+import { AppExceptionService } from "../../shared/exception/app.exception.service";
 import { I18nContext, I18nService } from "nestjs-i18n";
-import { IDetailExceptionMessage } from "../../core/exception/app.exception.interface";
-import { BadRequestCode, InternalServerErrorCode } from "../../shared/enum/exception-code";
+import { IDetailExceptionMessage } from "../../shared/exception/app.exception.interface";
+import { BadRequestCode, InternalServerErrorCode } from "../../common/enum/exception-code";
 import { UpdateCarResponseDto } from "./dto/update-car-response.dto";
 import { CarResponseDto } from "./dto/car-response.dto";
 import { CarType } from "./entities/car-type.entity";
@@ -29,8 +29,8 @@ import { CarSteering } from "./entities/car-steering.entity";
 import { CarPrice } from "./entities/car-price.entity";
 import { Sequelize } from "sequelize-typescript";
 import { Inject, Injectable } from "@nestjs/common";
-import { ECarPrice, ECarStatus } from "../../shared/enum/car.enum";
-import { isDateValid, isPriceValid, isSameDateTime } from "../../shared/utils/ultils";
+import { ECarPrice, ECarStatus } from "../../common/enum/car.enum";
+import { isDateValid, isPriceValid, isSameDateTime } from "../../common/utils/ultils";
 import { CarImage } from "./entities/car-image.entity";
 import { CreateUserFavoriteCarResponseDto } from "./dto/create-user-favorite-car-response.dto";
 import { UserFavoriteCar } from "./entities/user-favorite-car.entity";

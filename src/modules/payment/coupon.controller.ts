@@ -2,8 +2,8 @@ import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Req } from
 import { CreatePaymentDto } from "./dto/create-payment.dto";
 import { UpdatePaymentDto } from "./dto/update-payment.dto";
 import { CouponService } from "./coupon.service";
-import { SetRoles } from "../../core/constants";
-import { Role } from "../../shared/enum/role";
+import { SetRoles } from "../../shared/constants";
+import { Role } from "../../common/enum/role";
 import { CreateCouponDto } from "./dto/create-coupon.dto";
 
 @Controller("v1")

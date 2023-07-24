@@ -5,14 +5,14 @@ import {
   COUPON_TYPES_REPOSITORY, COUPONS_REPOSITORY,
   PAYMENT_STATUSES_REPOSITORY, PAYMENT_TYPES_REPOSITORY, PAYMENTS_REPOSITORY,
   SEQUELIZE
-} from "../../core/constants";
+} from "../../shared/constants";
 import { Sequelize } from "sequelize-typescript";
-import { AppExceptionService } from "../../core/exception/app.exception.service";
+import { AppExceptionService } from "../../shared/exception/app.exception.service";
 import { I18nContext, I18nService } from "nestjs-i18n";
 import { PaymentStatus } from "./entities/payment-status.entity";
 import { Payment } from "./entities/payment.entity";
 import { RentalService } from "../rental/rental.service";
-import { InternalServerErrorCode } from "../../shared/enum/exception-code";
+import { InternalServerErrorCode } from "../../common/enum/exception-code";
 import { CouponType } from "./entities/coupon-types.entity";
 import { Coupon } from "./entities/coupon.entity";
 import { FindOptions, Op } from "sequelize";

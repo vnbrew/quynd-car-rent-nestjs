@@ -1,12 +1,12 @@
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
-import { AppAllExceptionFilter } from "./core/filter/app.exception.filter";
-import { AppValidationPipe } from "./core/pipe/app.validation.pipe";
-import { AppLoggingInterceptor } from "./core/interceptor/app.logging.interceptor";
-import { AppResponseInterceptor } from "./core/interceptor/app.response.interceptor";
-import { AppLogFileService } from "./core/logger/file/app.log.file.service";
+import { AppAllExceptionFilter } from "./shared/filter/app.exception.filter";
+import { AppValidationPipe } from "./shared/pipe/app.validation.pipe";
+import { AppLoggingInterceptor } from "./shared/interceptor/app.logging.interceptor";
+import { AppResponseInterceptor } from "./shared/interceptor/app.response.interceptor";
+import { AppLogFileService } from "./shared/logger/file/app.log.file.service";
 import { format, transports } from "winston";
-import { AuthGuard } from "./modules/auth/auth.guard";
-import { RolesGuard } from "./modules/auth/roles.guard";
+import { AuthGuard } from "./shared/auth/auth.guard";
+import { RolesGuard } from "./shared/auth/roles.guard";
 
 export const APP_INTERCEPTOR_PROVIDERS = [
   {
