@@ -1,5 +1,5 @@
-import { IsDate, IsNumber, IsString } from "class-validator";
-import { Type } from "class-transformer";
+import { IsDate, IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreatePaymentDto {
   @IsNumber()
@@ -10,11 +10,11 @@ export class CreatePaymentDto {
 
   @IsNumber()
   @Type(() => Number)
-  readonly payment_status_id: number
+  readonly payment_status_id: number;
 
   @IsNumber()
   @Type(() => Number)
-  readonly payment_type_id: number
+  readonly payment_type_id: number;
 
   @IsNumber()
   @Type(() => Number)

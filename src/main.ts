@@ -1,18 +1,18 @@
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
 import {
   appendIdToRequest,
   appendRequestIdToLogger,
   morganRequestLogger,
   morganResponseLogger,
-  AppLogFileInterceptor
-} from "./shared/logger/file";
-import { globalLogger } from "./app.const";
-import { VersioningType } from "@nestjs/common";
+  AppLogFileInterceptor,
+} from './shared/logger/file';
+import { globalLogger } from './app.const';
+import { VersioningType } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix("api");
+  app.setGlobalPrefix('api');
 
   app.enableVersioning({ type: VersioningType.URI });
 

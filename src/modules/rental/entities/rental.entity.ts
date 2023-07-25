@@ -7,15 +7,15 @@ import {
   HasOne,
   Model,
   PrimaryKey,
-  Table
-} from "sequelize-typescript";
-import { Car } from "../../cars/entities/car.entity";
-import { User } from "../../users/entities/user.entity";
-import { RentalStatus } from "./rental-status.entity";
-import { Payment } from "../../payment/entities/payment.entity";
+  Table,
+} from 'sequelize-typescript';
+import { Car } from '../../cars/entities/car.entity';
+import { User } from '../../users/entities/user.entity';
+import { RentalStatus } from './rental-status.entity';
+import { Payment } from '../../payment/entities/payment.entity';
 
 @Table({
-  tableName: "rentals"
+  tableName: 'rentals',
 })
 export class Rental extends Model<Rental> {
   @AutoIncrement
@@ -24,7 +24,7 @@ export class Rental extends Model<Rental> {
     type: DataType.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    allowNull: false
+    allowNull: false,
   })
   id!: number;
 
@@ -51,19 +51,19 @@ export class Rental extends Model<Rental> {
 
   @Column({
     type: DataType.DATE,
-    allowNull: false
+    allowNull: false,
   })
   pick_date_time!: Date;
 
   @Column({
     type: DataType.DATE,
-    allowNull: false
+    allowNull: false,
   })
   drop_date_time!: Date;
 
   @Column({
     type: DataType.TEXT,
-    allowNull: true
+    allowNull: true,
   })
   detail?: string;
 

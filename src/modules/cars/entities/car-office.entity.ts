@@ -1,7 +1,14 @@
-import { AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from "sequelize-typescript";
+import {
+  AutoIncrement,
+  Column,
+  DataType,
+  Model,
+  PrimaryKey,
+  Table,
+} from 'sequelize-typescript';
 
 @Table({
-  tableName: "offices"
+  tableName: 'offices',
 })
 export class Office extends Model<Office> {
   @PrimaryKey
@@ -18,7 +25,7 @@ export class Office extends Model<Office> {
   @Column(DataType.STRING)
   address!: string;
 
-  @Column(DataType.GEOMETRY("POINT"))
+  @Column(DataType.GEOMETRY('POINT'))
   coordinate!: {
     type: string;
     coordinates: number[];

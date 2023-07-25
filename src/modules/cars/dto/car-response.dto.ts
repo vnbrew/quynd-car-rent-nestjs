@@ -1,13 +1,13 @@
-import { CarDto } from "./car.dto";
-import { Car } from "../entities/car.entity";
-import { CarType } from "../entities/car-type.entity";
-import { Office } from "../entities/car-office.entity";
-import { CarCapacity } from "../entities/car-capacity.entity";
-import { CarStatus } from "../entities/car-status.entity";
-import { CarSteering } from "../entities/car-steering.entity";
-import { CarPrice } from "../entities/car-price.entity";
-import { CarImage } from "../entities/car-image.entity";
-import { UserReviewCarResponseDto } from "./user-review-car.response.dto";
+import { CarDto } from './car.dto';
+import { Car } from '../entities/car.entity';
+import { CarType } from '../entities/car-type.entity';
+import { Office } from '../entities/car-office.entity';
+import { CarCapacity } from '../entities/car-capacity.entity';
+import { CarStatus } from '../entities/car-status.entity';
+import { CarSteering } from '../entities/car-steering.entity';
+import { CarPrice } from '../entities/car-price.entity';
+import { CarImage } from '../entities/car-image.entity';
+import { UserReviewCarResponseDto } from './user-review-car.response.dto';
 
 export class CarResponseDto extends CarDto {
   readonly office: Office;
@@ -28,6 +28,8 @@ export class CarResponseDto extends CarDto {
     this.car_steering = car.steering;
     this.car_price = car.carPrice;
     this.car_images = car.carImages;
-    this.reviews = car.userReviewCars.map((userReviewCar) => new UserReviewCarResponseDto(userReviewCar));
+    this.reviews = car.userReviewCars.map(
+      (userReviewCar) => new UserReviewCarResponseDto(userReviewCar),
+    );
   }
 }

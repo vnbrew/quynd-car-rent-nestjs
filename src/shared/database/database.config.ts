@@ -1,5 +1,5 @@
-import { IDatabaseConfig } from "./database.interfaces";
-import { config } from "dotenv";
+import { IDatabaseConfig } from './database.interfaces';
+import { config } from 'dotenv';
 
 config();
 
@@ -14,6 +14,6 @@ export const databaseConfig: IDatabaseConfig = {
     define: {
       timestamps: false,
     },
-    logging: process.env.NODE_ENV !== "production"
+    logging: process.env.NODE_ENV !== 'production',
   },
 };

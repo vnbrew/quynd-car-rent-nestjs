@@ -2,23 +2,22 @@ import {
   Injectable,
   NestInterceptor,
   ExecutionContext,
-  CallHandler
-} from "@nestjs/common";
-import { Observable } from "rxjs";
-import { tap } from "rxjs/operators";
-import { AppLogFileService, LOG_TYPE } from "./app.log.file.service";
-import { getCircularReplacer } from "./ultils";
+  CallHandler,
+} from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { AppLogFileService, LOG_TYPE } from './app.log.file.service';
+import { getCircularReplacer } from './ultils';
 
 @Injectable()
 export class AppLogFileInterceptor implements NestInterceptor {
-  constructor(private logger: AppLogFileService) {
-  }
+  constructor(private logger: AppLogFileService) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     this.logger.setContext(context.getClass().name);
     const ctx = context.switchToHttp();
 
-    if (context.getType() === "http") {
+    if (context.getType() === 'http') {
       // do something that is only important in the context of regular HTTP requests (REST)
       const request: Request = ctx.getRequest();
 
@@ -28,12 +27,12 @@ export class AppLogFileInterceptor implements NestInterceptor {
             headers: request.headers,
             type: LOG_TYPE.REQUEST_ARGS,
             // if body is multipart, request.body={}
-            value: request.body
+            value: request.body,
           },
-          getCircularReplacer()
-        )}`
+          getCircularReplacer(),
+        )}`,
       );
-    } else if (context.getType() === "rpc") {
+    } else if (context.getType() === 'rpc') {
       // do something that is only important in the context of Microservice requests
     }
     //   else if (context.getType<GqlContextType>() === "graphql") {
@@ -57,9 +56,9 @@ export class AppLogFileInterceptor implements NestInterceptor {
       tap({
         next: (value) => {
           this.logger.log(
-            `${JSON.stringify({ Response: value }, getCircularReplacer())}`
+            `${JSON.stringify({ Response: value }, getCircularReplacer())}`,
           );
-        }
+        },
         /*
        /**
          * Intercept error state
@@ -72,8 +71,7 @@ export class AppLogFileInterceptor implements NestInterceptor {
          * Intercept complete state
          */
         // complete: () => this.logger.log(`Finished... ${Date.now() - now}ms`),
-      })
+      }),
     );
   }
 }
-  

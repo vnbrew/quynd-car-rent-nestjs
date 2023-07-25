@@ -9,4 +9,3 @@ export interface IAppLog {
 
   verbose(context: string, message: string): void;
 }
-  

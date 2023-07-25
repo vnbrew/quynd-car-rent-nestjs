@@ -1,6 +1,6 @@
-import { RentalResponseDto } from "./rental-response.dto";
-import { Rental } from "../entities/rental.entity";
-import { PaginationDto } from "../../../common/dto/pagination.dto";
+import { RentalResponseDto } from './rental-response.dto';
+import { Rental } from '../entities/rental.entity';
+import { PaginationDto } from '../../../common/dto/pagination.dto';
 
 export class AllRentalResponseDto {
   readonly items: RentalResponseDto[];

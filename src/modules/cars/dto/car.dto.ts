@@ -1,4 +1,4 @@
-import { Car } from "../entities/car.entity";
+import { Car } from '../entities/car.entity';
 
 export class CarDto {
   readonly id: number;

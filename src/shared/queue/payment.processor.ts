@@ -1,27 +1,23 @@
-import { Process, Processor } from "@nestjs/bull";
-import { EProcessName, EQueueName } from "../../common/enum/queue.enum";
-import { Job } from "bull";
-import { Injectable } from "@nestjs/common";
-import { EmailService } from "../email/email.service";
-import { CreateEmailDto } from "../email/dto/create-email.dto";
+import { Process, Processor } from '@nestjs/bull';
+import { EProcessName, EQueueName } from '../../common/enum/queue.enum';
+import { Job } from 'bull';
+import { Injectable } from '@nestjs/common';
+import { EmailService } from '../email/email.service';
+import { CreateEmailDto } from '../email/dto/create-email.dto';
 
 @Injectable()
 @Processor(EQueueName.payment)
 export class PaymentProcessor {
-
-  constructor(
-    private readonly sendgridService: EmailService
-  ) {
-  }
+  constructor(private readonly sendgridService: EmailService) {}
 
   @Process(EProcessName.payment_completed)
   async handlePaymentCompleted(job: Job) {
     // console.log(job.data);
     let { user_name, pay_date_time } = job.data;
     let letterToUser = new CreateEmailDto();
-    letterToUser.to = ["nguyenducquy.qt@gmail.com"];
-    letterToUser.from = "quynd@tech.est-rouge.com";
-    letterToUser.subject = "Congratulations on successfully booking your car!";
+    letterToUser.to = ['nguyenducquy.qt@gmail.com'];
+    letterToUser.from = 'quynd@tech.est-rouge.com';
+    letterToUser.subject = 'Congratulations on successfully booking your car!';
     letterToUser.html = `
                       <p>Dear ${user_name}</p>
                       <p>I am writing to inform you that your payment has been successfully processed.</p>

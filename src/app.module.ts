@@ -1,29 +1,29 @@
-import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import {
   APP_EXCEPTION_PROVIDERS,
-  APP_INTERCEPTOR_PROVIDERS
-} from "./app.const";
-import { AppMiddleware } from "./shared/middleware/app.middleware";
-import { AppLogModule } from "./shared/logger/console/app.log.module";
-import { DatabaseModule } from "./shared/database/database.module";
-import { AppExceptionModule } from "./shared/exception/app.exception.module";
-import { AppLanguageModule } from "./shared/language/app.language.module";
-import { UsersModule } from "./modules/users/users.module";
-import { JwtModule } from "@nestjs/jwt";
-import { CarsModule } from "./modules/cars/cars.module";
-import { RentalModule } from "./modules/rental/rental.module";
-import { PaymentModule } from "./modules/payment/payment.module";
-import { EmailModule } from "./shared/email/email.module";
+  APP_INTERCEPTOR_PROVIDERS,
+} from './app.const';
+import { AppMiddleware } from './shared/middleware/app.middleware';
+import { AppLogModule } from './shared/logger/console/app.log.module';
+import { DatabaseModule } from './shared/database/database.module';
+import { AppExceptionModule } from './shared/exception/app.exception.module';
+import { AppLanguageModule } from './shared/language/app.language.module';
+import { UsersModule } from './modules/users/users.module';
+import { JwtModule } from '@nestjs/jwt';
+import { CarsModule } from './modules/cars/cars.module';
+import { RentalModule } from './modules/rental/rental.module';
+import { PaymentModule } from './modules/payment/payment.module';
+import { EmailModule } from './shared/email/email.module';
 import { QueueModule } from './shared/queue/queue.module';
-import { RedisCacheModule } from "./shared/cache/rediscache.module";
-import { TaskScheduleModule } from "./shared/schedule/task-schedule.module";
+import { RedisCacheModule } from './shared/cache/rediscache.module';
+import { TaskScheduleModule } from './shared/schedule/task-schedule.module';
 
 @Module({
   imports: [
     JwtModule.register({
       global: true,
       secret: `${process.env.JWT_KEY}`,
-      signOptions: { expiresIn: process.env.JWT_EXP_TIME }
+      signOptions: { expiresIn: process.env.JWT_EXP_TIME },
     }),
     RedisCacheModule,
     AppLogModule,
@@ -38,14 +38,11 @@ import { TaskScheduleModule } from "./shared/schedule/task-schedule.module";
     QueueModule,
     TaskScheduleModule,
   ],
-  providers: [
-    ...APP_INTERCEPTOR_PROVIDERS,
-    ...APP_EXCEPTION_PROVIDERS
-  ],
-  controllers: []
+  providers: [...APP_INTERCEPTOR_PROVIDERS, ...APP_EXCEPTION_PROVIDERS],
+  controllers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AppMiddleware).forRoutes("*");
+    consumer.apply(AppMiddleware).forRoutes('*');
   }
 }

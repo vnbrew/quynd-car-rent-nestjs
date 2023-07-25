@@ -1,7 +1,10 @@
-import { DynamicModule, FactoryProvider, Module } from "@nestjs/common";
-import { LoggerOptions } from "winston";
-import { APP_LOG_FILE_CONFIG_OPTIONS, AppLogFileService } from "./app.log.file.service";
-import { getLoggerContexts, getLoggerToken } from "./app.log.file.decorator";
+import { DynamicModule, FactoryProvider, Module } from '@nestjs/common';
+import { LoggerOptions } from 'winston';
+import {
+  APP_LOG_FILE_CONFIG_OPTIONS,
+  AppLogFileService,
+} from './app.log.file.service';
+import { getLoggerContexts, getLoggerToken } from './app.log.file.decorator';
 
 @Module({})
 export class AppLogFileModule {
@@ -16,9 +19,9 @@ export class AppLogFileModule {
             const logger = new AppLogFileService(options);
             logger.setContext(context);
             return logger;
-          }
+          },
         };
-      }
+      },
     );
 
     return {
@@ -26,15 +29,15 @@ export class AppLogFileModule {
       providers: [
         {
           provide: APP_LOG_FILE_CONFIG_OPTIONS,
-          useValue: options
+          useValue: options,
         },
         AppLogFileService,
-        ...loggerProviders
+        ...loggerProviders,
       ],
       exports: [
         AppLogFileService,
-        ...contexts.map((context) => getLoggerToken(context))
-      ]
+        ...contexts.map((context) => getLoggerToken(context)),
+      ],
     };
   }
 }

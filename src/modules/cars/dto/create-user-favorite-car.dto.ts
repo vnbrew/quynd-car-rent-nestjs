@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsNumber } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateUserFavoriteCarDto {
   @IsBoolean()

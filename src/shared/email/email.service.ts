@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
-import { CreateEmailDto } from "./dto/create-email.dto";
-import * as sendGrid from "@sendgrid/mail";
+import { Injectable } from '@nestjs/common';
+import { CreateEmailDto } from './dto/create-email.dto';
+import * as sendGrid from '@sendgrid/mail';
 
 @Injectable()
 export class EmailService {
@@ -13,7 +13,7 @@ export class EmailService {
       to: createSendgridDto.to,
       from: createSendgridDto.from,
       subject: createSendgridDto.subject,
-      html: createSendgridDto.html
+      html: createSendgridDto.html,
     };
     await sendGrid.sendMultiple(msg);
     return {};

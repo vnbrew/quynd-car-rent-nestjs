@@ -1,2 +1,1 @@
-export class UpdateCarResponseDto {
-}
+export class UpdateCarResponseDto {}

@@ -1,5 +1,5 @@
-import { IsDate, IsNumber, IsOptional, IsString, Min } from "class-validator";
-import { Transform, Type } from "class-transformer";
+import { IsDate, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 
 export class PagingCarDto {
   @IsOptional()
@@ -15,12 +15,12 @@ export class PagingCarDto {
   readonly offset?: number;
 
   @IsOptional()
-  @Transform((params) => params.value.split(",").map(Number))
+  @Transform((params) => params.value.split(',').map(Number))
   @IsNumber({}, { each: true })
   public types?: number[];
 
   @IsOptional()
-  @Transform((params) => params.value.split(",").map(Number))
+  @Transform((params) => params.value.split(',').map(Number))
   @IsNumber({}, { each: true })
   public capacities?: number[];
 
@@ -43,10 +43,10 @@ export class PagingCarDto {
   @IsOptional()
   @Type(() => Date)
   @IsDate()
-  public pick_date_time?: Date
+  public pick_date_time?: Date;
 
   @IsOptional()
   @Type(() => Date)
   @IsDate()
-  public drop_date_time?: Date
+  public drop_date_time?: Date;
 }

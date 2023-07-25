@@ -1,6 +1,6 @@
-import { Payment } from "../entities/payment.entity";
-import { Coupon } from "../entities/coupon.entity";
-import { CouponResponseDto } from "./coupon-response.dto";
+import { Payment } from '../entities/payment.entity';
+import { Coupon } from '../entities/coupon.entity';
+import { CouponResponseDto } from './coupon-response.dto';
 
 export class PaymentResponseDto {
   readonly id: number;
@@ -14,6 +14,6 @@ export class PaymentResponseDto {
     this.tax = payment.tax;
     this.pay_date_time = payment.pay_date_time;
     this.amount = payment.amount;
-    this.coupon = (payment.coupon ? new CouponResponseDto(payment.coupon) : {});
+    this.coupon = payment.coupon ? new CouponResponseDto(payment.coupon) : {};
   }
 }

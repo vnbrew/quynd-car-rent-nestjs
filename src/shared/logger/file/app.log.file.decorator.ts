@@ -1,5 +1,5 @@
-import { Inject } from "@nestjs/common";
-import { AppLogFileService } from "./app.log.file.service";
+import { Inject } from '@nestjs/common';
+import { AppLogFileService } from './app.log.file.service';
 
 /**
  * Hold all unique logger context
@@ -19,7 +19,7 @@ export function getLoggerToken(context: string): string {
  * Custom decorator for easy inject LoggerService
  * @param context - prefer input your service name
  */
-export function InjectLogger(context = "") {
+export function InjectLogger(context = '') {
   loggerContexts.add(context);
   return Inject(getLoggerToken(context));
 }

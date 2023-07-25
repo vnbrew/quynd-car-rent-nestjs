@@ -1,26 +1,26 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, Model, Table } from 'sequelize-typescript';
 
 @Table({
-  tableName: "payment_statuses"
+  tableName: 'payment_statuses',
 })
 export class PaymentType extends Model<PaymentType> {
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,
-    primaryKey: true
+    primaryKey: true,
   })
   id: number;
 
   @Column({
     type: DataType.STRING(255),
-    allowNull: false
+    allowNull: false,
   })
   type: string;
 
   @Column({
     type: DataType.STRING(255),
     allowNull: true,
-    defaultValue: ""
+    defaultValue: '',
   })
   description: string;
 }

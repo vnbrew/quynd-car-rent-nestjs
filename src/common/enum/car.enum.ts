@@ -1,10 +1,10 @@
 export enum ECarPrice {
-  old = "Old",
-  new = "New",
+  old = 'Old',
+  new = 'New',
 }
 
 export enum ECarStatus {
-  available = "Available",
-  repair = "Repair",
-  notAvailable = "NotAvailable"
+  available = 'Available',
+  repair = 'Repair',
+  notAvailable = 'NotAvailable',
 }

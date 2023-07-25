@@ -1,9 +1,17 @@
-import { BelongsTo, Column, DataType, ForeignKey, Model, Table, Unique } from "sequelize-typescript";
-import { TableName } from "../../../common/enum/table";
-import { User } from "./user.entity";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+  Unique,
+} from 'sequelize-typescript';
+import { TableName } from '../../../common/enum/table';
+import { User } from './user.entity';
 
 @Table({
-  tableName: TableName.user_tokens
+  tableName: TableName.user_tokens,
 })
 export class UserToken extends Model<UserToken> {
   @Column({ primaryKey: true, autoIncrement: true })

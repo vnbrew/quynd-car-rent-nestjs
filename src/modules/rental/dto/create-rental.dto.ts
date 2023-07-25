@@ -1,9 +1,8 @@
-import { Optional } from "@nestjs/common";
-import { IsDate, IsNumber, IsString } from "class-validator";
-import { Type } from "class-transformer";
+import { Optional } from '@nestjs/common';
+import { IsDate, IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateRentalDto {
-
   @IsNumber()
   readonly car_id: number;
 

@@ -1,17 +1,25 @@
-import { BelongsTo, Column, DataType, ForeignKey, Model, Sequelize, Table } from "sequelize-typescript";
-import { Car } from "./car.entity";
-import { User } from "../../users/entities/user.entity";
-import { Exclude } from "class-transformer";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Sequelize,
+  Table,
+} from 'sequelize-typescript';
+import { Car } from './car.entity';
+import { User } from '../../users/entities/user.entity';
+import { Exclude } from 'class-transformer';
 
 @Table({
-  tableName: "reviews"
+  tableName: 'reviews',
 })
 export class UserReviewCar extends Model<UserReviewCar> {
   @ForeignKey(() => Car)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
-    primaryKey: true
+    primaryKey: true,
   })
   car_id!: number;
 
@@ -22,7 +30,7 @@ export class UserReviewCar extends Model<UserReviewCar> {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
-    primaryKey: true
+    primaryKey: true,
   })
   user_id!: number;
 
@@ -31,19 +39,19 @@ export class UserReviewCar extends Model<UserReviewCar> {
 
   @Column({
     type: DataType.INTEGER,
-    allowNull: false
+    allowNull: false,
   })
   rate!: number;
 
   @Column({
     type: DataType.TEXT,
-    allowNull: true
+    allowNull: true,
   })
   title!: string;
 
   @Column({
     type: DataType.TEXT,
-    allowNull: true
+    allowNull: true,
   })
   comment!: string;
 

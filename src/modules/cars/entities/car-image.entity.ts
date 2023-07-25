@@ -1,13 +1,19 @@
-import { BelongsTo, Column, ForeignKey, Model, Table } from "sequelize-typescript";
-import { Car } from "./car.entity";
+import {
+  BelongsTo,
+  Column,
+  ForeignKey,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import { Car } from './car.entity';
 
 @Table({
-  tableName: "car_images"
+  tableName: 'car_images',
 })
 export class CarImage extends Model<CarImage> {
   @Column({
     primaryKey: true,
-    autoIncrement: true
+    autoIncrement: true,
   })
   id!: number;
 

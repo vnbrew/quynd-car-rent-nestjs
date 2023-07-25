@@ -1,5 +1,5 @@
-import { Coupon } from "../entities/coupon.entity";
-import { CouponTypeResponseDto } from "./coupon-type-response.dto";
+import { Coupon } from '../entities/coupon.entity';
+import { CouponTypeResponseDto } from './coupon-type-response.dto';
 
 export class CouponResponseDto {
   readonly id: number;

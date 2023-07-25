@@ -1,4 +1,4 @@
-import { UserReviewCar } from "../entities/user-review-car.entity";
+import { UserReviewCar } from '../entities/user-review-car.entity';
 
 export class UserReviewCarResponseDto {
   readonly rate: number;
@@ -14,6 +14,8 @@ export class UserReviewCarResponseDto {
     this.comment = userReviewCar.comment;
     this.name = userReviewCar.user.name;
     this.image_url = userReviewCar.user.image_url;
-    this.review_date = new Date(userReviewCar.updated_at.getTime() + 7 * 60 * 60 * 1000).toUTCString();
+    this.review_date = new Date(
+      userReviewCar.updated_at.getTime() + 7 * 60 * 60 * 1000,
+    ).toUTCString();
   }
 }
