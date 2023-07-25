@@ -1,3 +1,6 @@
+
+
+
 export enum BadRequestCode {
   BA_EMAIL_DOES_NOT_EXIST = 'BA-001', //Email does not exist
   BA_IN_CORRECT_DATA_TYPE = 'BA-002', //Incorrect data type
