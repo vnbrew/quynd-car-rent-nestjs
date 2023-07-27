@@ -7,7 +7,8 @@ import {
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AppLogFileService, LOG_TYPE } from './app.log.file.service';
-import { getCircularReplacer } from './ultils';
+import { getCircularReplacer, maskJSONOptions } from "./ultils";
+import * as MaskData from "maskdata";
 
 @Injectable()
 export class AppLogFileInterceptor implements NestInterceptor {
@@ -18,16 +19,13 @@ export class AppLogFileInterceptor implements NestInterceptor {
     const ctx = context.switchToHttp();
 
     if (context.getType() === 'http') {
-      // do something that is only important in the context of regular HTTP requests (REST)
       const request: Request = ctx.getRequest();
-
       this.logger.log(
         `${JSON.stringify(
           {
-            headers: request.headers,
+            headers: MaskData.maskJSONFields(request.headers, maskJSONOptions),
             type: LOG_TYPE.REQUEST_ARGS,
-            // if body is multipart, request.body={}
-            value: request.body,
+            value: MaskData.maskJSONFields(request.body, maskJSONOptions),
           },
           getCircularReplacer(),
         )}`,
@@ -38,7 +36,6 @@ export class AppLogFileInterceptor implements NestInterceptor {
     //   else if (context.getType<GqlContextType>() === "graphql") {
     //     const gqlContext = GqlExecutionContext.create(context);
     //     const args = gqlContext.getArgs();
-
     //     this.logger.log(
     //       `${JSON.stringify(
     //         {
@@ -51,26 +48,17 @@ export class AppLogFileInterceptor implements NestInterceptor {
     //     );
     //   }
 
-    // const now = Date.now();
+    const now = Date.now();
     return next.handle().pipe(
       tap({
         next: (value) => {
           this.logger.log(
-            `${JSON.stringify({ Response: value }, getCircularReplacer())}`,
+            `${JSON.stringify({ 
+              Response: MaskData.maskJSONFields(value, maskJSONOptions), 
+            }, getCircularReplacer())}`,
           );
         },
-        /*
-       /**
-         * Intercept error state
-         */
-        // error: (err) => {
-        //   this.logger.error(err, "");
-        // },
-
-        /**
-         * Intercept complete state
-         */
-        // complete: () => this.logger.log(`Finished... ${Date.now() - now}ms`),
+        complete: () => this.logger.log(`Finished... ${Date.now() - now}ms`),
       }),
     );
   }

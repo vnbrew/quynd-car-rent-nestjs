@@ -24,10 +24,7 @@ async function bootstrap() {
   app.use(morganResponseLogger(globalLogger));
   app.useGlobalInterceptors(new AppLogFileInterceptor(globalLogger));
 
-  const port = 3000;
-  await app.listen(port).then(() => {
-    // console.log(`🚀 Server ready at ${port}`);
-  });
+  await app.listen(process.env.APP_PORT).then(() => {});
 }
 
-bootstrap();
+bootstrap().then(() => {});

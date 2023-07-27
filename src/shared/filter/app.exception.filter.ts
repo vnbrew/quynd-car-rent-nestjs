@@ -6,12 +6,10 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { IBaseExceptionMessage } from '../exception/app.exception.interface';
-import { AppLogService } from '../logger/console/app.log.service';
 import { InternalServerErrorCode } from '../../common/enum/exception-code';
 
 @Catch()
 export class AppAllExceptionFilter implements ExceptionFilter {
-  constructor(private readonly logger: AppLogService) {}
 
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -36,35 +34,6 @@ export class AppAllExceptionFilter implements ExceptionFilter {
         error,
       },
     };
-    this.logMessage(request, error, status, exception);
     response.status(status).json(responseData);
-  }
-
-  private logMessage(
-    request: any,
-    message: IBaseExceptionMessage,
-    status: number,
-    exception: any,
-  ) {
-    if (status === HttpStatus.INTERNAL_SERVER_ERROR) {
-      this.logger.error(
-        AppAllExceptionFilter.name,
-        `End Request for ${request.path} method=${
-          request.method
-        } status=${status} code_error=${
-          message.code ? message.code : null
-        } message=${message.message ? message.message : null}`,
-        status >= HttpStatus.INTERNAL_SERVER_ERROR ? exception.stack : '',
-      );
-    } else {
-      this.logger.warn(
-        AppAllExceptionFilter.name,
-        `End Request for ${request.path} method=${
-          request.method
-        } status=${status} code_error=${
-          message.code ? message.code : null
-        } message=${message.message ? message.message : null}`,
-      );
-    }
   }
 }

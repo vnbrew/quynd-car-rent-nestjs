@@ -4,7 +4,6 @@ import {
   APP_INTERCEPTOR_PROVIDERS,
 } from './app.const';
 import { AppMiddleware } from './shared/middleware/app.middleware';
-import { AppLogModule } from './shared/logger/console/app.log.module';
 import { DatabaseModule } from './shared/database/database.module';
 import { AppExceptionModule } from './shared/exception/app.exception.module';
 import { AppLanguageModule } from './shared/language/app.language.module';
@@ -26,7 +25,6 @@ import { TaskScheduleModule } from './shared/schedule/task-schedule.module';
       signOptions: { expiresIn: process.env.JWT_EXP_TIME },
     }),
     RedisCacheModule,
-    AppLogModule,
     DatabaseModule,
     AppExceptionModule,
     AppLanguageModule,

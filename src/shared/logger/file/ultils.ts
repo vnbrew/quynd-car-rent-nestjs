@@ -10,3 +10,8 @@ export const getCircularReplacer = () => {
     return value;
   };
 };
+
+export const maskJSONOptions = {
+  maskWith : "*",
+  fields : ['password', 'email', 'phone_number']
+};
