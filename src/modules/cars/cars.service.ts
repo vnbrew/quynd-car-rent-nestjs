@@ -55,6 +55,7 @@ import { UserFavoriteCarsResponseDto } from './dto/user-favorite-cars-response.d
 import { AllCarResponseDto } from './dto/all-car-response.dto';
 import { PagingCarDto } from './dto/paging-car.dto';
 import { Rental } from '../rental/entities/rental.entity';
+import { Order } from "../orders/entities/order.entity";
 
 @Injectable()
 export class CarsService {
@@ -278,29 +279,18 @@ export class CarsService {
   }
 
   async findAll(pagingCarDto: PagingCarDto): Promise<AllCarResponseDto> {
-    // console.log(pagingCarDto);
-    let {
-      limit,
-      offset,
-      types,
-      capacities,
-      price,
-      name,
-      city,
-      pick_date_time,
-      drop_date_time,
-    } = pagingCarDto;
-    // console.log({ limit, offset, types, capacities, price, name, city, pick_date_time, drop_date_time });
+    let { limit, offset, types, capacities, price, name, city, pick_date_time, drop_date_time, } = pagingCarDto;
     let carInDB;
-    if (limit && offset && +limit > 0 && +offset >= 0) {
+    if(!limit) limit = 20;
+    if(!offset) offset = 0;
       carInDB = await this.carsRepository.findAndCountAll({
         where: {
           ...(pick_date_time &&
             drop_date_time && {
               id: {
                 [Op.notIn]: sequelize.literal(
-                  `(SELECT car_id FROM rentals WHERE 
-                        (rental_status_id IN (1, 2, 4) AND
+                  `(SELECT car_id FROM orders WHERE 
+                        (order_status_id IN (1, 2) AND
                           (
                             (pick_date_time <= '${drop_date_time}' AND drop_date_time >= '${pick_date_time}')
                             OR (pick_date_time >= '${pick_date_time}' AND drop_date_time <= '${drop_date_time}')
@@ -363,7 +353,7 @@ export class CarsService {
             required: false,
           },
           {
-            model: Rental,
+            model: Order,
             required: false,
             where: {
               ...(pick_date_time &&
@@ -389,61 +379,6 @@ export class CarsService {
         +offset,
         +limit,
       );
-    } else {
-      carInDB = await this.carsRepository.findAll({
-        where: {
-          ...(types && {
-            car_type_id: {
-              [Op.or]: !types ? [] : types.toString().split(',').map(Number),
-            },
-          }),
-          ...(capacities && {
-            car_capacity_id: {
-              [Op.or]: !capacities
-                ? []
-                : capacities.toString().split(',').map(Number),
-            },
-          }),
-          ...(name && { name: { [Op.like]: `%${name}%` } }),
-        },
-        include: [
-          Office,
-          {
-            model: CarType,
-          },
-          {
-            model: CarCapacity,
-          },
-          {
-            model: CarStatus,
-            where: { status: ECarStatus.available },
-          },
-          CarSteering,
-          {
-            model: CarPrice,
-            where: {
-              status: ECarPrice.new,
-              ...(price && { rental_price: { [Op.lte]: +price } }),
-            },
-          },
-          {
-            model: CarImage,
-            required: false,
-          },
-          {
-            model: UserReviewCar,
-            include: [User],
-            required: false,
-          },
-        ],
-      });
-      return new AllCarResponseDto(
-        carInDB.map((car) => new CarResponseDto(car)),
-        carInDB.length,
-        0,
-        carInDB.length,
-      );
-    }
   }
 
   async findCarById(carId: number): Promise<Car> {

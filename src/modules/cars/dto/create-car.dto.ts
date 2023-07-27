@@ -1,13 +1,8 @@
 import {
-  IsArray,
-  IsDate,
   IsNotEmpty,
   IsNumber,
   IsString,
-  ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
-import { Optional } from '@nestjs/common';
 
 export class CreateCarDto {
   @IsNumber()

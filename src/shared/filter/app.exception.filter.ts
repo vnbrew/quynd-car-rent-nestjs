@@ -10,7 +10,6 @@ import { InternalServerErrorCode } from '../../common/enum/exception-code';
 
 @Catch()
 export class AppAllExceptionFilter implements ExceptionFilter {
-
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();

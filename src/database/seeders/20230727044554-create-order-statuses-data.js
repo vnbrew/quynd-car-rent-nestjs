@@ -5,16 +5,16 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.bulkInsert("order_statuses", [
       {
-        status: "success",
-        description: "Success"
+        status: "order",
+        description: "order"
       },
       {
-        status: "failure",
-        description: "Failure"
+        status: "paid",
+        description: "paid"
       },
       {
-        status: "processing",
-        description: "In processing"
+        status: "cancel",
+        description: "cancel"
       },
     ]);
   },

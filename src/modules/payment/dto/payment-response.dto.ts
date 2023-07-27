@@ -1,5 +1,5 @@
 import { Payment } from '../entities/payment.entity';
-import { Coupon } from '../entities/coupon.entity';
+import { Coupon } from '../../orders/entities/coupon.entity';
 import { CouponResponseDto } from './coupon-response.dto';
 
 export class PaymentResponseDto {

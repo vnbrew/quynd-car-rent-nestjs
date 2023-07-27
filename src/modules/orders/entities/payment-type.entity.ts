@@ -1,7 +1,7 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
 
 @Table({
-  tableName: 'payment_statuses',
+  tableName: 'payment_types',
 })
 export class PaymentType extends Model<PaymentType> {
   @Column({
