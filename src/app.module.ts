@@ -16,6 +16,7 @@ import { EmailModule } from './shared/email/email.module';
 import { QueueModule } from './shared/queue/queue.module';
 import { RedisCacheModule } from './shared/cache/rediscache.module';
 import { TaskScheduleModule } from './shared/schedule/task-schedule.module';
+import { OrdersModule } from './modules/orders/orders.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { TaskScheduleModule } from './shared/schedule/task-schedule.module';
     EmailModule,
     QueueModule,
     TaskScheduleModule,
+    OrdersModule,
   ],
   providers: [...APP_INTERCEPTOR_PROVIDERS, ...APP_EXCEPTION_PROVIDERS],
   controllers: [],
