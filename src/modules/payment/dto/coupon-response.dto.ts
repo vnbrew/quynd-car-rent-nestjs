@@ -1,4 +1,4 @@
-import { Coupon } from '../entities/coupon.entity';
+import { Coupon } from '../../orders/entities/coupon.entity';
 import { CouponTypeResponseDto } from './coupon-type-response.dto';
 
 export class CouponResponseDto {

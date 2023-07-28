@@ -7,8 +7,8 @@ import {
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AppLogFileService, LOG_TYPE } from './app.log.file.service';
-import { getCircularReplacer, maskJSONOptions } from "./ultils";
-import * as MaskData from "maskdata";
+import { getCircularReplacer, maskJSONOptions } from './ultils';
+import * as MaskData from 'maskdata';
 
 @Injectable()
 export class AppLogFileInterceptor implements NestInterceptor {
@@ -53,9 +53,12 @@ export class AppLogFileInterceptor implements NestInterceptor {
       tap({
         next: (value) => {
           this.logger.log(
-            `${JSON.stringify({ 
-              Response: MaskData.maskJSONFields(value, maskJSONOptions), 
-            }, getCircularReplacer())}`,
+            `${JSON.stringify(
+              {
+                Response: MaskData.maskJSONFields(value, maskJSONOptions),
+              },
+              getCircularReplacer(),
+            )}`,
           );
         },
         complete: () => this.logger.log(`Finished... ${Date.now() - now}ms`),

@@ -12,6 +12,6 @@ export const getCircularReplacer = () => {
 };
 
 export const maskJSONOptions = {
-  maskWith : "*",
-  fields : ['password', 'email', 'phone_number']
+  maskWith: '*',
+  fields: ['password', 'email', 'phone_number'],
 };

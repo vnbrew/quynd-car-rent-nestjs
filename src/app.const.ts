@@ -43,23 +43,19 @@ export const globalLogger = new AppLogFileService({
     format.colorize({ all: true }),
   ),
   transports: [
-    new transports.DailyRotateFile(
-      {
-        filename: `logs/%DATE%-error.log`,
-        datePattern: "YYYY-MM-DD",
-        zippedArchive: false,
-        maxFiles: "30d",
-        level: "error"
-      }
-    ),
-    new transports.DailyRotateFile(
-      {
-        filename: `logs/%DATE%-combined.log`,
-        datePattern: "YYYY-MM-DD",
-        zippedArchive: false,
-        maxFiles: "30d"
-      }
-    ),
-    new transports.Console()
-  ]
+    new transports.DailyRotateFile({
+      filename: `logs/%DATE%-error.log`,
+      datePattern: 'YYYY-MM-DD',
+      zippedArchive: false,
+      maxFiles: '30d',
+      level: 'error',
+    }),
+    new transports.DailyRotateFile({
+      filename: `logs/%DATE%-combined.log`,
+      datePattern: 'YYYY-MM-DD',
+      zippedArchive: false,
+      maxFiles: '30d',
+    }),
+    new transports.Console(),
+  ],
 });

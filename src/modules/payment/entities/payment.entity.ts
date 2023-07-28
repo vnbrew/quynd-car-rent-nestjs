@@ -7,10 +7,10 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Coupon } from './coupon.entity';
+import { Coupon } from '../../orders/entities/coupon.entity';
 import { Rental } from '../../rental/entities/rental.entity';
 import { PaymentStatus } from './payment-status.entity';
-import { PaymentType } from './payment-type.entity';
+import { PaymentType } from '../../orders/entities/payment-type.entity';
 
 @Table({
   tableName: 'payments',

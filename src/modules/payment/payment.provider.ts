@@ -7,9 +7,9 @@ import {
 } from '../../shared/constants';
 import { Payment } from './entities/payment.entity';
 import { PaymentStatus } from './entities/payment-status.entity';
-import { CouponType } from './entities/coupon-types.entity';
-import { Coupon } from './entities/coupon.entity';
-import { PaymentType } from './entities/payment-type.entity';
+import { CouponType } from '../orders/entities/coupon-types.entity';
+import { Coupon } from '../orders/entities/coupon.entity';
+import { PaymentType } from '../orders/entities/payment-type.entity';
 
 export const paymentsProviders = [
   {
