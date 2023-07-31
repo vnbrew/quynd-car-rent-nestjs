@@ -3,18 +3,18 @@
 /** @type {import("sequelize-cli").Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert("car_statuses", [
+    await queryInterface.bulkInsert("payment_types", [
       {
-        status: "NotAvailable",
-        description: "Car is not enough information"
+        type: "cash",
+        description: "COD"
       }
     ]);
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete("car_statuses", {
+    await queryInterface.bulkDelete("payment_types", {
       type: [
-        "NotAvailable"
+        "cash"
       ]
     });
   }

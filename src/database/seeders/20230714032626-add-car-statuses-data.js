@@ -11,6 +11,10 @@ module.exports = {
       {
         status: "Repair",
         description: "Car is being repaired"
+      },
+      {
+        status: "NotAvailable",
+        description: "Car is not enough information"
       }
     ]);
   },
@@ -19,7 +23,8 @@ module.exports = {
     await queryInterface.bulkDelete("car_statuses", {
       type: [
         "Available",
-        "Repair"
+        "Repair",
+        "NotAvailable"
       ]
     });
   }

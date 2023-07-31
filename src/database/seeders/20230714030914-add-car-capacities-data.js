@@ -4,10 +4,10 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert("car_capacities", [
-      { type: "2 Person", description: "Loại xe 2 chổ ngồi." },
-      { type: "4 Person", description: "Loại xe 4 chổ ngồi." },
-      { type: "6 Person", description: "Loại xe 6 chổ ngồi." },
-      { type: "8 or More", description: "Loại xe trên 8 chổ ngồi." },
+      { type: "2 Person", description: "Type for 2 Person" },
+      { type: "4 Person", description: "Type for 4 Person" },
+      { type: "6 Person", description: "Type for 6 Person" },
+      { type: "8 or More", description: "Type for 8 or more" },
     ], {});
   },
 

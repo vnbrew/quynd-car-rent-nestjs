@@ -22,8 +22,9 @@ module.exports = {
   async down (queryInterface, Sequelize) {
     await queryInterface.bulkDelete("order_statuses", {
       status: [
-        "success",
-        "failure"
+        "order",
+        "paid",
+        "cancel"
       ]
     });
   }
