@@ -1,36 +1,43 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { CreateOrderDto } from "./dto/create-order.dto";
-import { UpdateOrderDto } from "./dto/update-order.dto";
-import { COUPONS_REPOSITORY, ORDER_REPOSITORY, SEQUELIZE } from "../../shared/constants";
-import { Sequelize } from "sequelize-typescript";
-import { UsersService } from "../users/users.service";
-import { CarsService } from "../cars/cars.service";
-import { AppExceptionService } from "../../shared/exception/app.exception.service";
-import { I18nContext, I18nService } from "nestjs-i18n";
-import { InjectQueue } from "@nestjs/bull";
-import { EProcessName, EQueueName } from "../../common/enum/queue.enum";
-import { Queue } from "bull";
-import { Order } from "./entities/order.entity";
-import { IDetailExceptionMessage } from "../../shared/exception/app.exception.interface";
-import { BadRequestCode, InternalServerErrorCode } from "../../common/enum/exception-code";
-import { FindOptions, Op } from "sequelize";
-import { EOrderStatus } from "../../common/enum/order.enum";
-import { Coupon } from "./entities/coupon.entity";
-import { CouponType } from "./entities/coupon-types.entity";
-import { OrderResponseDto } from "./dto/order-response.dto";
-import { RentalStatus } from "../rental/entities/rental-status.entity";
-import { User } from "../users/entities/user.entity";
-import { Car } from "../cars/entities/car.entity";
-import { Office } from "../cars/entities/car-office.entity";
-import { CarType } from "../cars/entities/car-type.entity";
-import { CarSteering } from "../cars/entities/car-steering.entity";
-import { CarCapacity } from "../cars/entities/car-capacity.entity";
-import { CarStatus } from "../cars/entities/car-status.entity";
-import { CarImage } from "../cars/entities/car-image.entity";
-import { CarPrice } from "../cars/entities/car-price.entity";
-import { UserReviewCar } from "../cars/entities/user-review-car.entity";
-import { Payment } from "../payment/entities/payment.entity";
-import { PaymentType } from "./entities/payment-type.entity";
+import { Inject, Injectable } from '@nestjs/common';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
+import {
+  COUPONS_REPOSITORY,
+  ORDER_REPOSITORY,
+  SEQUELIZE,
+} from '../../shared/constants';
+import { Sequelize } from 'sequelize-typescript';
+import { UsersService } from '../users/users.service';
+import { CarsService } from '../cars/cars.service';
+import { AppExceptionService } from '../../shared/exception/app.exception.service';
+import { I18nContext, I18nService } from 'nestjs-i18n';
+import { InjectQueue } from '@nestjs/bull';
+import { EProcessName, EQueueName } from '../../common/enum/queue.enum';
+import { Queue } from 'bull';
+import { Order } from './entities/order.entity';
+import { IDetailExceptionMessage } from '../../shared/exception/app.exception.interface';
+import {
+  BadRequestCode,
+  InternalServerErrorCode,
+} from '../../common/enum/exception-code';
+import { FindOptions, Op, or } from 'sequelize';
+import { EOrderStatus } from '../../common/enum/order.enum';
+import { Coupon } from './entities/coupon.entity';
+import { CouponType } from './entities/coupon-types.entity';
+import { OrderResponseDto } from './dto/order-response.dto';
+import { RentalStatus } from '../rental/entities/rental-status.entity';
+import { User } from '../users/entities/user.entity';
+import { Car } from '../cars/entities/car.entity';
+import { Office } from '../cars/entities/car-office.entity';
+import { CarType } from '../cars/entities/car-type.entity';
+import { CarSteering } from '../cars/entities/car-steering.entity';
+import { CarCapacity } from '../cars/entities/car-capacity.entity';
+import { CarStatus } from '../cars/entities/car-status.entity';
+import { CarImage } from '../cars/entities/car-image.entity';
+import { CarPrice } from '../cars/entities/car-price.entity';
+import { UserReviewCar } from '../cars/entities/user-review-car.entity';
+import { Payment } from '../payment/entities/payment.entity';
+import { PaymentType } from './entities/payment-type.entity';
 
 @Injectable()
 export class OrdersService {
@@ -167,7 +174,9 @@ export class OrdersService {
   }
 
   async createOrder(userId: number, createOrderDto: CreateOrderDto) {
-    let isCarAvailable = await this.carService.isCarAvailable(createOrderDto.car_id,);
+    let isCarAvailable = await this.carService.isCarAvailable(
+      createOrderDto.car_id,
+    );
     if (!isCarAvailable) {
       this.carIsNotAvailable();
     }
@@ -193,7 +202,7 @@ export class OrdersService {
     if (createOrderDto.coupon_code !== '' && !couponInDB) {
       this.couponIsInValid();
     }
-    if(createOrderDto.order_status_id !== EOrderStatus.order) {
+    if (createOrderDto.order_status_id !== EOrderStatus.order) {
       this.orderIsInternalError();
     }
     try {
@@ -227,8 +236,13 @@ export class OrdersService {
           }
         }
         let amount = carInDB.carPrice.rental_price - discount;
-        let totalAmount = amount + (amount * createOrderDto.tax) / 100;
-        order.amount = totalAmount;
+        let tax_price = (amount * createOrderDto.tax) / 100;
+
+        order.discount = discount;
+        order.subtotal = carInDB.carPrice.rental_price;
+        order.tax_price = tax_price;
+        order.total = amount + tax_price;
+
         await order.save(transactionHost);
         let user = await this.userService.getUserInformation(userId);
         if (user) {
@@ -245,47 +259,58 @@ export class OrdersService {
     return {};
   }
 
-  async completeOrder(userId: number, orderId: number, updateOrderDto: UpdateOrderDto) {
+  async completeOrder(
+    userId: number,
+    orderId: number,
+    updateOrderDto: UpdateOrderDto,
+  ) {
     let orderOfUser = await this.ordersRepository.findOne({
-      where : {
+      where: {
         id: orderId,
         user_id: userId,
-        order_status_id: EOrderStatus.order
-      }
+        order_status_id: EOrderStatus.order,
+      },
     } as FindOptions);
 
-    if(!orderOfUser) {
-      this.orderIsNotAvailable()
+    if (!orderOfUser) {
+      this.orderIsNotAvailable();
     }
-    let order_status_id = EOrderStatus.order
+    let order_status_id = EOrderStatus.order;
     //Pay Order
-    if(updateOrderDto.order_status_id === EOrderStatus.paid) {
+    if (updateOrderDto.order_status_id === EOrderStatus.paid) {
       order_status_id = EOrderStatus.paid;
     }
     //Cancel Order
-    else if(updateOrderDto.order_status_id === EOrderStatus.cancel) {
+    else if (updateOrderDto.order_status_id === EOrderStatus.cancel) {
       order_status_id = EOrderStatus.cancel;
     }
     try {
       let currentDate = new Date();
       await this.sequelize.transaction(async (t) => {
         let transactionHost = { transaction: t };
-        await  orderOfUser.update( {
-          order_status_id: order_status_id,
-          paid_date_time: (order_status_id === EOrderStatus.paid ? currentDate : null),
-          cancel_date_time: (order_status_id === EOrderStatus.cancel ? currentDate : null),
-          detail: (updateOrderDto.detail ? updateOrderDto.detail : orderOfUser.detail)
-        }, transactionHost);
+        await orderOfUser.update(
+          {
+            order_status_id: order_status_id,
+            paid_date_time:
+              order_status_id === EOrderStatus.paid ? currentDate : null,
+            cancel_date_time:
+              order_status_id === EOrderStatus.cancel ? currentDate : null,
+            detail: updateOrderDto.detail
+              ? updateOrderDto.detail
+              : orderOfUser.detail,
+          },
+          transactionHost,
+        );
 
         let user = await this.userService.getUserInformation(userId);
         if (user) {
-          if(order_status_id === EOrderStatus.paid) {
+          if (order_status_id === EOrderStatus.paid) {
             await this.orderQueue.add(EProcessName.pay_order, {
               user_name: user.name,
               paid_date_time: currentDate,
             });
           }
-          if(order_status_id === EOrderStatus.cancel) {
+          if (order_status_id === EOrderStatus.cancel) {
             await this.orderQueue.add(EProcessName.cancel_order, {
               user_name: user.name,
               cancel_date_time: currentDate,
@@ -300,7 +325,7 @@ export class OrdersService {
 
   async findOne(userId: number, id: number): Promise<OrderResponseDto> {
     let orderOfUser = await this.ordersRepository.findOne<Order>({
-      where : {
+      where: {
         id: id,
         user_id: userId,
       },
@@ -326,17 +351,15 @@ export class OrdersService {
         {
           model: Coupon,
           required: false,
-          include: [
-            CouponType
-          ]
+          include: [CouponType],
         },
         {
-          model: PaymentType
-        }
+          model: PaymentType,
+        },
       ],
     } as FindOptions);
-    if(!orderOfUser) {
-      this.orderIsNotAvailable()
+    if (!orderOfUser) {
+      this.orderIsNotAvailable();
     }
     return new OrderResponseDto(orderOfUser);
   }

@@ -3,14 +3,15 @@ import {
   COUPONS_REPOSITORY,
   ORDER_REPOSITORY,
   ORDER_STATUSES_REPOSITORY,
-  ORDER_TYPES_REPOSITORY, PAYMENT_TYPES_REPOSITORY
-} from "../../shared/constants";
+  ORDER_TYPES_REPOSITORY,
+  PAYMENT_TYPES_REPOSITORY,
+} from '../../shared/constants';
 import { Order } from './entities/order.entity';
 import { OrderStatus } from './entities/order-status.entity';
 import { OrderType } from './entities/order-type.entity';
 import { CouponType } from './entities/coupon-types.entity';
 import { Coupon } from './entities/coupon.entity';
-import { PaymentType } from "./entities/payment-type.entity";
+import { PaymentType } from './entities/payment-type.entity';
 
 export const ordersProviders = [
   {

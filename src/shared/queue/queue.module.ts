@@ -5,7 +5,7 @@ import { RentalProcessor } from './rental.processor';
 import { EmailModule } from '../email/email.module';
 import { RegisterProcessor } from './register.processor';
 import { PaymentProcessor } from './payment.processor';
-import { OrderProcessor } from "./order.processor";
+import { OrderProcessor } from './order.processor';
 
 @Module({
   imports: [
@@ -22,7 +22,12 @@ import { OrderProcessor } from "./order.processor";
     BullModule.registerQueue({ name: EQueueName.order }),
   ],
   controllers: [],
-  providers: [RentalProcessor, RegisterProcessor, PaymentProcessor, OrderProcessor],
+  providers: [
+    RentalProcessor,
+    RegisterProcessor,
+    PaymentProcessor,
+    OrderProcessor,
+  ],
   exports: [BullModule],
 })
 export class QueueModule {}

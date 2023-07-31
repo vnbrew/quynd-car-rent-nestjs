@@ -12,5 +12,4 @@ export enum EProcessName {
   create_order = 'create_order',
   pay_order = 'pay_order',
   cancel_order = 'cancel_order',
-
 }

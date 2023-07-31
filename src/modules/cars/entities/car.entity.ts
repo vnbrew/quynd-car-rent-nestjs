@@ -19,7 +19,7 @@ import { CarPrice } from './car-price.entity';
 import { CarImage } from './car-image.entity';
 import { UserReviewCar } from './user-review-car.entity';
 import { Rental } from '../../rental/entities/rental.entity';
-import { Order } from "../../orders/entities/order.entity";
+import { Order } from '../../orders/entities/order.entity';
 
 @Table({
   tableName: 'cars',

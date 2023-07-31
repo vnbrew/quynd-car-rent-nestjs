@@ -12,7 +12,7 @@ import { Car } from '../../cars/entities/car.entity';
 import { User } from '../../users/entities/user.entity';
 import { OrderStatus } from './order-status.entity';
 import { Coupon } from './coupon.entity';
-import { PaymentType } from "./payment-type.entity";
+import { PaymentType } from './payment-type.entity';
 
 @Table({
   tableName: 'orders',
@@ -103,7 +103,25 @@ export class Order extends Model<Order> {
     type: DataType.DECIMAL(10, 2),
     allowNull: false,
   })
-  amount: number;
+  subtotal: number;
+
+  @Column({
+    type: DataType.DECIMAL(10, 2),
+    allowNull: false,
+  })
+  discount: number;
+
+  @Column({
+    type: DataType.DECIMAL(10, 2),
+    allowNull: false,
+  })
+  tax_price: number;
+
+  @Column({
+    type: DataType.DECIMAL(10, 2),
+    allowNull: false,
+  })
+  total: number;
 
   @Column({
     type: DataType.TEXT,
