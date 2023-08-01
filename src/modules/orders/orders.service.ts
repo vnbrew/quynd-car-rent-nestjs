@@ -25,18 +25,14 @@ import { EOrderStatus } from '../../common/enum/order.enum';
 import { Coupon } from './entities/coupon.entity';
 import { CouponType } from './entities/coupon-types.entity';
 import { OrderResponseDto } from './dto/order-response.dto';
-import { RentalStatus } from '../rental/entities/rental-status.entity';
 import { User } from '../users/entities/user.entity';
 import { Car } from '../cars/entities/car.entity';
-import { Office } from '../cars/entities/car-office.entity';
 import { CarType } from '../cars/entities/car-type.entity';
 import { CarSteering } from '../cars/entities/car-steering.entity';
 import { CarCapacity } from '../cars/entities/car-capacity.entity';
 import { CarStatus } from '../cars/entities/car-status.entity';
 import { CarImage } from '../cars/entities/car-image.entity';
-import { CarPrice } from '../cars/entities/car-price.entity';
 import { UserReviewCar } from '../cars/entities/user-review-car.entity';
-import { Payment } from '../payment/entities/payment.entity';
 import { PaymentType } from './entities/payment-type.entity';
 
 @Injectable()
@@ -215,43 +211,42 @@ export class OrdersService {
         order.payment_type_id = createOrderDto.payment_type_id;
         order.pick_date_time = createOrderDto.pick_date_time;
         order.drop_date_time = createOrderDto.drop_date_time;
-        order.order_date_time = currentDate;
         order.tax = createOrderDto.tax;
         order.detail = createOrderDto.detail;
         let discount: number = 0;
-        if (couponInDB) {
-          order.coupon_id = couponInDB.id;
-          switch (couponInDB.coupon_type_id) {
-            case 1:
-              discount = couponInDB.value;
-              break;
-            case 2:
-              discount =
-                (carInDB.carPrice.rental_price * couponInDB.value) / 100;
-              // console.log({ "1": carInDB.carPrice.rental_price, "2": couponInDB.value, "3": discount });
-              break;
-            default:
-              discount = 0;
-              break;
-          }
-        }
-        let amount = carInDB.carPrice.rental_price - discount;
-        let tax_price = (amount * createOrderDto.tax) / 100;
-
-        order.discount = discount;
-        order.subtotal = carInDB.carPrice.rental_price;
-        order.tax_price = tax_price;
-        order.total = amount + tax_price;
-
-        await order.save(transactionHost);
-        let user = await this.userService.getUserInformation(userId);
-        if (user) {
-          await this.orderQueue.add(EProcessName.create_order, {
-            user_name: user.name,
-            pick_date_time: createOrderDto.pick_date_time,
-            drop_date_time: createOrderDto.drop_date_time,
-          });
-        }
+        // if (couponInDB) {
+        //   order.coupon_id = couponInDB.id;
+        //   switch (couponInDB.coupon_type_id) {
+        //     case 1:
+        //       discount = couponInDB.value;
+        //       break;
+        //     case 2:
+        //       discount =
+        //         (carInDB.carPrice.rental_price * couponInDB.value) / 100;
+        //       // console.log({ "1": carInDB.carPrice.rental_price, "2": couponInDB.value, "3": discount });
+        //       break;
+        //     default:
+        //       discount = 0;
+        //       break;
+        //   }
+        // }
+        // let amount = carInDB.carPrice.rental_price - discount;
+        // let tax_price = (amount * createOrderDto.tax) / 100;
+        //
+        // order.discount = discount;
+        // order.subtotal = carInDB.carPrice.rental_price;
+        // order.tax_price = tax_price;
+        // order.total = amount + tax_price;
+        //
+        // await order.save(transactionHost);
+        // let user = await this.userService.getUserInformation(userId);
+        // if (user) {
+        //   await this.orderQueue.add(EProcessName.create_order, {
+        //     user_name: user.name,
+        //     pick_date_time: createOrderDto.pick_date_time,
+        //     drop_date_time: createOrderDto.drop_date_time,
+        //   });
+        // }
       });
     } catch (error) {
       this.orderIsInternalError();
@@ -291,10 +286,6 @@ export class OrdersService {
         await orderOfUser.update(
           {
             order_status_id: order_status_id,
-            paid_date_time:
-              order_status_id === EOrderStatus.paid ? currentDate : null,
-            cancel_date_time:
-              order_status_id === EOrderStatus.cancel ? currentDate : null,
             detail: updateOrderDto.detail
               ? updateOrderDto.detail
               : orderOfUser.detail,
@@ -333,20 +324,20 @@ export class OrdersService {
         User,
         {
           model: Car,
-          include: [
-            Office,
-            CarType,
-            CarSteering,
-            CarCapacity,
-            CarStatus,
-            CarImage,
-            CarPrice,
-            {
-              model: UserReviewCar,
-              include: [User],
-              required: false,
-            },
-          ],
+          // include: [
+          //   Office,
+          //   CarType,
+          //   CarSteering,
+          //   CarCapacity,
+          //   CarStatus,
+          //   CarImage,
+          //   CarPrice,
+          //   {
+          //     model: UserReviewCar,
+          //     include: [User],
+          //     required: false,
+          //   },
+          // ],
         },
         {
           model: Coupon,

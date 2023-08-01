@@ -90,39 +90,39 @@ export class PaymentService {
               include: [CouponType],
             } as FindOptions);
             let discount: number = 0;
-            if (couponInDB) {
-              payment.coupon_id = couponInDB.id;
-              switch (couponInDB.coupon_type_id) {
-                case 1:
-                  discount = couponInDB.value;
-                  break;
-                case 2:
-                  discount =
-                    (carInDB.carPrice.rental_price * couponInDB.value) / 100;
-                  // console.log({ "1": carInDB.carPrice.rental_price, "2": couponInDB.value, "3": discount });
-                  break;
-                default:
-                  discount = 0;
-                  break;
-              }
-            }
-            let amount = carInDB.carPrice.rental_price - discount;
-            let totalAmount = amount + (amount * createPaymentDto.tax) / 100;
-            payment.amount = totalAmount;
-            // console.log(amount);
-            // console.log(totalAmount);
-            let newRental = await userHasRentalInEffective.update(
-              { rental_status_id: 2 },
-              transactionHost,
-            );
-            await payment.save(transactionHost);
-            let user = await this.userService.getUserInformation(userId);
-            if (user) {
-              await this.paymentQueue.add(EProcessName.payment_completed, {
-                user_name: user.name,
-                pay_date_time: currentDate,
-              });
-            }
+            // if (couponInDB) {
+            //   payment.coupon_id = couponInDB.id;
+            //   switch (couponInDB.coupon_type_id) {
+            //     case 1:
+            //       discount = couponInDB.value;
+            //       break;
+            //     case 2:
+            //       discount =
+            //         (carInDB.carPrice.rental_price * couponInDB.value) / 100;
+            //       // console.log({ "1": carInDB.carPrice.rental_price, "2": couponInDB.value, "3": discount });
+            //       break;
+            //     default:
+            //       discount = 0;
+            //       break;
+            //   }
+            // }
+            // let amount = carInDB.carPrice.rental_price - discount;
+            // let totalAmount = amount + (amount * createPaymentDto.tax) / 100;
+            // payment.amount = totalAmount;
+            // // console.log(amount);
+            // // console.log(totalAmount);
+            // let newRental = await userHasRentalInEffective.update(
+            //   { rental_status_id: 2 },
+            //   transactionHost,
+            // );
+            // await payment.save(transactionHost);
+            // let user = await this.userService.getUserInformation(userId);
+            // if (user) {
+            //   await this.paymentQueue.add(EProcessName.payment_completed, {
+            //     user_name: user.name,
+            //     pay_date_time: currentDate,
+            //   });
+            // }
           });
         } catch (error) {
           this.rentalIsInternalError(error);

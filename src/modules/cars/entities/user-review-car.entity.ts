@@ -4,12 +4,10 @@ import {
   DataType,
   ForeignKey,
   Model,
-  Sequelize,
   Table,
 } from 'sequelize-typescript';
 import { Car } from './car.entity';
 import { User } from '../../users/entities/user.entity';
-import { Exclude } from 'class-transformer';
 
 @Table({
   tableName: 'reviews',
@@ -22,7 +20,6 @@ export class UserReviewCar extends Model<UserReviewCar> {
     primaryKey: true,
   })
   car_id!: number;
-
   @BelongsTo(() => Car)
   car!: Car;
 
@@ -33,7 +30,6 @@ export class UserReviewCar extends Model<UserReviewCar> {
     primaryKey: true,
   })
   user_id!: number;
-
   @BelongsTo(() => User)
   user!: User;
 

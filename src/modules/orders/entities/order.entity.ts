@@ -82,24 +82,6 @@ export class Order extends Model<Order> {
   tax: number;
 
   @Column({
-    type: DataType.DATE,
-    allowNull: true,
-  })
-  order_date_time: Date;
-
-  @Column({
-    type: DataType.DATE,
-    allowNull: true,
-  })
-  paid_date_time: Date;
-
-  @Column({
-    type: DataType.DATE,
-    allowNull: true,
-  })
-  cancel_date_time: Date;
-
-  @Column({
     type: DataType.DECIMAL(10, 2),
     allowNull: false,
   })

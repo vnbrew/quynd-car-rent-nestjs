@@ -22,14 +22,12 @@ import { CarsService } from '../cars/cars.service';
 import { RentalResponseDto } from './dto/rental-response.dto';
 import { User } from '../users/entities/user.entity';
 import { Car } from '../cars/entities/car.entity';
-import { Office } from '../cars/entities/car-office.entity';
 import { CarType } from '../cars/entities/car-type.entity';
 import { CarSteering } from '../cars/entities/car-steering.entity';
 import { CarCapacity } from '../cars/entities/car-capacity.entity';
 import { CarStatus } from '../cars/entities/car-status.entity';
 import { UserReviewCar } from '../cars/entities/user-review-car.entity';
 import { CarImage } from '../cars/entities/car-image.entity';
-import { CarPrice } from '../cars/entities/car-price.entity';
 import { Payment } from '../payment/entities/payment.entity';
 import { Coupon } from '../orders/entities/coupon.entity';
 import { CouponType } from '../orders/entities/coupon-types.entity';
@@ -213,13 +211,11 @@ export class RentalService {
         {
           model: Car,
           include: [
-            Office,
             CarType,
             CarSteering,
             CarCapacity,
             CarStatus,
             CarImage,
-            CarPrice,
             {
               model: UserReviewCar,
               include: [User],
@@ -260,13 +256,11 @@ export class RentalService {
         {
           model: Car,
           include: [
-            Office,
             CarType,
             CarSteering,
             CarCapacity,
             CarStatus,
             CarImage,
-            CarPrice,
             {
               model: UserReviewCar,
               include: [User],
