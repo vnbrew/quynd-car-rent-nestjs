@@ -1,9 +1,19 @@
 import { Request } from 'express';
-import {
-  IBaseExceptionMessage,
-  IDetailExceptionMessage,
-} from '../../shared/exception/app.exception.interface';
-import { IsDecimal } from 'sequelize-typescript/dist/browser';
+
+export const calculateNumberOfRentDays = (
+  pick: string,
+  drop: string,
+): number => {
+  const ONE_DAY: number = 24 * 60 * 60 * 1000;
+  const pickDate: Date = new Date(pick);
+  pickDate.setHours(0, 0, 0, 0);
+  const dropDate: Date = new Date(drop);
+  dropDate.setHours(0, 0, 0, 0);
+  const difference: number = Math.ceil(
+    (dropDate.getTime() - pickDate.getTime() + ONE_DAY) / ONE_DAY,
+  );
+  return difference;
+};
 
 export const extractTokenFromHeader = (request: Request) => {
   const [type, token] = request.headers.authorization?.split(' ') ?? [];

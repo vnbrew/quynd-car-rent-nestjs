@@ -6,9 +6,9 @@ import { CarStatus } from '../entities/car-status.entity';
 import { CarSteering } from '../entities/car-steering.entity';
 import { CarImage } from '../entities/car-image.entity';
 import { UserReviewCarResponseDto } from './user-review-car.response.dto';
-import { PickCarCityResponseDto } from "./pick-car-city.response.dto";
-import { DropCarCityResponseDto } from "./drop-car-city.response.dto";
-import { Order } from "../../orders/entities/order.entity";
+import { PickCarCityResponseDto } from './pick-car-city.response.dto';
+import { DropCarCityResponseDto } from './drop-car-city.response.dto';
+import { Order } from '../../orders/entities/order.entity';
 
 export class CarResponseDto extends CarDto {
   readonly car_type: CarType;
@@ -31,11 +31,11 @@ export class CarResponseDto extends CarDto {
     this.reviews = car.userReviewCars.map(
       (userReviewCar) => new UserReviewCarResponseDto(userReviewCar),
     );
-    this.can_pick_at = car.pickCarCities.map((pickAtCity) =>
-      new PickCarCityResponseDto(pickAtCity)
+    this.can_pick_at = car.pickCarCities.map(
+      (pickAtCity) => new PickCarCityResponseDto(pickAtCity),
     );
-    this.can_drop_at = car.dropCarCities.map((dropAtCity) =>
-      new DropCarCityResponseDto(dropAtCity)
+    this.can_drop_at = car.dropCarCities.map(
+      (dropAtCity) => new DropCarCityResponseDto(dropAtCity),
     );
     this.has_orders = car.orders;
   }

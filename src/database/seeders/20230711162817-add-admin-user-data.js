@@ -15,6 +15,16 @@ module.exports = {
         name: "Nguyen Duc Quy"
       }
     ]);
+
+    await queryInterface.bulkInsert("billing_info", [
+      {
+        user_id: 1,
+        name: "Nguyen Duc Quy",
+        city: "DN",
+        address: "DN",
+        phone_number: "+84987677544"
+      }
+    ]);
   },
 
   async down(queryInterface, Sequelize) {

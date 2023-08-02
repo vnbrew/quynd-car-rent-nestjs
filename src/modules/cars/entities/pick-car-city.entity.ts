@@ -1,11 +1,18 @@
-import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
-import { City } from "./city.entity";
-import { Car } from "./car.entity";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import { City } from './city.entity';
+import { Car } from './car.entity';
 
 @Table({
-  tableName: "pick_car_city"
+  tableName: 'pick_car_city',
 })
-export class PickCarCity extends Model<PickCarCity>{
+export class PickCarCity extends Model<PickCarCity> {
   @ForeignKey(() => City)
   @Column({
     type: DataType.INTEGER,

@@ -1,6 +1,6 @@
-import { CreateCarDto } from "./dto/create-car.dto";
-import { UpdateCarDto } from "./dto/update-car.dto";
-import { CreateCarResponseDto } from "./dto/create-car-response.dto";
+import { CreateCarDto } from './dto/create-car.dto';
+import { UpdateCarDto } from './dto/update-car.dto';
+import { CreateCarResponseDto } from './dto/create-car-response.dto';
 import {
   CAR_CAPACITIES_REPOSITORY,
   CAR_IMAGES_REPOSITORY,
@@ -10,49 +10,46 @@ import {
   CARS_REPOSITORY,
   SEQUELIZE,
   USER_FAVORITE_CAR_REPOSITORY,
-  USER_REVIEWS_CAR_REPOSITORY
-} from "../../shared/constants";
-import sequelize, { DestroyOptions, FindOptions, Op } from "sequelize";
-import { UpdateOptions } from "sequelize/types/model";
-import { Car } from "./entities/car.entity";
-import { AppExceptionService } from "../../shared/exception/app.exception.service";
-import { I18nContext, I18nService } from "nestjs-i18n";
-import { IDetailExceptionMessage } from "../../shared/exception/app.exception.interface";
+  USER_REVIEWS_CAR_REPOSITORY,
+} from '../../shared/constants';
+import sequelize, { DestroyOptions, FindOptions, LOCK, Op } from 'sequelize';
+import { UpdateOptions } from 'sequelize/types/model';
+import { Car } from './entities/car.entity';
+import { AppExceptionService } from '../../shared/exception/app.exception.service';
+import { I18nContext, I18nService } from 'nestjs-i18n';
+import { IDetailExceptionMessage } from '../../shared/exception/app.exception.interface';
 import {
   BadRequestCode,
-  InternalServerErrorCode
-} from "../../common/enum/exception-code";
-import { UpdateCarResponseDto } from "./dto/update-car-response.dto";
-import { CarResponseDto } from "./dto/car-response.dto";
-import { CarType } from "./entities/car-type.entity";
-import { CarCapacity } from "./entities/car-capacity.entity";
-import { CarStatus } from "./entities/car-status.entity";
-import { CarSteering } from "./entities/car-steering.entity";
-import { Sequelize } from "sequelize-typescript";
-import { Inject, Injectable } from "@nestjs/common";
-import { ECarStatus } from "../../common/enum/car.enum";
-import {
-  isDateValid,
-  isPriceValid
-} from "../../common/utils/ultils";
-import { CarImage } from "./entities/car-image.entity";
-import { CreateUserFavoriteCarResponseDto } from "./dto/create-user-favorite-car-response.dto";
-import { UserFavoriteCar } from "./entities/user-favorite-car.entity";
-import { CreateUserFavoriteCarDto } from "./dto/create-user-favorite-car.dto";
-import { CreateUserReviewCarDto } from "./dto/create-user-review-car.dto";
-import { CreateUserReviewCarResponseDto } from "./dto/create-user-review-car-response.dto";
-import { UserReviewCar } from "./entities/user-review-car.entity";
-import { UpdateUserReviewCarDto } from "./dto/update-user-review-car.dto";
-import { UpdateUserReviewCarResponseDto } from "./dto/update-user-review-car-response.dto";
-import { UserFavoriteCarResponseDto } from "./dto/user-favorite-car-response.dto";
-import { User } from "../users/entities/user.entity";
-import { UserFavoriteCarsResponseDto } from "./dto/user-favorite-cars-response.dto";
-import { AllCarResponseDto } from "./dto/all-car-response.dto";
-import { PagingCarDto } from "./dto/paging-car.dto";
-import { Order } from "../orders/entities/order.entity";
-import { PickCarCity } from "./entities/pick-car-city.entity";
-import { City } from "./entities/city.entity";
-import { DropCarCity } from "./entities/drop-car-city.entity";
+  InternalServerErrorCode,
+} from '../../common/enum/exception-code';
+import { UpdateCarResponseDto } from './dto/update-car-response.dto';
+import { CarResponseDto } from './dto/car-response.dto';
+import { CarType } from './entities/car-type.entity';
+import { CarCapacity } from './entities/car-capacity.entity';
+import { CarStatus } from './entities/car-status.entity';
+import { CarSteering } from './entities/car-steering.entity';
+import { Sequelize } from 'sequelize-typescript';
+import { Inject, Injectable } from '@nestjs/common';
+import { ECarStatus } from '../../common/enum/car.enum';
+import { isDateValid, isPriceValid } from '../../common/utils/ultils';
+import { CarImage } from './entities/car-image.entity';
+import { CreateUserFavoriteCarResponseDto } from './dto/create-user-favorite-car-response.dto';
+import { UserFavoriteCar } from './entities/user-favorite-car.entity';
+import { CreateUserFavoriteCarDto } from './dto/create-user-favorite-car.dto';
+import { CreateUserReviewCarDto } from './dto/create-user-review-car.dto';
+import { CreateUserReviewCarResponseDto } from './dto/create-user-review-car-response.dto';
+import { UserReviewCar } from './entities/user-review-car.entity';
+import { UpdateUserReviewCarDto } from './dto/update-user-review-car.dto';
+import { UpdateUserReviewCarResponseDto } from './dto/update-user-review-car-response.dto';
+import { UserFavoriteCarResponseDto } from './dto/user-favorite-car-response.dto';
+import { User } from '../users/entities/user.entity';
+import { UserFavoriteCarsResponseDto } from './dto/user-favorite-cars-response.dto';
+import { AllCarResponseDto } from './dto/all-car-response.dto';
+import { PagingCarDto } from './dto/paging-car.dto';
+import { Order } from '../orders/entities/order.entity';
+import { PickCarCity } from './entities/pick-car-city.entity';
+import { City } from './entities/city.entity';
+import { DropCarCity } from './entities/drop-car-city.entity';
 
 @Injectable()
 export class CarsService {
@@ -74,105 +71,133 @@ export class CarsService {
     @Inject(USER_REVIEWS_CAR_REPOSITORY)
     private readonly userReviewCarRepository: typeof UserReviewCar,
     private readonly appExceptionService: AppExceptionService,
-    private readonly i18n: I18nService
-  ) {
-  }
+    private readonly i18n: I18nService,
+  ) {}
 
   async isCarAvailable(carId: number): Promise<boolean> {
     let isCarAvailable = await this.carsRepository.findOne<Car>({
       where: {
-        id: carId
+        id: carId,
       },
       include: [
         {
           model: CarStatus,
           where: {
-            status: ECarStatus.available
-          }
-        }
-      ]
+            status: ECarStatus.available,
+          },
+        },
+      ],
     } as FindOptions);
     return !!isCarAvailable;
   }
 
+  async isCarAvailableAndCanPickDropAt(
+    carId: number,
+    pick: number,
+    drop: number,
+    transaction,
+  ): Promise<Car> {
+    let query = `(SELECT id FROM cars
+        where id = ${carId} AND
+        id IN (SELECT car_id FROM pick_car_city WHERE city_id = ${pick}) AND
+        id IN (SELECT car_id FROM drop_car_city WHERE city_id = ${drop})
+    )`;
+    let isCarAvailable = await this.carsRepository.findOne<Car>({
+      where: {
+        id: { [Op.in]: sequelize.literal(query) },
+      },
+      lock: transaction.LOCK.UPDATE,
+      transaction: transaction,
+      include: [
+        {
+          model: CarStatus,
+          where: {
+            status: ECarStatus.available,
+          },
+        },
+      ],
+    } as FindOptions);
+    return isCarAvailable;
+  }
+
   async create(createCarDto: CreateCarDto): Promise<CreateCarResponseDto> {
     let carStatusInDB = await this.carStatuesRepository.findOne({
-      where: { id: createCarDto.car_status_id }
+      where: { id: createCarDto.car_status_id },
     } as FindOptions);
     if (carStatusInDB && carStatusInDB.status === ECarStatus.available) {
       let fromDateTimeValid = isDateValid(createCarDto.from_date_time);
       if (!fromDateTimeValid) {
-        let message = this.i18n.translate("error.data_type", {
-          lang: I18nContext.current().lang
+        let message = this.i18n.translate('error.data_type', {
+          lang: I18nContext.current().lang,
         });
-        const code = "";
-        const field = "from_date_time";
+        const code = '';
+        const field = 'from_date_time';
         const filed_message = this.i18n.translate(
-          "error.incorrect_datetime_value",
+          'error.incorrect_datetime_value',
           {
-            lang: I18nContext.current().lang
-          }
+            lang: I18nContext.current().lang,
+          },
         );
         let detail: IDetailExceptionMessage = {
           code,
           field,
-          message: filed_message
+          message: filed_message,
         };
         this.appExceptionService.badRequestException(
           BadRequestCode.BA_IN_CORRECT_DATA_TYPE,
-          "",
+          '',
           message,
-          [detail]
+          [detail],
         );
       }
       let originalPriceValid = isPriceValid(createCarDto.original_price);
       if (!originalPriceValid) {
-        let message = this.i18n.translate("error.data_type", {
-          lang: I18nContext.current().lang
+        let message = this.i18n.translate('error.data_type', {
+          lang: I18nContext.current().lang,
         });
-        const code = "";
-        const field = "original_price";
+        const code = '';
+        const field = 'original_price';
         const filed_message = this.i18n.translate(
-          "error.incorrect_decimal_value",
+          'error.incorrect_decimal_value',
           {
-            lang: I18nContext.current().lang
-          }
+            lang: I18nContext.current().lang,
+          },
         );
         let detail: IDetailExceptionMessage = {
           code,
           field,
-          message: filed_message
+          message: filed_message,
         };
         this.appExceptionService.badRequestException(
           BadRequestCode.BA_IN_CORRECT_DATA_TYPE,
-          "",
+          '',
           message,
-          [detail]
+          [detail],
         );
       }
       let rentalPriceValid = isPriceValid(createCarDto.rental_price);
       if (!rentalPriceValid) {
-        let message = this.i18n.translate("error.data_type", {
-          lang: I18nContext.current().lang
+        let message = this.i18n.translate('error.data_type', {
+          lang: I18nContext.current().lang,
         });
-        const code = "";
-        const field = "rental_price";
+        const code = '';
+        const field = 'rental_price';
         const filed_message = this.i18n.translate(
-          "error.incorrect_decimal_value",
+          'error.incorrect_decimal_value',
           {
-            lang: I18nContext.current().lang
-          }
+            lang: I18nContext.current().lang,
+          },
         );
         let detail: IDetailExceptionMessage = {
           code,
           field,
-          message: filed_message
+          message: filed_message,
         };
         this.appExceptionService.badRequestException(
           BadRequestCode.BA_IN_CORRECT_DATA_TYPE,
-          "",
+          '',
           message,
-          [detail]
+          [detail],
         );
       }
     }
@@ -213,60 +238,60 @@ export class CarsService {
     } catch (error) {
       if (
         [
-          "ER_TRUNCATED_WRONG_VALUE",
-          "ER_TRUNCATED_WRONG_VALUE_FOR_FIELD"
+          'ER_TRUNCATED_WRONG_VALUE',
+          'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD',
         ].includes(error.original.code)
       ) {
-        let message = this.i18n.translate("error.data_type", {
-          lang: I18nContext.current().lang
+        let message = this.i18n.translate('error.data_type', {
+          lang: I18nContext.current().lang,
         });
-        const code = "";
-        const field = "";
+        const code = '';
+        const field = '';
         const filed_message = error.message;
         let detail: IDetailExceptionMessage = {
           code,
           field,
-          message: filed_message
+          message: filed_message,
         };
         this.appExceptionService.badRequestException(
           BadRequestCode.BA_IN_CORRECT_DATA_TYPE,
-          "",
+          '',
           message,
-          [detail]
+          [detail],
         );
       }
-      if (["ER_NO_REFERENCED_ROW_2"].includes(error.original.code)) {
-        let message = this.i18n.translate("error.data_type", {
-          lang: I18nContext.current().lang
+      if (['ER_NO_REFERENCED_ROW_2'].includes(error.original.code)) {
+        let message = this.i18n.translate('error.data_type', {
+          lang: I18nContext.current().lang,
         });
-        const code = "";
+        const code = '';
         const field = error.fields;
         const filed_message = this.i18n.translate(
-          "error.foreign_key_constraint_fails",
+          'error.foreign_key_constraint_fails',
           {
-            lang: I18nContext.current().lang
-          }
+            lang: I18nContext.current().lang,
+          },
         );
         let detail: IDetailExceptionMessage = {
           code,
           field,
-          message: filed_message
+          message: filed_message,
         };
         this.appExceptionService.badRequestException(
           BadRequestCode.BA_IN_CORRECT_DATA_TYPE,
-          "",
+          '',
           message,
-          [detail]
+          [detail],
         );
       }
-      let message = this.i18n.translate("error.internal_server_error", {
-        lang: I18nContext.current().lang
+      let message = this.i18n.translate('error.internal_server_error', {
+        lang: I18nContext.current().lang,
       });
       this.appExceptionService.internalServerErrorException(
         InternalServerErrorCode.IN_COMMON_ERROR,
-        "",
+        '',
         message,
-        [error]
+        [error],
       );
     }
   }
@@ -282,7 +307,7 @@ export class CarsService {
       pick_city,
       pick_date_time,
       drop_city,
-      drop_date_time
+      drop_date_time,
     } = pagingCarDto;
     let carInDB;
     if (!limit) limit = 20;
@@ -305,55 +330,55 @@ export class CarsService {
 
     carInDB = await this.carsRepository.findAndCountAll({
       where: {
-        id: { [Op.in] : sequelize.literal(query)},
+        id: { [Op.in]: sequelize.literal(query) },
         ...(types && {
           car_type_id: {
-            [Op.or]: !types ? [] : types.toString().split(",").map(Number)
-          }
+            [Op.or]: !types ? [] : types.toString().split(',').map(Number),
+          },
         }),
         ...(capacities && {
           car_capacity_id: {
             [Op.or]: !capacities
               ? []
-              : capacities.toString().split(",").map(Number)
-          }
+              : capacities.toString().split(',').map(Number),
+          },
         }),
         ...(price && { rental_price: { [Op.lte]: +price } }),
-        ...(name && { name: { [Op.like]: `%${name}%` } })
+        ...(name && { name: { [Op.like]: `%${name}%` } }),
       },
-      group: ["Car.id"],
+      group: ['Car.id'],
       include: [
         {
-          model: CarType
+          model: CarType,
         },
         {
-          model: CarCapacity
+          model: CarCapacity,
         },
         {
           model: CarStatus,
-          where: { status: ECarStatus.available }
+          where: { status: ECarStatus.available },
         },
         {
-          model: CarSteering
+          model: CarSteering,
         },
         {
           model: CarImage,
-          required: false
+          required: false,
         },
         {
           model: UserReviewCar,
           include: [User],
-          required: false
+          required: false,
         },
         {
           model: PickCarCity,
           include: [City],
-          required: false
+          required: false,
         },
         {
           model: DropCarCity,
           include: [City],
-          required: false
+          required: false,
         },
         {
           model: Order,
@@ -363,68 +388,69 @@ export class CarsService {
               drop_date_time && {
                 [Op.or]: [
                   {
-                    pick_date_time: { [Op.gt]: drop_date_time }
+                    pick_date_time: { [Op.gt]: drop_date_time },
                   },
                   {
-                    drop_date_time: { [Op.lt]: pick_date_time }
-                  }
-                ]
-              })
-          }
-        }
+                    drop_date_time: { [Op.lt]: pick_date_time },
+                  },
+                ],
+              }),
+          },
+        },
       ],
       offset: +offset,
-      limit: +limit
+      limit: +limit,
     });
     return new AllCarResponseDto(
       carInDB.rows.map((car) => new CarResponseDto(car)),
       carInDB.count.length,
       +offset,
-      +limit
+      +limit,
     );
   }
 
-  async findCarById(carId: number): Promise<Car> {
+  async findCarById(carId: number, transactionHost?): Promise<Car> {
     let carInDB = await this.carsRepository.findOne<Car>({
       where: { id: carId },
+      transactionHost,
       include: [
         {
-          model: CarType
+          model: CarType,
         },
         {
-          model: CarCapacity
+          model: CarCapacity,
         },
         {
           model: CarStatus,
-          where: { status: ECarStatus.available }
+          where: { status: ECarStatus.available },
         },
         {
-          model: CarSteering
+          model: CarSteering,
         },
         {
           model: CarImage,
-          required: false
+          required: false,
         },
         {
           model: UserReviewCar,
           include: [User],
-          required: false
+          required: false,
         },
         {
           model: PickCarCity,
           include: [City],
-          required: false
+          required: false,
         },
         {
           model: DropCarCity,
           include: [City],
-          required: false
+          required: false,
         },
         {
           model: Order,
           required: false,
-        }
-      ]
+        },
+      ],
     } as FindOptions);
     return carInDB;
   }
@@ -432,14 +458,14 @@ export class CarsService {
   async findOne(id: number): Promise<CarResponseDto> {
     let carInDB = await this.findCarById(id);
     if (!carInDB) {
-      let message = this.i18n.translate("error.car_does_not_exist", {
-        lang: I18nContext.current().lang
+      let message = this.i18n.translate('error.car_does_not_exist', {
+        lang: I18nContext.current().lang,
       });
       this.appExceptionService.badRequestException(
         BadRequestCode.BA_CAR_DOES_NOT_EXIST,
-        "",
+        '',
         message,
-        []
+        [],
       );
     }
     return new CarResponseDto(carInDB);
@@ -447,99 +473,99 @@ export class CarsService {
 
   async update(
     id: number,
-    updateCarDto: UpdateCarDto
+    updateCarDto: UpdateCarDto,
   ): Promise<UpdateCarResponseDto> {
     let carInDB = await this.carsRepository.findOne({
-      where: { id: id }
+      where: { id: id },
     } as FindOptions);
     if (!carInDB) {
-      let message = this.i18n.translate("error.car_does_not_exist", {
-        lang: I18nContext.current().lang
+      let message = this.i18n.translate('error.car_does_not_exist', {
+        lang: I18nContext.current().lang,
       });
       this.appExceptionService.badRequestException(
         BadRequestCode.BA_CAR_DOES_NOT_EXIST,
-        "",
+        '',
         message,
-        []
+        [],
       );
     }
     let carStatusInDB = await this.carStatuesRepository.findOne({
-      where: { id: updateCarDto.car_status_id }
+      where: { id: updateCarDto.car_status_id },
     } as FindOptions);
     if (carStatusInDB && carStatusInDB.status === ECarStatus.available) {
       let fromDateTimeValid = isDateValid(updateCarDto.from_date_time);
       if (!fromDateTimeValid) {
-        let message = this.i18n.translate("error.data_type", {
-          lang: I18nContext.current().lang
+        let message = this.i18n.translate('error.data_type', {
+          lang: I18nContext.current().lang,
         });
-        const code = "";
-        const field = "from_date_time";
+        const code = '';
+        const field = 'from_date_time';
         const filed_message = this.i18n.translate(
-          "error.incorrect_datetime_value",
+          'error.incorrect_datetime_value',
           {
-            lang: I18nContext.current().lang
-          }
+            lang: I18nContext.current().lang,
+          },
         );
         let detail: IDetailExceptionMessage = {
           code,
           field,
-          message: filed_message
+          message: filed_message,
         };
         this.appExceptionService.badRequestException(
           BadRequestCode.BA_IN_CORRECT_DATA_TYPE,
-          "",
+          '',
           message,
-          [detail]
+          [detail],
         );
       }
       let originalPriceValid = isPriceValid(updateCarDto.original_price);
       if (!originalPriceValid) {
-        let message = this.i18n.translate("error.data_type", {
-          lang: I18nContext.current().lang
+        let message = this.i18n.translate('error.data_type', {
+          lang: I18nContext.current().lang,
         });
-        const code = "";
-        const field = "original_price";
+        const code = '';
+        const field = 'original_price';
         const filed_message = this.i18n.translate(
-          "error.incorrect_decimal_value",
+          'error.incorrect_decimal_value',
           {
-            lang: I18nContext.current().lang
-          }
+            lang: I18nContext.current().lang,
+          },
         );
         let detail: IDetailExceptionMessage = {
           code,
           field,
-          message: filed_message
+          message: filed_message,
         };
         this.appExceptionService.badRequestException(
           BadRequestCode.BA_IN_CORRECT_DATA_TYPE,
-          "",
+          '',
           message,
-          [detail]
+          [detail],
         );
       }
       let rentalPriceValid = isPriceValid(updateCarDto.rental_price);
       if (!rentalPriceValid) {
-        let message = this.i18n.translate("error.data_type", {
-          lang: I18nContext.current().lang
+        let message = this.i18n.translate('error.data_type', {
+          lang: I18nContext.current().lang,
         });
-        const code = "";
-        const field = "rental_price";
+        const code = '';
+        const field = 'rental_price';
         const filed_message = this.i18n.translate(
-          "error.incorrect_decimal_value",
+          'error.incorrect_decimal_value',
           {
-            lang: I18nContext.current().lang
-          }
+            lang: I18nContext.current().lang,
+          },
         );
         let detail: IDetailExceptionMessage = {
           code,
           field,
-          message: filed_message
+          message: filed_message,
         };
         this.appExceptionService.badRequestException(
           BadRequestCode.BA_IN_CORRECT_DATA_TYPE,
-          "",
+          '',
           message,
-          [detail]
+          [detail],
         );
       }
     }
@@ -553,9 +579,9 @@ export class CarsService {
             car_steering_id: updateCarDto.car_steering_id,
             car_status_id: updateCarDto.car_status_id,
             name: updateCarDto.name,
-            gasoline: updateCarDto.gasoline
+            gasoline: updateCarDto.gasoline,
           },
-          { where: { id: id }, transactionHost } as UpdateOptions
+          { where: { id: id }, transactionHost } as UpdateOptions,
         );
 
         // let carPriceInDB = await this.carPricesRepository.findOne<CarPrice>({
@@ -608,7 +634,7 @@ export class CarsService {
         // }
         await this.carImagesRepository.destroy<CarImage>({
           where: { car_id: id },
-          transactionHost
+          transactionHost,
         } as DestroyOptions);
         let imageLength = updateCarDto.images.length;
         for (
@@ -626,60 +652,60 @@ export class CarsService {
     } catch (error) {
       if (
         [
-          "ER_TRUNCATED_WRONG_VALUE",
-          "ER_TRUNCATED_WRONG_VALUE_FOR_FIELD"
+          'ER_TRUNCATED_WRONG_VALUE',
+          'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD',
         ].includes(error.original.code)
       ) {
-        let message = this.i18n.translate("error.data_type", {
-          lang: I18nContext.current().lang
+        let message = this.i18n.translate('error.data_type', {
+          lang: I18nContext.current().lang,
         });
-        const code = "";
-        const field = "";
+        const code = '';
+        const field = '';
         const filed_message = error.message;
         let detail: IDetailExceptionMessage = {
           code,
           field,
-          message: filed_message
+          message: filed_message,
         };
         this.appExceptionService.badRequestException(
           BadRequestCode.BA_IN_CORRECT_DATA_TYPE,
-          "",
+          '',
           message,
-          [detail]
+          [detail],
         );
       }
-      if (["ER_NO_REFERENCED_ROW_2"].includes(error.original.code)) {
-        let message = this.i18n.translate("error.data_type", {
-          lang: I18nContext.current().lang
+      if (['ER_NO_REFERENCED_ROW_2'].includes(error.original.code)) {
+        let message = this.i18n.translate('error.data_type', {
+          lang: I18nContext.current().lang,
         });
-        const code = "";
+        const code = '';
         const field = error.fields;
         const filed_message = this.i18n.translate(
-          "error.foreign_key_constraint_fails",
+          'error.foreign_key_constraint_fails',
           {
-            lang: I18nContext.current().lang
-          }
+            lang: I18nContext.current().lang,
+          },
         );
         let detail: IDetailExceptionMessage = {
           code,
           field,
-          message: filed_message
+          message: filed_message,
         };
         this.appExceptionService.badRequestException(
           BadRequestCode.BA_IN_CORRECT_DATA_TYPE,
-          "",
+          '',
           message,
-          [detail]
+          [detail],
         );
       }
-      let message = this.i18n.translate("error.internal_server_error", {
-        lang: I18nContext.current().lang
+      let message = this.i18n.translate('error.internal_server_error', {
+        lang: I18nContext.current().lang,
       });
       this.appExceptionService.internalServerErrorException(
         InternalServerErrorCode.IN_COMMON_ERROR,
-        "",
+        '',
         message,
-        [error]
+        [error],
       );
     }
   }
@@ -689,54 +715,54 @@ export class CarsService {
       await this.sequelize.transaction(async (t) => {
         const transactionHost = { transaction: t };
         let carInDB = await this.carsRepository.findOne<Car>({
-          where: { id: id }
+          where: { id: id },
         } as FindOptions);
         if (!carInDB) {
-          let message = this.i18n.translate("error.car_does_not_exist", {
-            lang: I18nContext.current().lang
+          let message = this.i18n.translate('error.car_does_not_exist', {
+            lang: I18nContext.current().lang,
           });
           this.appExceptionService.badRequestException(
             BadRequestCode.BA_CAR_DOES_NOT_EXIST,
-            "",
+            '',
             message,
-            []
+            [],
           );
         }
         await carInDB.destroy(transactionHost);
       });
     } catch (error) {
-      if (["ER_ROW_IS_REFERENCED_2"].includes(error.original.code)) {
-        let message = this.i18n.translate("error.data_type", {
-          lang: I18nContext.current().lang
+      if (['ER_ROW_IS_REFERENCED_2'].includes(error.original.code)) {
+        let message = this.i18n.translate('error.data_type', {
+          lang: I18nContext.current().lang,
         });
-        const code = "";
+        const code = '';
         const field = error.fields;
         const filed_message = this.i18n.translate(
-          "error.foreign_key_constraint_fails",
+          'error.foreign_key_constraint_fails',
           {
-            lang: I18nContext.current().lang
-          }
+            lang: I18nContext.current().lang,
+          },
         );
         let detail: IDetailExceptionMessage = {
           code,
           field,
-          message: filed_message
+          message: filed_message,
         };
         this.appExceptionService.badRequestException(
           BadRequestCode.BA_IN_CORRECT_DATA_TYPE,
-          "",
+          '',
           message,
-          [detail]
+          [detail],
         );
       }
-      let message = this.i18n.translate("error.internal_server_error", {
-        lang: I18nContext.current().lang
+      let message = this.i18n.translate('error.internal_server_error', {
+        lang: I18nContext.current().lang,
       });
       this.appExceptionService.internalServerErrorException(
         InternalServerErrorCode.IN_COMMON_ERROR,
-        "",
+        '',
         message,
-        [error]
+        [error],
       );
     }
   }
@@ -744,7 +770,7 @@ export class CarsService {
   async favorite(
     userId: number,
     carId: number,
-    createUserFavoriteCarDto: CreateUserFavoriteCarDto
+    createUserFavoriteCarDto: CreateUserFavoriteCarDto,
   ): Promise<CreateUserFavoriteCarResponseDto> {
     if (createUserFavoriteCarDto.favorite) {
       try {
@@ -753,63 +779,63 @@ export class CarsService {
         userFavoriteCar.car_id = carId;
         await userFavoriteCar.save();
       } catch (error) {
-        if (error.original.code === "ER_DUP_ENTRY") {
+        if (error.original.code === 'ER_DUP_ENTRY') {
           if (error.errors.length > 0) {
             const transformedErrors = error.errors.map((e) => {
-              const code = "";
+              const code = '';
               const field = e.path;
               const message = e.message;
               let detail: IDetailExceptionMessage = { code, field, message };
               return detail;
             });
-            let message = this.i18n.translate("error.data_type", {
-              lang: I18nContext.current().lang
+            let message = this.i18n.translate('error.data_type', {
+              lang: I18nContext.current().lang,
             });
             this.appExceptionService.badRequestException(
               BadRequestCode.BA_USER_FAVORITE_CAR_MUST_ABE_UNIQUE,
-              "",
+              '',
               message,
-              transformedErrors
+              transformedErrors,
             );
           }
         }
-        if (["ER_NO_REFERENCED_ROW_2"].includes(error.original.code)) {
-          let message = this.i18n.translate("error.data_type", {
-            lang: I18nContext.current().lang
+        if (['ER_NO_REFERENCED_ROW_2'].includes(error.original.code)) {
+          let message = this.i18n.translate('error.data_type', {
+            lang: I18nContext.current().lang,
           });
-          const code = "";
+          const code = '';
           const field = error.fields;
           const filed_message = this.i18n.translate(
-            "error.foreign_key_constraint_fails",
+            'error.foreign_key_constraint_fails',
             {
-              lang: I18nContext.current().lang
-            }
+              lang: I18nContext.current().lang,
+            },
           );
           let detail: IDetailExceptionMessage = {
             code,
             field,
-            message: filed_message
+            message: filed_message,
           };
           this.appExceptionService.badRequestException(
             BadRequestCode.BA_IN_CORRECT_DATA_TYPE,
-            "",
+            '',
             message,
-            [detail]
+            [detail],
           );
         }
-        let message = this.i18n.translate("error.internal_server_error", {
-          lang: I18nContext.current().lang
+        let message = this.i18n.translate('error.internal_server_error', {
+          lang: I18nContext.current().lang,
         });
         this.appExceptionService.internalServerErrorException(
           InternalServerErrorCode.IN_COMMON_ERROR,
-          "",
+          '',
           message,
-          [error]
+          [error],
         );
       }
     } else {
       await this.userFavoriteCarRepository.destroy({
-        where: { user_id: userId, car_id: carId }
+        where: { user_id: userId, car_id: carId },
       });
     }
     return new CreateUserFavoriteCarResponseDto();
@@ -818,7 +844,7 @@ export class CarsService {
   async createReview(
     userId: number,
     carId: number,
-    createUserReviewCarDto: CreateUserReviewCarDto
+    createUserReviewCarDto: CreateUserReviewCarDto,
   ): Promise<CreateUserReviewCarResponseDto> {
     try {
       let userReviewCar = new UserReviewCar();
@@ -831,58 +857,58 @@ export class CarsService {
       userReviewCar.comment = createUserReviewCarDto.comment;
       await userReviewCar.save();
     } catch (error) {
-      if (error.original.code === "ER_DUP_ENTRY") {
+      if (error.original.code === 'ER_DUP_ENTRY') {
         if (error.errors.length > 0) {
           const transformedErrors = error.errors.map((e) => {
-            const code = "";
+            const code = '';
             const field = e.path;
             const message = e.message;
             let detail: IDetailExceptionMessage = { code, field, message };
             return detail;
           });
-          let message = this.i18n.translate("error.data_type", {
-            lang: I18nContext.current().lang
+          let message = this.i18n.translate('error.data_type', {
+            lang: I18nContext.current().lang,
           });
           this.appExceptionService.badRequestException(
             BadRequestCode.BA_USER_FAVORITE_CAR_MUST_ABE_UNIQUE,
-            "",
+            '',
             message,
-            transformedErrors
+            transformedErrors,
           );
         }
       }
-      if (["ER_BAD_FIELD_ERROR"].includes(error.original.code)) {
-        let message = this.i18n.translate("error.data_type", {
-          lang: I18nContext.current().lang
+      if (['ER_BAD_FIELD_ERROR'].includes(error.original.code)) {
+        let message = this.i18n.translate('error.data_type', {
+          lang: I18nContext.current().lang,
         });
-        const code = "";
+        const code = '';
         const field = error.fields;
         const filed_message = this.i18n.translate(
-          "error.foreign_key_constraint_fails",
+          'error.foreign_key_constraint_fails',
           {
-            lang: I18nContext.current().lang
-          }
+            lang: I18nContext.current().lang,
+          },
         );
         let detail: IDetailExceptionMessage = {
           code,
           field,
-          message: filed_message
+          message: filed_message,
         };
         this.appExceptionService.badRequestException(
           BadRequestCode.BA_IN_CORRECT_DATA_TYPE,
-          "",
+          '',
           message,
-          [detail]
+          [detail],
         );
       }
-      let message = this.i18n.translate("error.internal_server_error", {
-        lang: I18nContext.current().lang
+      let message = this.i18n.translate('error.internal_server_error', {
+        lang: I18nContext.current().lang,
       });
       this.appExceptionService.internalServerErrorException(
         InternalServerErrorCode.IN_COMMON_ERROR,
-        "",
+        '',
         message,
-        [error]
+        [error],
       );
     }
     return new CreateUserReviewCarResponseDto();
@@ -891,36 +917,36 @@ export class CarsService {
   async updateReview(
     userId: number,
     carId: number,
-    updateUserReviewCarDto: UpdateUserReviewCarDto
+    updateUserReviewCarDto: UpdateUserReviewCarDto,
   ): Promise<UpdateUserReviewCarResponseDto> {
     let reviewInDB = await this.userReviewCarRepository.findOne({
       where: {
         user_id: userId,
-        car_id: carId
-      }
+        car_id: carId,
+      },
     } as FindOptions);
     if (!reviewInDB) {
-      let message = this.i18n.translate("error.data_type", {
-        lang: I18nContext.current().lang
+      let message = this.i18n.translate('error.data_type', {
+        lang: I18nContext.current().lang,
       });
-      const code = "";
-      const field = "";
+      const code = '';
+      const field = '';
       const filed_message = this.i18n.translate(
-        "error.foreign_key_constraint_fails",
+        'error.foreign_key_constraint_fails',
         {
-          lang: I18nContext.current().lang
-        }
+          lang: I18nContext.current().lang,
+        },
       );
       let detail: IDetailExceptionMessage = {
         code,
         field,
-        message: filed_message
+        message: filed_message,
       };
       this.appExceptionService.badRequestException(
         BadRequestCode.BA_IN_CORRECT_DATA_TYPE,
-        "",
+        '',
         message,
-        [detail]
+        [detail],
       );
     }
     try {
@@ -931,63 +957,63 @@ export class CarsService {
         {
           rate: rate,
           title: updateUserReviewCarDto.title,
-          comment: updateUserReviewCarDto.comment
+          comment: updateUserReviewCarDto.comment,
         },
-        { where: { user_id: userId, car_id: carId } } as UpdateOptions
+        { where: { user_id: userId, car_id: carId } } as UpdateOptions,
       );
     } catch (error) {
-      if (error.original.code === "ER_DUP_ENTRY") {
+      if (error.original.code === 'ER_DUP_ENTRY') {
         if (error.errors.length > 0) {
           const transformedErrors = error.errors.map((e) => {
-            const code = "";
+            const code = '';
             const field = e.path;
             const message = e.message;
             let detail: IDetailExceptionMessage = { code, field, message };
             return detail;
           });
-          let message = this.i18n.translate("error.data_type", {
-            lang: I18nContext.current().lang
+          let message = this.i18n.translate('error.data_type', {
+            lang: I18nContext.current().lang,
           });
           this.appExceptionService.badRequestException(
             BadRequestCode.BA_USER_FAVORITE_CAR_MUST_ABE_UNIQUE,
-            "",
+            '',
             message,
-            transformedErrors
+            transformedErrors,
           );
         }
       }
-      if (["ER_BAD_FIELD_ERROR"].includes(error.original.code)) {
-        let message = this.i18n.translate("error.data_type", {
-          lang: I18nContext.current().lang
+      if (['ER_BAD_FIELD_ERROR'].includes(error.original.code)) {
+        let message = this.i18n.translate('error.data_type', {
+          lang: I18nContext.current().lang,
         });
-        const code = "";
+        const code = '';
         const field = error.fields;
         const filed_message = this.i18n.translate(
-          "error.foreign_key_constraint_fails",
+          'error.foreign_key_constraint_fails',
           {
-            lang: I18nContext.current().lang
-          }
+            lang: I18nContext.current().lang,
+          },
         );
         let detail: IDetailExceptionMessage = {
           code,
           field,
-          message: filed_message
+          message: filed_message,
         };
         this.appExceptionService.badRequestException(
           BadRequestCode.BA_IN_CORRECT_DATA_TYPE,
-          "",
+          '',
           message,
-          [detail]
+          [detail],
         );
       }
-      let message = this.i18n.translate("error.internal_server_error", {
-        lang: I18nContext.current().lang
+      let message = this.i18n.translate('error.internal_server_error', {
+        lang: I18nContext.current().lang,
       });
       this.appExceptionService.internalServerErrorException(
         InternalServerErrorCode.IN_COMMON_ERROR,
-        "",
+        '',
         message,
-        []
+        [],
       );
     }
     return new UpdateUserReviewCarResponseDto();
@@ -995,14 +1021,14 @@ export class CarsService {
 
   async isFavorite(
     userId: number,
-    carId: number
+    carId: number,
   ): Promise<UserFavoriteCarResponseDto> {
     let userFavoriteCarInDB =
       await this.userFavoriteCarRepository.findOne<UserFavoriteCar>({
         where: {
           user_id: userId,
-          car_id: carId
-        }
+          car_id: carId,
+        },
       } as FindOptions);
     if (!userFavoriteCarInDB) {
       return new UserFavoriteCarResponseDto(false);
@@ -1011,19 +1037,19 @@ export class CarsService {
   }
 
   async getFavoriteCarByUser(
-    userId: number
+    userId: number,
   ): Promise<UserFavoriteCarsResponseDto> {
     let userFavoriteCarInDB =
       await this.userFavoriteCarRepository.findAll<UserFavoriteCar>({
         where: {
-          user_id: userId
-        }
+          user_id: userId,
+        },
       } as FindOptions);
     if (!userFavoriteCarInDB) {
       return new UserFavoriteCarsResponseDto([]);
     }
     return new UserFavoriteCarsResponseDto(
-      userFavoriteCarInDB.map((item) => item.car_id)
+      userFavoriteCarInDB.map((item) => item.car_id),
     );
   }
 }

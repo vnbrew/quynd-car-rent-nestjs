@@ -1,13 +1,14 @@
 import {
   AutoIncrement,
   Column,
-  DataType, HasMany,
+  DataType,
+  HasMany,
   Model,
   PrimaryKey,
-  Table
-} from "sequelize-typescript";
-import { PickCarCity } from "./pick-car-city.entity";
-import { DropCarCity } from "./drop-car-city.entity";
+  Table,
+} from 'sequelize-typescript';
+import { PickCarCity } from './pick-car-city.entity';
+import { DropCarCity } from './drop-car-city.entity';
 
 @Table({
   tableName: 'cities',

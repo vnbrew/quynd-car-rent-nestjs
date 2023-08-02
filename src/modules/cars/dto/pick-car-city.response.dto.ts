@@ -1,4 +1,4 @@
-import { PickCarCity } from "../entities/pick-car-city.entity";
+import { PickCarCity } from '../entities/pick-car-city.entity';
 
 export class PickCarCityResponseDto {
   readonly id: number;

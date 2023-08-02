@@ -13,6 +13,7 @@ import { User } from '../../users/entities/user.entity';
 import { OrderStatus } from './order-status.entity';
 import { Coupon } from './coupon.entity';
 import { PaymentType } from './payment-type.entity';
+import { BillingInfo } from '../../users/entities/billing-info.entity';
 
 @Table({
   tableName: 'orders',
@@ -62,6 +63,13 @@ export class Order extends Model<Order> {
 
   @BelongsTo(() => Coupon)
   coupon!: Coupon;
+
+  @ForeignKey(() => BillingInfo)
+  @Column
+  billing_id!: number;
+
+  @BelongsTo(() => BillingInfo)
+  billing_info!: BillingInfo;
 
   @Column({
     type: DataType.DATE,

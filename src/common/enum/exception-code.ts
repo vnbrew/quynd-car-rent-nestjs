@@ -7,7 +7,7 @@ export enum BadRequestCode {
   BA_USER_DOES_NOT_EXIST = 'BA-006', //User does not exist
   BA_CAR_DOES_NOT_EXIST = 'BA-007', //Car does not exist
   BA_USER_FAVORITE_CAR_MUST_ABE_UNIQUE = 'BA-008', //User favorite car must be unique
-  BA_COUPON_DOES_NOT_EXIST = 'BA-009', //Car does not exist
+  BA_COUPON_DOES_NOT_EXIST = 'BA-009', //Coupon does not exist
 }
 
 export enum InternalServerErrorCode {

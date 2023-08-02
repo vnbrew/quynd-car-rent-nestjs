@@ -17,9 +17,9 @@ import { CarCapacity } from './car-capacity.entity';
 import { CarImage } from './car-image.entity';
 import { UserReviewCar } from './user-review-car.entity';
 import { Order } from '../../orders/entities/order.entity';
-import { City } from "./city.entity";
-import { PickCarCity } from "./pick-car-city.entity";
-import { DropCarCity } from "./drop-car-city.entity";
+import { City } from './city.entity';
+import { PickCarCity } from './pick-car-city.entity';
+import { DropCarCity } from './drop-car-city.entity';
 
 @Table({
   tableName: 'cars',

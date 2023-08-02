@@ -3,6 +3,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserResponseDto } from './dto/create-user-response.dto';
 import {
+  SEQUELIZE,
+  USER_BILLING_INFO_REPOSITORY,
   USER_TOKENS_REPOSITORY,
   USERS_REPOSITORY,
 } from '../../shared/constants';
@@ -28,13 +30,18 @@ import { UserLoginResponseDto } from './dto/user-login-response.dto';
 import { UserLogoutResponseDto } from './dto/user-logout-response.dto';
 import { JwtService } from '@nestjs/jwt';
 import { RedisCacheService } from '../../shared/cache/rediscache.service';
+import { BillingInfo } from './entities/billing-info.entity';
+import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
 export class UsersService {
   constructor(
+    @Inject(SEQUELIZE) private readonly sequelize: Sequelize,
     @Inject(USERS_REPOSITORY) private readonly usersRepository: typeof User,
     @Inject(USER_TOKENS_REPOSITORY)
     private readonly userTokensRepository: typeof UserToken,
+    @Inject(USER_BILLING_INFO_REPOSITORY)
+    private readonly billingInfoRepository: typeof BillingInfo,
     private readonly exceptionService: AppExceptionService,
     private readonly i18n: I18nService,
     @InjectQueue(EQueueName.register) private readonly registerQueue: Queue,
@@ -135,17 +142,28 @@ export class UsersService {
 
   async register(createUserDto: CreateUserDto): Promise<CreateUserResponseDto> {
     try {
-      const user = new User();
-      user.email = createUserDto.email.trim().toLowerCase();
-      user.name = createUserDto.name;
-      user.address = createUserDto.address;
-      user.city = createUserDto.city;
-      user.phone_number = createUserDto.phone_number;
-      const salt = await genSalt(10);
-      user.password = await hash(createUserDto.password, salt);
-      await user.save();
-      await this.registerQueue.add(EProcessName.register_completed, {
-        user_name: user.name,
+      await this.sequelize.transaction(async (t) => {
+        let transactionHost = { transaction: t };
+        const user = new User();
+        user.email = createUserDto.email.trim().toLowerCase();
+        user.name = createUserDto.name;
+        user.address = createUserDto.address;
+        user.city = createUserDto.city;
+        user.phone_number = createUserDto.phone_number;
+        const salt = await genSalt(10);
+        user.password = await hash(createUserDto.password, salt);
+        let newUser = await user.save(transactionHost);
+
+        const billing = new BillingInfo();
+        billing.user_id = newUser.id;
+        billing.name = createUserDto.name;
+        billing.address = createUserDto.address;
+        billing.city = createUserDto.city;
+        billing.phone_number = createUserDto.phone_number;
+        await billing.save(transactionHost);
+        await this.registerQueue.add(EProcessName.register_completed, {
+          user_name: user.name,
+        });
       });
       return new CreateUserResponseDto();
     } catch (error) {

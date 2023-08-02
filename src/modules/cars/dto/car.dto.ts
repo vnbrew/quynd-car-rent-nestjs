@@ -14,6 +14,6 @@ export class CarDto {
     this.gasoline = car.gasoline;
     this.description = car.description;
     this.rental_price = parseFloat(car.rental_price.toString());
-    this.original_price =  parseFloat(car.original_price.toString());
+    this.original_price = parseFloat(car.original_price.toString());
   }
 }

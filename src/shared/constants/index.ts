@@ -20,9 +20,11 @@ import { PaymentType } from '../../modules/orders/entities/payment-type.entity';
 import { OrderType } from '../../modules/orders/entities/order-type.entity';
 import { OrderStatus } from '../../modules/orders/entities/order-status.entity';
 import { Order } from '../../modules/orders/entities/order.entity';
-import { City } from "../../modules/cars/entities/city.entity";
-import { PickCarCity } from "../../modules/cars/entities/pick-car-city.entity";
-import { DropCarCity } from "../../modules/cars/entities/drop-car-city.entity";
+import { City } from '../../modules/cars/entities/city.entity';
+import { PickCarCity } from '../../modules/cars/entities/pick-car-city.entity';
+import { DropCarCity } from '../../modules/cars/entities/drop-car-city.entity';
+import { BillingInfo } from '../../modules/users/entities/billing-info.entity';
+import { OrderStatusHistory } from '../../modules/orders/entities/order-status-history.entity';
 
 export const SEQUELIZE = 'SEQUELIZE';
 export const DEVELOPMENT = 'development';
@@ -31,6 +33,7 @@ export const PRODUCTION = 'production';
 
 export const USERS_REPOSITORY = 'USERS_REPOSITORY';
 export const USER_TOKENS_REPOSITORY = 'USER_TOKENS_REPOSITORY';
+export const USER_BILLING_INFO_REPOSITORY = 'USER_BILLING_INFO_REPOSITORY';
 
 export const CAR_TYPES_REPOSITORY = 'CAR_TYPES_REPOSITORY';
 export const CAR_CAPACITIES_REPOSITORY = 'CAR_CAPACITIES_REPOSITORY';
@@ -42,6 +45,8 @@ export const USER_REVIEWS_CAR_REPOSITORY = 'USER_REVIEWS_CAR_REPOSITORY';
 export const CARS_REPOSITORY = 'CARS_REPOSITORY';
 
 export const ORDER_STATUSES_REPOSITORY = 'ORDER_STATUSES_REPOSITORY';
+export const ORDER_STATUS_HISTORY_REPOSITORY =
+  'ORDER_STATUS_HISTORY_REPOSITORY';
 export const ORDER_TYPES_REPOSITORY = 'ORDER_TYPES_REPOSITORY';
 export const ORDER_REPOSITORY = 'ORDER_REPOSITORY';
 
@@ -58,6 +63,7 @@ export const COUPONS_REPOSITORY = 'COUPONS_REPOSITORY';
 export const SEQUELIZE_MODELS = [
   User,
   UserToken,
+  BillingInfo,
   CarType,
   CarCapacity,
   CarSteering,
@@ -68,6 +74,7 @@ export const SEQUELIZE_MODELS = [
   Car,
   OrderType,
   OrderStatus,
+  OrderStatusHistory,
   Order,
   RentalStatus,
   Rental,
@@ -78,7 +85,7 @@ export const SEQUELIZE_MODELS = [
   Coupon,
   City,
   PickCarCity,
-  DropCarCity
+  DropCarCity,
 ];
 
 export const IS_PUBLIC_KEY = 'isPublic';

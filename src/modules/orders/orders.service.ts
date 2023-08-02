@@ -21,19 +21,26 @@ import {
   InternalServerErrorCode,
 } from '../../common/enum/exception-code';
 import { FindOptions, Op, or } from 'sequelize';
-import { EOrderStatus } from '../../common/enum/order.enum';
+import { EOrderErrorType, EOrderStatus } from '../../common/enum/order.enum';
 import { Coupon } from './entities/coupon.entity';
 import { CouponType } from './entities/coupon-types.entity';
 import { OrderResponseDto } from './dto/order-response.dto';
 import { User } from '../users/entities/user.entity';
 import { Car } from '../cars/entities/car.entity';
+import { PaymentType } from './entities/payment-type.entity';
+import { calculateNumberOfRentDays } from '../../common/utils/ultils';
+import { OrderStatusHistory } from './entities/order-status-history.entity';
 import { CarType } from '../cars/entities/car-type.entity';
 import { CarSteering } from '../cars/entities/car-steering.entity';
 import { CarCapacity } from '../cars/entities/car-capacity.entity';
 import { CarStatus } from '../cars/entities/car-status.entity';
-import { CarImage } from '../cars/entities/car-image.entity';
 import { UserReviewCar } from '../cars/entities/user-review-car.entity';
-import { PaymentType } from './entities/payment-type.entity';
+import { ECarStatus } from '../../common/enum/car.enum';
+import { CarImage } from '../cars/entities/car-image.entity';
+import { PickCarCity } from '../cars/entities/pick-car-city.entity';
+import { City } from '../cars/entities/city.entity';
+import { DropCarCity } from '../cars/entities/drop-car-city.entity';
+import { OrderStatus } from './entities/order-status.entity';
 
 @Injectable()
 export class OrdersService {
@@ -135,7 +142,10 @@ export class OrdersService {
     return !!carInRentalDB;
   }
 
-  private async canOrderCar(createOrderDto: CreateOrderDto): Promise<boolean> {
+  private async canOrderCar(
+    createOrderDto: CreateOrderDto,
+    transactionHost,
+  ): Promise<boolean> {
     let carInRental = await this.isCarInOrder(createOrderDto.car_id);
     if (!carInRental) return true;
     let carInRentalDB = await this.ordersRepository.findOne<Order>({
@@ -165,45 +175,58 @@ export class OrdersService {
           },
         ],
       },
+      transactionHost,
     } as FindOptions);
     return !carInRentalDB;
   }
 
   async createOrder(userId: number, createOrderDto: CreateOrderDto) {
-    let isCarAvailable = await this.carService.isCarAvailable(
-      createOrderDto.car_id,
-    );
-    if (!isCarAvailable) {
-      this.carIsNotAvailable();
-    }
-    let canBookCar = await this.canOrderCar(createOrderDto);
-    if (!canBookCar) {
-      this.carIsNotAvailable();
-    }
-    let carInDB = await this.carService.findCarById(createOrderDto.car_id);
-    if (!carInDB) {
-      this.carIsNotAvailable();
-    }
-    let currentDate = new Date();
-    let couponCode = createOrderDto.coupon_code
-      ? createOrderDto.coupon_code
-      : '';
-    let couponInDB = await this.couponsRepository.findOne<Coupon>({
-      where: {
-        code: couponCode,
-        expiration_time: { [Op.gte]: currentDate },
-      },
-      include: [CouponType],
-    } as FindOptions);
-    if (createOrderDto.coupon_code !== '' && !couponInDB) {
-      this.couponIsInValid();
-    }
-    if (createOrderDto.order_status_id !== EOrderStatus.order) {
-      this.orderIsInternalError();
-    }
     try {
       await this.sequelize.transaction(async (t) => {
         let transactionHost = { transaction: t };
+        // await this.sequelize.query(`SELECT * FROM cars WHERE id = ${createOrderDto.car_id} FOR UPDATE`, transactionHost);
+        // await this.sequelize.query(`UPDATE cars SET locked = true WHERE id = ${createOrderDto.car_id}`, transactionHost);
+        let carInDB = await this.carService.isCarAvailableAndCanPickDropAt(
+          createOrderDto.car_id,
+          createOrderDto.pick_city,
+          createOrderDto.drop_city,
+          t,
+        );
+        if (!carInDB) {
+          throw { type: EOrderErrorType.ORDER_CAR_IS_NOT_AVAILABLE };
+        }
+
+        let canBookCar = await this.canOrderCar(
+          createOrderDto,
+          transactionHost,
+        );
+        if (!canBookCar) {
+          throw { type: EOrderErrorType.ORDER_CAR_IS_NOT_AVAILABLE };
+        }
+
+        let currentDate = new Date();
+        let couponCode = createOrderDto.coupon_code
+          ? createOrderDto.coupon_code
+          : '';
+        let couponInDB = await this.couponsRepository.findOne<Coupon>({
+          where: {
+            code: couponCode,
+            expiration_time: { [Op.gte]: currentDate },
+          },
+          transactionHost,
+          include: [CouponType],
+        } as FindOptions);
+        if (createOrderDto.coupon_code !== '' && !couponInDB) {
+          throw { type: EOrderErrorType.ORDER_COUPON_IS_INVALID };
+        }
+        if (createOrderDto.order_status_id !== EOrderStatus.order) {
+          throw { type: EOrderErrorType.ORDER_IS_INTERNAL_ERROR };
+        }
+        let numberOfDays = calculateNumberOfRentDays(
+          createOrderDto.pick_date_time.toString(),
+          createOrderDto.drop_date_time.toString(),
+        );
+
         let order = new Order();
         order.user_id = userId;
         order.car_id = createOrderDto.car_id;
@@ -211,45 +234,63 @@ export class OrdersService {
         order.payment_type_id = createOrderDto.payment_type_id;
         order.pick_date_time = createOrderDto.pick_date_time;
         order.drop_date_time = createOrderDto.drop_date_time;
+        order.billing_id = createOrderDto.billing_id;
         order.tax = createOrderDto.tax;
         order.detail = createOrderDto.detail;
+        let totalPriceWithNumberOfDays = numberOfDays * carInDB.rental_price;
         let discount: number = 0;
-        // if (couponInDB) {
-        //   order.coupon_id = couponInDB.id;
-        //   switch (couponInDB.coupon_type_id) {
-        //     case 1:
-        //       discount = couponInDB.value;
-        //       break;
-        //     case 2:
-        //       discount =
-        //         (carInDB.carPrice.rental_price * couponInDB.value) / 100;
-        //       // console.log({ "1": carInDB.carPrice.rental_price, "2": couponInDB.value, "3": discount });
-        //       break;
-        //     default:
-        //       discount = 0;
-        //       break;
-        //   }
-        // }
-        // let amount = carInDB.carPrice.rental_price - discount;
-        // let tax_price = (amount * createOrderDto.tax) / 100;
-        //
-        // order.discount = discount;
-        // order.subtotal = carInDB.carPrice.rental_price;
-        // order.tax_price = tax_price;
-        // order.total = amount + tax_price;
-        //
-        // await order.save(transactionHost);
-        // let user = await this.userService.getUserInformation(userId);
-        // if (user) {
-        //   await this.orderQueue.add(EProcessName.create_order, {
-        //     user_name: user.name,
-        //     pick_date_time: createOrderDto.pick_date_time,
-        //     drop_date_time: createOrderDto.drop_date_time,
-        //   });
-        // }
+        if (couponInDB) {
+          order.coupon_id = couponInDB.id;
+          switch (couponInDB.coupon_type_id) {
+            case 1:
+              discount = couponInDB.value;
+              break;
+            case 2:
+              discount = (totalPriceWithNumberOfDays * couponInDB.value) / 100;
+              // console.log({ "1": carInDB.carPrice.rental_price, "2": couponInDB.value, "3": discount });
+              break;
+            default:
+              discount = 0;
+              break;
+          }
+        }
+        let totalPriceWithNumberOfDaysAfterDiscount =
+          totalPriceWithNumberOfDays - discount;
+        let tax_price =
+          (totalPriceWithNumberOfDaysAfterDiscount * createOrderDto.tax) / 100;
+
+        order.discount = discount;
+        order.tax_price = tax_price;
+        order.subtotal = totalPriceWithNumberOfDays;
+        order.total = totalPriceWithNumberOfDaysAfterDiscount + tax_price;
+        let newOrder = await order.save(transactionHost);
+
+        let orderStatusHistory = new OrderStatusHistory();
+        orderStatusHistory.order_id = newOrder.id;
+        orderStatusHistory.order_status_id = createOrderDto.order_status_id;
+        await orderStatusHistory.save(transactionHost);
+
+        let user = await this.userService.getUserInformation(userId);
+        if (user) {
+          await this.orderQueue.add(EProcessName.create_order, {
+            user_name: user.name,
+            pick_date_time: createOrderDto.pick_date_time,
+            drop_date_time: createOrderDto.drop_date_time,
+          });
+        }
+        // await this.sequelize.query(`UPDATE cars SET locked = false WHERE id = ${createOrderDto.car_id}`, transactionHost);
       });
     } catch (error) {
-      this.orderIsInternalError();
+      switch (error.type) {
+        case EOrderErrorType.ORDER_CAR_IS_NOT_AVAILABLE:
+          this.carIsNotAvailable();
+          break;
+        case EOrderErrorType.ORDER_COUPON_IS_INVALID:
+          this.couponIsInValid();
+          break;
+        default:
+          this.orderIsInternalError();
+      }
     }
     return {};
   }
@@ -293,21 +334,26 @@ export class OrdersService {
           transactionHost,
         );
 
-        let user = await this.userService.getUserInformation(userId);
-        if (user) {
-          if (order_status_id === EOrderStatus.paid) {
-            await this.orderQueue.add(EProcessName.pay_order, {
-              user_name: user.name,
-              paid_date_time: currentDate,
-            });
-          }
-          if (order_status_id === EOrderStatus.cancel) {
-            await this.orderQueue.add(EProcessName.cancel_order, {
-              user_name: user.name,
-              cancel_date_time: currentDate,
-            });
-          }
-        }
+        let orderStatusHistory = new OrderStatusHistory();
+        orderStatusHistory.order_id = orderOfUser.id;
+        orderStatusHistory.order_status_id = order_status_id;
+        await orderStatusHistory.save(transactionHost);
+
+        // let user = await this.userService.getUserInformation(userId);
+        // if (user) {
+        //   if (order_status_id === EOrderStatus.paid) {
+        //     await this.orderQueue.add(EProcessName.pay_order, {
+        //       user_name: user.name,
+        //       paid_date_time: currentDate
+        //     });
+        //   }
+        //   if (order_status_id === EOrderStatus.cancel) {
+        //     await this.orderQueue.add(EProcessName.cancel_order, {
+        //       user_name: user.name,
+        //       cancel_date_time: currentDate
+        //     });
+        //   }
+        // }
       });
     } catch (error) {
       this.orderIsInternalError();
@@ -324,20 +370,40 @@ export class OrdersService {
         User,
         {
           model: Car,
-          // include: [
-          //   Office,
-          //   CarType,
-          //   CarSteering,
-          //   CarCapacity,
-          //   CarStatus,
-          //   CarImage,
-          //   CarPrice,
-          //   {
-          //     model: UserReviewCar,
-          //     include: [User],
-          //     required: false,
-          //   },
-          // ],
+          include: [
+            {
+              model: CarType,
+            },
+            {
+              model: CarCapacity,
+            },
+            {
+              model: CarStatus,
+              where: { status: ECarStatus.available },
+            },
+            {
+              model: CarSteering,
+            },
+            {
+              model: CarImage,
+              required: false,
+            },
+            {
+              model: UserReviewCar,
+              include: [User],
+              required: false,
+            },
+            {
+              model: PickCarCity,
+              include: [City],
+              required: false,
+            },
+            {
+              model: DropCarCity,
+              include: [City],
+              required: false,
+            },
+          ],
         },
         {
           model: Coupon,
@@ -346,6 +412,9 @@ export class OrdersService {
         },
         {
           model: PaymentType,
+        },
+        {
+          model: OrderStatus,
         },
       ],
     } as FindOptions);
