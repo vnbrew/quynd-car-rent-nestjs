@@ -10,10 +10,6 @@ import { CarStatus } from '../../modules/cars/entities/car-status.entity';
 import { CarImage } from '../../modules/cars/entities/car-image.entity';
 import { UserFavoriteCar } from '../../modules/cars/entities/user-favorite-car.entity';
 import { UserReviewCar } from '../../modules/cars/entities/user-review-car.entity';
-import { RentalStatus } from '../../modules/rental/entities/rental-status.entity';
-import { Rental } from '../../modules/rental/entities/rental.entity';
-import { PaymentStatus } from '../../modules/payment/entities/payment-status.entity';
-import { Payment } from '../../modules/payment/entities/payment.entity';
 import { Coupon } from '../../modules/orders/entities/coupon.entity';
 import { CouponType } from '../../modules/orders/entities/coupon-types.entity';
 import { PaymentType } from '../../modules/orders/entities/payment-type.entity';
@@ -50,12 +46,7 @@ export const ORDER_STATUS_HISTORY_REPOSITORY =
 export const ORDER_TYPES_REPOSITORY = 'ORDER_TYPES_REPOSITORY';
 export const ORDER_REPOSITORY = 'ORDER_REPOSITORY';
 
-export const RENTAL_STATUSES_REPOSITORY = 'RENTAL_STATUSES_REPOSITORY';
-export const RENTALS_REPOSITORY = 'RENTALS_REPOSITORY';
-
-export const PAYMENT_STATUSES_REPOSITORY = 'PAYMENT_STATUSES_REPOSITORY';
 export const PAYMENT_TYPES_REPOSITORY = 'PAYMENT_TYPES_REPOSITORY';
-export const PAYMENTS_REPOSITORY = 'PAYMENTS_REPOSITORY';
 
 export const COUPON_TYPES_REPOSITORY = 'COUPON_TYPES_REPOSITORY';
 export const COUPONS_REPOSITORY = 'COUPONS_REPOSITORY';
@@ -76,11 +67,7 @@ export const SEQUELIZE_MODELS = [
   OrderStatus,
   OrderStatusHistory,
   Order,
-  RentalStatus,
-  Rental,
-  PaymentStatus,
   PaymentType,
-  Payment,
   CouponType,
   Coupon,
   City,
