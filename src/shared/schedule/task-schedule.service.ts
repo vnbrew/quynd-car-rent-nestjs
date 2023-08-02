@@ -13,7 +13,7 @@ export class TaskScheduleService {
   // @Cron("0 * * * * *") //every minute at second 0
   @Cron('*/5 * * * *') //run after 5 minutes
   async cronToCheckRentalStatus() {
-    let userTokens = await this.usersService.getAllUserTokenExpired();
+    const userTokens = await this.usersService.getAllUserTokenExpired();
     for (const userToken of userTokens) {
       await this.usersService.removeTokenInDB(userToken.token);
       await this.redisCacheService.addTokenToBlackList(userToken.token);

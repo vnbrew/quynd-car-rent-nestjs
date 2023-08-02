@@ -11,8 +11,8 @@ module.exports = {
       "https://www-asia.nissan-cdn.net/content/dam/Nissan/in/Home/Spotlight/270-x-151.jpg.ximg.l_4_h.smart.jpg",
       "https://www-asia.nissan-cdn.net/content/dam/Nissan/in/Home/hpi/Magnite_side_400x213-pix-v1.jpg.ximg.l_4_h.smart.jpg"
     ];
-    let car_images = [];
-    let allCars = await queryInterface.sequelize.query('SELECT * FROM cars', { type: sequelize.QueryTypes.SELECT });
+    const car_images = [];
+    const allCars = await queryInterface.sequelize.query('SELECT * FROM cars', { type: sequelize.QueryTypes.SELECT });
     for (let i = 0; i < allCars.length; i++) {
       for (let j = 0; j < images.length; j++) {
         car_images.push({ car_id: allCars.at(i).id, image_url: images.at(j)})

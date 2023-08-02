@@ -1,18 +1,12 @@
 import {
-  BelongsToMany,
   Column,
   DataType,
   ForeignKey,
-  HasOne,
   Index,
-  IsEmail,
   Model,
   Table,
   Unique,
 } from 'sequelize-typescript';
-import { Role } from '../../../common/enum/role';
-import { TableName } from '../../../common/enum/table';
-import { UserToken } from './user-token.entity';
 import { User } from './user.entity';
 
 @Table({

@@ -26,9 +26,9 @@ export class RolesGuard implements CanActivate {
     if (!user) {
       return true;
     }
-    let isValid = requiredRoles.some((role) => user.role?.includes(role));
+    const isValid = requiredRoles.some((role) => user.role?.includes(role));
     if (!isValid) {
-      let message = this.i18n.translate('error.method_not_allowed', {
+      const message = this.i18n.translate('error.method_not_allowed', {
         lang: I18nContext.current().lang,
       });
       this.appExceptionService.badRequestException(

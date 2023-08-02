@@ -5,8 +5,8 @@ const sequelize = require("sequelize");
 module.exports = {
   async up(queryInterface, Sequelize) {
     const pick_car_city = [];
-    let allCities = await queryInterface.sequelize.query("SELECT * FROM cities", { type: sequelize.QueryTypes.SELECT });
-    let allCars = await queryInterface.sequelize.query("SELECT * FROM cars", { type: sequelize.QueryTypes.SELECT });
+    const allCities = await queryInterface.sequelize.query("SELECT * FROM cities", { type: sequelize.QueryTypes.SELECT });
+    const allCars = await queryInterface.sequelize.query("SELECT * FROM cars", { type: sequelize.QueryTypes.SELECT });
     for (let i = 0; i < allCars.length; i++) {
       const randomIndex = Math.floor(Math.random() * allCities.length);
       const city = allCities[randomIndex];

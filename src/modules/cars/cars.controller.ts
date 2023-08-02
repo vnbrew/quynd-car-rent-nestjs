@@ -80,7 +80,7 @@ export class CarsController {
     @Param('id') id: string,
     @Body() createUserFavoriteCarDto: CreateUserFavoriteCarDto,
   ): Promise<CreateUserFavoriteCarResponseDto> {
-    let userId = request.user.id;
+    const userId = request.user.id;
     return this.carsService.favorite(userId, +id, createUserFavoriteCarDto);
   }
 
@@ -89,7 +89,7 @@ export class CarsController {
     @Req() request,
     @Param('id') id: string,
   ): Promise<UserFavoriteCarResponseDto> {
-    let userId = request.user.id;
+    const userId = request.user.id;
     return await this.carsService.isFavorite(userId, +id);
   }
 
@@ -100,7 +100,7 @@ export class CarsController {
     @Param('id') id: string,
     @Body() createUserReviewCarDto: CreateUserReviewCarDto,
   ): Promise<CreateUserReviewCarResponseDto> {
-    let userId = request.user.id;
+    const userId = request.user.id;
     return this.carsService.createReview(userId, +id, createUserReviewCarDto);
   }
 
@@ -111,7 +111,7 @@ export class CarsController {
     @Param('id') id: string,
     @Body() updateUserReviewCarDto: UpdateUserReviewCarDto,
   ): Promise<UpdateUserReviewCarResponseDto> {
-    let userId = request.user.id;
+    const userId = request.user.id;
     return await this.carsService.updateReview(
       userId,
       +id,
@@ -123,7 +123,7 @@ export class CarsController {
   async getFavoriteCarByUser(
     @Req() request,
   ): Promise<UserFavoriteCarsResponseDto> {
-    let userId = request.user.id;
+    const userId = request.user.id;
     return await this.carsService.getFavoriteCarByUser(userId);
   }
 }

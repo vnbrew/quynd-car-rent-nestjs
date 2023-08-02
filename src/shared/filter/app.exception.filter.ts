@@ -28,7 +28,7 @@ export class AppAllExceptionFilter implements ExceptionFilter {
             errors: [],
           };
 
-    let responseData = {
+    const responseData = {
       ...{
         error,
       },

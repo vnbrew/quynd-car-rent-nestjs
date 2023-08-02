@@ -12,9 +12,8 @@ export class PaymentProcessor {
 
   @Process(EProcessName.payment_completed)
   async handlePaymentCompleted(job: Job) {
-    // console.log(job.data);
-    let { user_name, pay_date_time } = job.data;
-    let letterToUser = new CreateEmailDto();
+    const { user_name, pay_date_time } = job.data;
+    const letterToUser = new CreateEmailDto();
     letterToUser.to = ['nguyenducquy.qt@gmail.com'];
     letterToUser.from = 'quynd@tech.est-rouge.com';
     letterToUser.subject = 'Congratulations on successfully booking your car!';

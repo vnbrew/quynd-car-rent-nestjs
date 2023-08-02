@@ -56,7 +56,7 @@ export class OrdersService {
   ) {}
 
   private couponIsInValid() {
-    let message = this.i18n.translate('error.data_type', {
+    const message = this.i18n.translate('error.data_type', {
       lang: I18nContext.current().lang,
     });
     const code = '';
@@ -64,7 +64,7 @@ export class OrdersService {
     const filed_message = this.i18n.translate('error.coupon_is_not_available', {
       lang: I18nContext.current().lang,
     });
-    let detail: IDetailExceptionMessage = {
+    const detail: IDetailExceptionMessage = {
       code,
       field,
       message: filed_message,
@@ -78,7 +78,7 @@ export class OrdersService {
   }
 
   private carIsNotAvailable() {
-    let message = this.i18n.translate('error.data_type', {
+    const message = this.i18n.translate('error.data_type', {
       lang: I18nContext.current().lang,
     });
     const code = '';
@@ -86,7 +86,7 @@ export class OrdersService {
     const filed_message = this.i18n.translate('error.car_is_not_available', {
       lang: I18nContext.current().lang,
     });
-    let detail: IDetailExceptionMessage = {
+    const detail: IDetailExceptionMessage = {
       code,
       field,
       message: filed_message,
@@ -100,7 +100,7 @@ export class OrdersService {
   }
 
   private orderIsNotAvailable() {
-    let message = this.i18n.translate('error.data_type', {
+    const message = this.i18n.translate('error.data_type', {
       lang: I18nContext.current().lang,
     });
     const code = '';
@@ -108,7 +108,7 @@ export class OrdersService {
     const filed_message = this.i18n.translate('error.order_is_not_available', {
       lang: I18nContext.current().lang,
     });
-    let detail: IDetailExceptionMessage = {
+    const detail: IDetailExceptionMessage = {
       code,
       field,
       message: filed_message,
@@ -122,7 +122,7 @@ export class OrdersService {
   }
 
   private orderIsInternalError() {
-    let message = this.i18n.translate('error.internal_server_error', {
+    const message = this.i18n.translate('error.internal_server_error', {
       lang: I18nContext.current().lang,
     });
     this.appExceptionService.internalServerErrorException(
@@ -134,7 +134,7 @@ export class OrdersService {
   }
 
   private async isCarInOrder(carId: number) {
-    let carInRentalDB = await this.ordersRepository.findOne<Order>({
+    const carInRentalDB = await this.ordersRepository.findOne<Order>({
       where: {
         car_id: carId,
       },
@@ -146,9 +146,9 @@ export class OrdersService {
     createOrderDto: CreateOrderDto,
     transactionHost,
   ): Promise<boolean> {
-    let carInRental = await this.isCarInOrder(createOrderDto.car_id);
+    const carInRental = await this.isCarInOrder(createOrderDto.car_id);
     if (!carInRental) return true;
-    let carInRentalDB = await this.ordersRepository.findOne<Order>({
+    const carInRentalDB = await this.ordersRepository.findOne<Order>({
       where: {
         car_id: createOrderDto.car_id,
         order_status_id: { [Op.or]: [EOrderStatus.order, EOrderStatus.paid] },
@@ -183,10 +183,10 @@ export class OrdersService {
   async createOrder(userId: number, createOrderDto: CreateOrderDto) {
     try {
       await this.sequelize.transaction(async (t) => {
-        let transactionHost = { transaction: t };
+        const transactionHost = { transaction: t };
         // await this.sequelize.query(`SELECT * FROM cars WHERE id = ${createOrderDto.car_id} FOR UPDATE`, transactionHost);
         // await this.sequelize.query(`UPDATE cars SET locked = true WHERE id = ${createOrderDto.car_id}`, transactionHost);
-        let carInDB = await this.carService.isCarAvailableAndCanPickDropAt(
+        const carInDB = await this.carService.isCarAvailableAndCanPickDropAt(
           createOrderDto.car_id,
           createOrderDto.pick_city,
           createOrderDto.drop_city,
@@ -196,7 +196,7 @@ export class OrdersService {
           throw { type: EOrderErrorType.ORDER_CAR_IS_NOT_AVAILABLE };
         }
 
-        let canBookCar = await this.canOrderCar(
+        const canBookCar = await this.canOrderCar(
           createOrderDto,
           transactionHost,
         );
@@ -204,11 +204,11 @@ export class OrdersService {
           throw { type: EOrderErrorType.ORDER_CAR_IS_NOT_AVAILABLE };
         }
 
-        let currentDate = new Date();
-        let couponCode = createOrderDto.coupon_code
+        const currentDate = new Date();
+        const couponCode = createOrderDto.coupon_code
           ? createOrderDto.coupon_code
           : '';
-        let couponInDB = await this.couponsRepository.findOne<Coupon>({
+        const couponInDB = await this.couponsRepository.findOne<Coupon>({
           where: {
             code: couponCode,
             expiration_time: { [Op.gte]: currentDate },
@@ -222,12 +222,12 @@ export class OrdersService {
         if (createOrderDto.order_status_id !== EOrderStatus.order) {
           throw { type: EOrderErrorType.ORDER_IS_INTERNAL_ERROR };
         }
-        let numberOfDays = calculateNumberOfRentDays(
+        const numberOfDays = calculateNumberOfRentDays(
           createOrderDto.pick_date_time.toString(),
           createOrderDto.drop_date_time.toString(),
         );
 
-        let order = new Order();
+        const order = new Order();
         order.user_id = userId;
         order.car_id = createOrderDto.car_id;
         order.order_status_id = createOrderDto.order_status_id;
@@ -237,7 +237,7 @@ export class OrdersService {
         order.billing_id = createOrderDto.billing_id;
         order.tax = createOrderDto.tax;
         order.detail = createOrderDto.detail;
-        let totalPriceWithNumberOfDays = numberOfDays * carInDB.rental_price;
+        const totalPriceWithNumberOfDays = numberOfDays * carInDB.rental_price;
         let discount: number = 0;
         if (couponInDB) {
           order.coupon_id = couponInDB.id;
@@ -254,23 +254,23 @@ export class OrdersService {
               break;
           }
         }
-        let totalPriceWithNumberOfDaysAfterDiscount =
+        const totalPriceWithNumberOfDaysAfterDiscount =
           totalPriceWithNumberOfDays - discount;
-        let tax_price =
+        const tax_price =
           (totalPriceWithNumberOfDaysAfterDiscount * createOrderDto.tax) / 100;
 
         order.discount = discount;
         order.tax_price = tax_price;
         order.subtotal = totalPriceWithNumberOfDays;
         order.total = totalPriceWithNumberOfDaysAfterDiscount + tax_price;
-        let newOrder = await order.save(transactionHost);
+        const newOrder = await order.save(transactionHost);
 
-        let orderStatusHistory = new OrderStatusHistory();
+        const orderStatusHistory = new OrderStatusHistory();
         orderStatusHistory.order_id = newOrder.id;
         orderStatusHistory.order_status_id = createOrderDto.order_status_id;
         await orderStatusHistory.save(transactionHost);
 
-        let user = await this.userService.getUserInformation(userId);
+        const user = await this.userService.getUserInformation(userId);
         if (user) {
           await this.orderQueue.add(EProcessName.create_order, {
             user_name: user.name,
@@ -300,7 +300,7 @@ export class OrdersService {
     orderId: number,
     updateOrderDto: UpdateOrderDto,
   ) {
-    let orderOfUser = await this.ordersRepository.findOne({
+    const orderOfUser = await this.ordersRepository.findOne({
       where: {
         id: orderId,
         user_id: userId,
@@ -321,9 +321,8 @@ export class OrdersService {
       order_status_id = EOrderStatus.cancel;
     }
     try {
-      let currentDate = new Date();
       await this.sequelize.transaction(async (t) => {
-        let transactionHost = { transaction: t };
+        const transactionHost = { transaction: t };
         await orderOfUser.update(
           {
             order_status_id: order_status_id,
@@ -334,26 +333,10 @@ export class OrdersService {
           transactionHost,
         );
 
-        let orderStatusHistory = new OrderStatusHistory();
+        const orderStatusHistory = new OrderStatusHistory();
         orderStatusHistory.order_id = orderOfUser.id;
         orderStatusHistory.order_status_id = order_status_id;
         await orderStatusHistory.save(transactionHost);
-
-        // let user = await this.userService.getUserInformation(userId);
-        // if (user) {
-        //   if (order_status_id === EOrderStatus.paid) {
-        //     await this.orderQueue.add(EProcessName.pay_order, {
-        //       user_name: user.name,
-        //       paid_date_time: currentDate
-        //     });
-        //   }
-        //   if (order_status_id === EOrderStatus.cancel) {
-        //     await this.orderQueue.add(EProcessName.cancel_order, {
-        //       user_name: user.name,
-        //       cancel_date_time: currentDate
-        //     });
-        //   }
-        // }
       });
     } catch (error) {
       this.orderIsInternalError();
@@ -361,7 +344,7 @@ export class OrdersService {
   }
 
   async findOne(userId: number, id: number): Promise<OrderResponseDto> {
-    let orderOfUser = await this.ordersRepository.findOne<Order>({
+    const orderOfUser = await this.ordersRepository.findOne<Order>({
       where: {
         id: id,
         user_id: userId,

@@ -36,8 +36,8 @@ export const isPriceValid = (price?: number) => {
 
 export const isSameDateTime = (dateTimeA?: Date, dateTimeB?: Date) => {
   if (dateTimeA === null || dateTimeB === null) return false;
-  let a = new Date(dateTimeA).toISOString();
-  let b = new Date(dateTimeB).toISOString();
+  const a = new Date(dateTimeA).toISOString();
+  const b = new Date(dateTimeB).toISOString();
   return a === b;
 };
 
@@ -45,6 +45,6 @@ export const toNumber = (value: string) => {
   if (isNaN(+value)) {
     return 'NA';
   }
-  let newValue: number = parseInt(value);
+  const newValue: number = parseInt(value);
   return newValue;
 };
