@@ -20,7 +20,7 @@ import {
   BadRequestCode,
   InternalServerErrorCode,
 } from '../../common/enum/exception-code';
-import { FindOptions, Op, or } from 'sequelize';
+import { FindOptions, Op } from 'sequelize';
 import { EOrderErrorType, EOrderStatus } from '../../common/enum/order.enum';
 import { Coupon } from './entities/coupon.entity';
 import { CouponType } from './entities/coupon-types.entity';
@@ -238,7 +238,7 @@ export class OrdersService {
         order.tax = createOrderDto.tax;
         order.detail = createOrderDto.detail;
         const totalPriceWithNumberOfDays = numberOfDays * carInDB.rental_price;
-        let discount: number = 0;
+        let discount = 0;
         if (couponInDB) {
           order.coupon_id = couponInDB.id;
           switch (couponInDB.coupon_type_id) {

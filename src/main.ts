@@ -24,7 +24,17 @@ async function bootstrap() {
   app.use(morganResponseLogger(globalLogger));
   app.useGlobalInterceptors(new AppLogFileInterceptor(globalLogger));
 
-  await app.listen(process.env.APP_PORT).then(() => {});
+  await app.listen(process.env.APP_PORT);
 }
 
-bootstrap().then(() => {});
+bootstrap()
+  .then(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Server running!');
+    }
+  })
+  .catch((error) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Server error!' + error);
+    }
+  });

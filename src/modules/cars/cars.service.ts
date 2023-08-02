@@ -12,7 +12,7 @@ import {
   USER_FAVORITE_CAR_REPOSITORY,
   USER_REVIEWS_CAR_REPOSITORY,
 } from '../../shared/constants';
-import sequelize, { DestroyOptions, FindOptions, LOCK, Op } from 'sequelize';
+import sequelize, { DestroyOptions, FindOptions, Op } from 'sequelize';
 import { UpdateOptions } from 'sequelize/types/model';
 import { Car } from './entities/car.entity';
 import { AppExceptionService } from '../../shared/exception/app.exception.service';
@@ -272,7 +272,7 @@ export class CarsService {
   }
 
   async findAll(pagingCarDto: PagingCarDto): Promise<AllCarResponseDto> {
-    let {
+    const {
       limit,
       offset,
       types,
@@ -284,9 +284,6 @@ export class CarsService {
       drop_city,
       drop_date_time,
     } = pagingCarDto;
-    let carInDB;
-    if (!limit) limit = 20;
-    if (!offset) offset = 0;
 
     const query = `(SELECT id FROM cars
         where
@@ -303,7 +300,7 @@ export class CarsService {
         )
     )`;
 
-    carInDB = await this.carsRepository.findAndCountAll({
+    const carInDB = await this.carsRepository.findAndCountAll({
       where: {
         id: { [Op.in]: sequelize.literal(query) },
         ...(types && {
@@ -373,8 +370,8 @@ export class CarsService {
           },
         },
       ],
-      offset: +offset,
-      limit: +limit,
+      offset: offset ? +offset : 0,
+      limit: limit ? +limit : 20,
     });
     return new AllCarResponseDto(
       carInDB.rows.map((car) => new CarResponseDto(car)),

@@ -1,5 +1,4 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
-import { STRING } from 'sequelize';
 
 @Table({
   tableName: 'car_statuses',

@@ -41,7 +41,13 @@ export class AppValidationPipe implements PipeTransform<any> {
   }
 
   private toValidate(metaType: any): boolean {
-    const types: Function[] = [String, Boolean, Number, Array, Object];
+    const types: (new (...args: any[]) => any)[] = [
+      String,
+      Boolean,
+      Number,
+      Array,
+      Object,
+    ];
     return !types.includes(metaType);
   }
 }

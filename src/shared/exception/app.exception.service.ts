@@ -12,8 +12,8 @@ import {
 @Injectable()
 export class AppExceptionService {
   badRequestException(
-    code: string = '',
-    title: string = '',
+    code = '',
+    title = '',
     message: string,
     errors: IDetailExceptionMessage[],
   ): void {
@@ -27,8 +27,8 @@ export class AppExceptionService {
   }
 
   unauthorizedException(
-    code: string = '',
-    title: string = '',
+    code = '',
+    title = '',
     message: string,
     errors: IDetailExceptionMessage[],
   ): void {
@@ -42,8 +42,8 @@ export class AppExceptionService {
   }
 
   internalServerErrorException(
-    code: string = '',
-    title: string = '',
+    code = '',
+    title = '',
     message: string,
     errors: IDetailExceptionMessage[],
   ): void {

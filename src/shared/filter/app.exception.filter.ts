@@ -13,7 +13,6 @@ export class AppAllExceptionFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
-    const request: any = ctx.getRequest();
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
