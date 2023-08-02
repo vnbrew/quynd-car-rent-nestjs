@@ -35,17 +35,22 @@ export class PagingCarDto {
   @IsString()
   public name?: string;
 
-  @IsOptional()
-  @Type(() => String)
-  @IsString()
-  public city?: string;
+  // @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  public pick_city?: number;
 
-  @IsOptional()
+  // @IsOptional()
   @Type(() => Date)
   @IsDate()
   public pick_date_time?: Date;
 
-  @IsOptional()
+  // @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  public drop_city?: number;
+
+  // @IsOptional()
   @Type(() => Date)
   @IsDate()
   public drop_date_time?: Date;

@@ -1,9 +1,19 @@
 import { Request } from 'express';
-import {
-  IBaseExceptionMessage,
-  IDetailExceptionMessage,
-} from '../../shared/exception/app.exception.interface';
-import { IsDecimal } from 'sequelize-typescript/dist/browser';
+
+export const calculateNumberOfRentDays = (
+  pick: string,
+  drop: string,
+): number => {
+  const ONE_DAY: number = 24 * 60 * 60 * 1000;
+  const pickDate: Date = new Date(pick);
+  pickDate.setHours(0, 0, 0, 0);
+  const dropDate: Date = new Date(drop);
+  dropDate.setHours(0, 0, 0, 0);
+  const difference: number = Math.ceil(
+    (dropDate.getTime() - pickDate.getTime() + ONE_DAY) / ONE_DAY,
+  );
+  return difference;
+};
 
 export const extractTokenFromHeader = (request: Request) => {
   const [type, token] = request.headers.authorization?.split(' ') ?? [];
@@ -26,8 +36,8 @@ export const isPriceValid = (price?: number) => {
 
 export const isSameDateTime = (dateTimeA?: Date, dateTimeB?: Date) => {
   if (dateTimeA === null || dateTimeB === null) return false;
-  let a = new Date(dateTimeA).toISOString();
-  let b = new Date(dateTimeB).toISOString();
+  const a = new Date(dateTimeA).toISOString();
+  const b = new Date(dateTimeB).toISOString();
   return a === b;
 };
 
@@ -35,6 +45,6 @@ export const toNumber = (value: string) => {
   if (isNaN(+value)) {
     return 'NA';
   }
-  let newValue: number = parseInt(value);
+  const newValue: number = parseInt(value);
   return newValue;
 };

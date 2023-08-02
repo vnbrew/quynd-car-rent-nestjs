@@ -10,6 +10,6 @@ export enum EProcessName {
   booking_success = 'booking_success',
   payment_completed = 'payment_completed',
   create_order = 'create_order',
-  pay_order = 'pay_order',
-  cancel_order = 'cancel_order',
+  // pay_order = 'pay_order',
+  // cancel_order = 'cancel_order',
 }

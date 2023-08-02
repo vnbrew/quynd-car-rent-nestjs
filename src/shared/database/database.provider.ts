@@ -7,7 +7,7 @@ export const databaseProvider = [
   {
     provide: SEQUELIZE,
     useFactory: async () => {
-      let config = databaseConfig.config as SequelizeOptions;
+      const config = databaseConfig.config as SequelizeOptions;
       const sequelize = new Sequelize(config);
       sequelize.addModels([...SEQUELIZE_MODELS]);
       // await sequelize.sync({ force: false });

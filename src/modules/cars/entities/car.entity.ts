@@ -10,16 +10,16 @@ import {
   HasOne,
   HasMany,
 } from 'sequelize-typescript';
-import { Office } from './car-office.entity';
 import { CarStatus } from './car-status.entity';
 import { CarSteering } from './car-steering.entity';
 import { CarType } from './car-type.entity';
 import { CarCapacity } from './car-capacity.entity';
-import { CarPrice } from './car-price.entity';
 import { CarImage } from './car-image.entity';
 import { UserReviewCar } from './user-review-car.entity';
-import { Rental } from '../../rental/entities/rental.entity';
 import { Order } from '../../orders/entities/order.entity';
+import { City } from './city.entity';
+import { PickCarCity } from './pick-car-city.entity';
+import { DropCarCity } from './drop-car-city.entity';
 
 @Table({
   tableName: 'cars',
@@ -30,25 +30,29 @@ export class Car extends Model<Car> {
   @Column({ primaryKey: true })
   id!: number;
 
-  @ForeignKey(() => Office)
-  @Column
-  office_id!: number;
-
   @ForeignKey(() => CarType)
   @Column
   car_type_id!: number;
+  @BelongsTo(() => CarType)
+  type!: CarType;
 
   @ForeignKey(() => CarCapacity)
   @Column
   car_capacity_id!: number;
+  @BelongsTo(() => CarCapacity)
+  capacity!: CarCapacity;
 
   @ForeignKey(() => CarSteering)
   @Column
   car_steering_id!: number;
+  @BelongsTo(() => CarSteering)
+  steering!: CarSteering;
 
   @ForeignKey(() => CarStatus)
   @Column
   car_status_id!: number;
+  @BelongsTo(() => CarStatus)
+  status!: CarStatus;
 
   @Column
   name!: string;
@@ -61,30 +65,23 @@ export class Car extends Model<Car> {
   @Column(DataType.TEXT)
   description?: string;
 
-  @BelongsTo(() => CarSteering)
-  steering!: CarSteering;
+  @Column({ allowNull: false })
+  rental_price: number;
 
-  @BelongsTo(() => CarStatus)
-  status!: CarStatus;
-
-  @BelongsTo(() => Office)
-  office!: Office;
-
-  @BelongsTo(() => CarType)
-  type!: CarType;
-
-  @BelongsTo(() => CarCapacity)
-  capacity!: CarCapacity;
-
-  @HasOne(() => CarPrice)
-  carPrice: CarPrice;
+  @Column({ allowNull: false })
+  original_price: number;
 
   @HasMany(() => CarImage)
   carImages: CarImage[];
 
   @HasMany(() => UserReviewCar)
-  // users: Array<User & { UserReviewCar: UserReviewCar }>;
   userReviewCars: UserReviewCar[];
+
+  @HasMany(() => PickCarCity)
+  pickCarCities: PickCarCity[];
+
+  @HasMany(() => DropCarCity)
+  dropCarCities: DropCarCity[];
 
   @HasMany(() => Order)
   orders: Order[];

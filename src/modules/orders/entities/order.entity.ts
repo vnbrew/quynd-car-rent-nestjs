@@ -13,6 +13,7 @@ import { User } from '../../users/entities/user.entity';
 import { OrderStatus } from './order-status.entity';
 import { Coupon } from './coupon.entity';
 import { PaymentType } from './payment-type.entity';
+import { BillingInfo } from '../../users/entities/billing-info.entity';
 
 @Table({
   tableName: 'orders',
@@ -63,6 +64,13 @@ export class Order extends Model<Order> {
   @BelongsTo(() => Coupon)
   coupon!: Coupon;
 
+  @ForeignKey(() => BillingInfo)
+  @Column
+  billing_id!: number;
+
+  @BelongsTo(() => BillingInfo)
+  billing_info!: BillingInfo;
+
   @Column({
     type: DataType.DATE,
     allowNull: false,
@@ -80,24 +88,6 @@ export class Order extends Model<Order> {
     allowNull: false,
   })
   tax: number;
-
-  @Column({
-    type: DataType.DATE,
-    allowNull: true,
-  })
-  order_date_time: Date;
-
-  @Column({
-    type: DataType.DATE,
-    allowNull: true,
-  })
-  paid_date_time: Date;
-
-  @Column({
-    type: DataType.DATE,
-    allowNull: true,
-  })
-  cancel_date_time: Date;
 
   @Column({
     type: DataType.DECIMAL(10, 2),

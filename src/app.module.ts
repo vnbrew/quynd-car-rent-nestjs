@@ -10,8 +10,6 @@ import { AppLanguageModule } from './shared/language/app.language.module';
 import { UsersModule } from './modules/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { CarsModule } from './modules/cars/cars.module';
-import { RentalModule } from './modules/rental/rental.module';
-import { PaymentModule } from './modules/payment/payment.module';
 import { EmailModule } from './shared/email/email.module';
 import { QueueModule } from './shared/queue/queue.module';
 import { RedisCacheModule } from './shared/cache/rediscache.module';
@@ -31,8 +29,6 @@ import { OrdersModule } from './modules/orders/orders.module';
     AppLanguageModule,
     UsersModule,
     CarsModule,
-    RentalModule,
-    PaymentModule,
     EmailModule,
     QueueModule,
     TaskScheduleModule,

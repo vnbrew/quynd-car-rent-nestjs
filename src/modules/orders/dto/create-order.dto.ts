@@ -9,13 +9,24 @@ export class CreateOrderDto {
   readonly order_status_id: number;
 
   @IsNumber()
+  readonly billing_id: number;
+
+  @IsNumber()
   readonly payment_type_id: number;
 
   readonly coupon_code?: string;
 
+  @Type(() => Number)
+  @IsNumber()
+  public pick_city?: number;
+
   @IsDate()
   @Type(() => Date)
   readonly pick_date_time: Date;
+
+  @Type(() => Number)
+  @IsNumber()
+  public drop_city?: number;
 
   @IsDate()
   @Type(() => Date)

@@ -33,22 +33,22 @@ export class AuthGuard implements CanActivate {
     const token = extractTokenFromHeader(request);
     //Check header has token or not
     if (!token) {
-      let code = UnauthorizedCode.UN_HEADER_WITH_OUT_TOKEN;
-      let message = this.i18n.translate('error.unauthorized', {
+      const code = UnauthorizedCode.UN_HEADER_WITH_OUT_TOKEN;
+      const message = this.i18n.translate('error.unauthorized', {
         lang: I18nContext.current().lang,
       });
       this.appExceptionService.unauthorizedException(code, '', message, []);
     }
 
     //Check memory cached has token invalid or not
-    let isTokenInWhiteList = await this.redisCacheService.isTokenInWhiteList(
+    const isTokenInWhiteList = await this.redisCacheService.isTokenInWhiteList(
       token,
     );
-    let isTokenInBlackList = await this.redisCacheService.isTokenInBlackList(
+    const isTokenInBlackList = await this.redisCacheService.isTokenInBlackList(
       token,
     );
     if (isTokenInBlackList || !isTokenInWhiteList) {
-      let message = this.i18n.translate('error.unauthorized', {
+      const message = this.i18n.translate('error.unauthorized', {
         lang: I18nContext.current().lang,
       });
       this.appExceptionService.unauthorizedException(
@@ -65,12 +65,12 @@ export class AuthGuard implements CanActivate {
         secret: process.env.JWT_KEY,
       });
     } catch (error) {
-      let hasTokenInDB = await this.usersService.hasTokenInDB(token);
+      const hasTokenInDB = await this.usersService.hasTokenInDB(token);
       if (hasTokenInDB) {
         await this.usersService.removeTokenInDB(token);
       }
       await this.redisCacheService.addTokenToBlackList(token);
-      let message = this.i18n.translate('error.unauthorized', {
+      const message = this.i18n.translate('error.unauthorized', {
         lang: I18nContext.current().lang,
       });
       this.appExceptionService.unauthorizedException(

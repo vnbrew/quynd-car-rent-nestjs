@@ -20,14 +20,12 @@ export class RedisCacheService {
   }
 
   async isTokenInBlackList(token: string): Promise<boolean> {
-    let tokenStatus = await this.cacheManager.get<String>(token);
+    const tokenStatus = await this.cacheManager.get<String>(token);
     return tokenStatus === TokenStatus.blacklist;
   }
 
   async isTokenInWhiteList(token: string): Promise<boolean> {
-    // console.log(token);
-    let tokenStatus = await this.cacheManager.get<String>(token);
-    // console.log(tokenStatus);
+    const tokenStatus = await this.cacheManager.get<String>(token);
     return tokenStatus === TokenStatus.whitelist;
   }
 }

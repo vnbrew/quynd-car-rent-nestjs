@@ -55,7 +55,7 @@ export class UsersController {
   @SetRoles(Role.user, Role.admin)
   @Get('users/me')
   async findMe(@Req() request): Promise<User> {
-    let user = request.user;
+    const user = request.user;
     return await this.usersService.findMe(user);
   }
 
@@ -66,7 +66,7 @@ export class UsersController {
     @Req() request,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UpdateUserResponseDto> {
-    let user = request.user;
+    const user = request.user;
     return await this.usersService.updateMe(user.id, updateUserDto);
   }
 

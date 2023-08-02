@@ -24,10 +24,10 @@ export class AppValidationPipe implements PipeTransform<any> {
         const code = '';
         const field = error.property;
         const message = Object.values(error.constraints)[0];
-        let detail: IDetailExceptionMessage = { code, field, message };
+        const detail: IDetailExceptionMessage = { code, field, message };
         return detail;
       });
-      let message = this.i18n.translate('error.data_type', {
+      const message = this.i18n.translate('error.data_type', {
         lang: I18nContext.current().lang,
       });
       this.exceptionService.badRequestException(

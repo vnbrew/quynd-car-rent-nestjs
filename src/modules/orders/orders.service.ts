@@ -21,23 +21,26 @@ import {
   InternalServerErrorCode,
 } from '../../common/enum/exception-code';
 import { FindOptions, Op, or } from 'sequelize';
-import { EOrderStatus } from '../../common/enum/order.enum';
+import { EOrderErrorType, EOrderStatus } from '../../common/enum/order.enum';
 import { Coupon } from './entities/coupon.entity';
 import { CouponType } from './entities/coupon-types.entity';
 import { OrderResponseDto } from './dto/order-response.dto';
-import { RentalStatus } from '../rental/entities/rental-status.entity';
 import { User } from '../users/entities/user.entity';
 import { Car } from '../cars/entities/car.entity';
-import { Office } from '../cars/entities/car-office.entity';
+import { PaymentType } from './entities/payment-type.entity';
+import { calculateNumberOfRentDays } from '../../common/utils/ultils';
+import { OrderStatusHistory } from './entities/order-status-history.entity';
 import { CarType } from '../cars/entities/car-type.entity';
 import { CarSteering } from '../cars/entities/car-steering.entity';
 import { CarCapacity } from '../cars/entities/car-capacity.entity';
 import { CarStatus } from '../cars/entities/car-status.entity';
-import { CarImage } from '../cars/entities/car-image.entity';
-import { CarPrice } from '../cars/entities/car-price.entity';
 import { UserReviewCar } from '../cars/entities/user-review-car.entity';
-import { Payment } from '../payment/entities/payment.entity';
-import { PaymentType } from './entities/payment-type.entity';
+import { ECarStatus } from '../../common/enum/car.enum';
+import { CarImage } from '../cars/entities/car-image.entity';
+import { PickCarCity } from '../cars/entities/pick-car-city.entity';
+import { City } from '../cars/entities/city.entity';
+import { DropCarCity } from '../cars/entities/drop-car-city.entity';
+import { OrderStatus } from './entities/order-status.entity';
 
 @Injectable()
 export class OrdersService {
@@ -53,7 +56,7 @@ export class OrdersService {
   ) {}
 
   private couponIsInValid() {
-    let message = this.i18n.translate('error.data_type', {
+    const message = this.i18n.translate('error.data_type', {
       lang: I18nContext.current().lang,
     });
     const code = '';
@@ -61,7 +64,7 @@ export class OrdersService {
     const filed_message = this.i18n.translate('error.coupon_is_not_available', {
       lang: I18nContext.current().lang,
     });
-    let detail: IDetailExceptionMessage = {
+    const detail: IDetailExceptionMessage = {
       code,
       field,
       message: filed_message,
@@ -75,7 +78,7 @@ export class OrdersService {
   }
 
   private carIsNotAvailable() {
-    let message = this.i18n.translate('error.data_type', {
+    const message = this.i18n.translate('error.data_type', {
       lang: I18nContext.current().lang,
     });
     const code = '';
@@ -83,7 +86,7 @@ export class OrdersService {
     const filed_message = this.i18n.translate('error.car_is_not_available', {
       lang: I18nContext.current().lang,
     });
-    let detail: IDetailExceptionMessage = {
+    const detail: IDetailExceptionMessage = {
       code,
       field,
       message: filed_message,
@@ -97,7 +100,7 @@ export class OrdersService {
   }
 
   private orderIsNotAvailable() {
-    let message = this.i18n.translate('error.data_type', {
+    const message = this.i18n.translate('error.data_type', {
       lang: I18nContext.current().lang,
     });
     const code = '';
@@ -105,7 +108,7 @@ export class OrdersService {
     const filed_message = this.i18n.translate('error.order_is_not_available', {
       lang: I18nContext.current().lang,
     });
-    let detail: IDetailExceptionMessage = {
+    const detail: IDetailExceptionMessage = {
       code,
       field,
       message: filed_message,
@@ -119,7 +122,7 @@ export class OrdersService {
   }
 
   private orderIsInternalError() {
-    let message = this.i18n.translate('error.internal_server_error', {
+    const message = this.i18n.translate('error.internal_server_error', {
       lang: I18nContext.current().lang,
     });
     this.appExceptionService.internalServerErrorException(
@@ -131,7 +134,7 @@ export class OrdersService {
   }
 
   private async isCarInOrder(carId: number) {
-    let carInRentalDB = await this.ordersRepository.findOne<Order>({
+    const carInRentalDB = await this.ordersRepository.findOne<Order>({
       where: {
         car_id: carId,
       },
@@ -139,10 +142,13 @@ export class OrdersService {
     return !!carInRentalDB;
   }
 
-  private async canOrderCar(createOrderDto: CreateOrderDto): Promise<boolean> {
-    let carInRental = await this.isCarInOrder(createOrderDto.car_id);
+  private async canOrderCar(
+    createOrderDto: CreateOrderDto,
+    transactionHost,
+  ): Promise<boolean> {
+    const carInRental = await this.isCarInOrder(createOrderDto.car_id);
     if (!carInRental) return true;
-    let carInRentalDB = await this.ordersRepository.findOne<Order>({
+    const carInRentalDB = await this.ordersRepository.findOne<Order>({
       where: {
         car_id: createOrderDto.car_id,
         order_status_id: { [Op.or]: [EOrderStatus.order, EOrderStatus.paid] },
@@ -169,55 +175,69 @@ export class OrdersService {
           },
         ],
       },
+      transactionHost,
     } as FindOptions);
     return !carInRentalDB;
   }
 
   async createOrder(userId: number, createOrderDto: CreateOrderDto) {
-    let isCarAvailable = await this.carService.isCarAvailable(
-      createOrderDto.car_id,
-    );
-    if (!isCarAvailable) {
-      this.carIsNotAvailable();
-    }
-    let canBookCar = await this.canOrderCar(createOrderDto);
-    if (!canBookCar) {
-      this.carIsNotAvailable();
-    }
-    let carInDB = await this.carService.findCarById(createOrderDto.car_id);
-    if (!carInDB) {
-      this.carIsNotAvailable();
-    }
-    let currentDate = new Date();
-    let couponCode = createOrderDto.coupon_code
-      ? createOrderDto.coupon_code
-      : '';
-    let couponInDB = await this.couponsRepository.findOne<Coupon>({
-      where: {
-        code: couponCode,
-        expiration_time: { [Op.gte]: currentDate },
-      },
-      include: [CouponType],
-    } as FindOptions);
-    if (createOrderDto.coupon_code !== '' && !couponInDB) {
-      this.couponIsInValid();
-    }
-    if (createOrderDto.order_status_id !== EOrderStatus.order) {
-      this.orderIsInternalError();
-    }
     try {
       await this.sequelize.transaction(async (t) => {
-        let transactionHost = { transaction: t };
-        let order = new Order();
+        const transactionHost = { transaction: t };
+        // await this.sequelize.query(`SELECT * FROM cars WHERE id = ${createOrderDto.car_id} FOR UPDATE`, transactionHost);
+        // await this.sequelize.query(`UPDATE cars SET locked = true WHERE id = ${createOrderDto.car_id}`, transactionHost);
+        const carInDB = await this.carService.isCarAvailableAndCanPickDropAt(
+          createOrderDto.car_id,
+          createOrderDto.pick_city,
+          createOrderDto.drop_city,
+          t,
+        );
+        if (!carInDB) {
+          throw { type: EOrderErrorType.ORDER_CAR_IS_NOT_AVAILABLE };
+        }
+
+        const canBookCar = await this.canOrderCar(
+          createOrderDto,
+          transactionHost,
+        );
+        if (!canBookCar) {
+          throw { type: EOrderErrorType.ORDER_CAR_IS_NOT_AVAILABLE };
+        }
+
+        const currentDate = new Date();
+        const couponCode = createOrderDto.coupon_code
+          ? createOrderDto.coupon_code
+          : '';
+        const couponInDB = await this.couponsRepository.findOne<Coupon>({
+          where: {
+            code: couponCode,
+            expiration_time: { [Op.gte]: currentDate },
+          },
+          transactionHost,
+          include: [CouponType],
+        } as FindOptions);
+        if (createOrderDto.coupon_code !== '' && !couponInDB) {
+          throw { type: EOrderErrorType.ORDER_COUPON_IS_INVALID };
+        }
+        if (createOrderDto.order_status_id !== EOrderStatus.order) {
+          throw { type: EOrderErrorType.ORDER_IS_INTERNAL_ERROR };
+        }
+        const numberOfDays = calculateNumberOfRentDays(
+          createOrderDto.pick_date_time.toString(),
+          createOrderDto.drop_date_time.toString(),
+        );
+
+        const order = new Order();
         order.user_id = userId;
         order.car_id = createOrderDto.car_id;
         order.order_status_id = createOrderDto.order_status_id;
         order.payment_type_id = createOrderDto.payment_type_id;
         order.pick_date_time = createOrderDto.pick_date_time;
         order.drop_date_time = createOrderDto.drop_date_time;
-        order.order_date_time = currentDate;
+        order.billing_id = createOrderDto.billing_id;
         order.tax = createOrderDto.tax;
         order.detail = createOrderDto.detail;
+        const totalPriceWithNumberOfDays = numberOfDays * carInDB.rental_price;
         let discount: number = 0;
         if (couponInDB) {
           order.coupon_id = couponInDB.id;
@@ -226,8 +246,7 @@ export class OrdersService {
               discount = couponInDB.value;
               break;
             case 2:
-              discount =
-                (carInDB.carPrice.rental_price * couponInDB.value) / 100;
+              discount = (totalPriceWithNumberOfDays * couponInDB.value) / 100;
               // console.log({ "1": carInDB.carPrice.rental_price, "2": couponInDB.value, "3": discount });
               break;
             default:
@@ -235,16 +254,23 @@ export class OrdersService {
               break;
           }
         }
-        let amount = carInDB.carPrice.rental_price - discount;
-        let tax_price = (amount * createOrderDto.tax) / 100;
+        const totalPriceWithNumberOfDaysAfterDiscount =
+          totalPriceWithNumberOfDays - discount;
+        const tax_price =
+          (totalPriceWithNumberOfDaysAfterDiscount * createOrderDto.tax) / 100;
 
         order.discount = discount;
-        order.subtotal = carInDB.carPrice.rental_price;
         order.tax_price = tax_price;
-        order.total = amount + tax_price;
+        order.subtotal = totalPriceWithNumberOfDays;
+        order.total = totalPriceWithNumberOfDaysAfterDiscount + tax_price;
+        const newOrder = await order.save(transactionHost);
 
-        await order.save(transactionHost);
-        let user = await this.userService.getUserInformation(userId);
+        const orderStatusHistory = new OrderStatusHistory();
+        orderStatusHistory.order_id = newOrder.id;
+        orderStatusHistory.order_status_id = createOrderDto.order_status_id;
+        await orderStatusHistory.save(transactionHost);
+
+        const user = await this.userService.getUserInformation(userId);
         if (user) {
           await this.orderQueue.add(EProcessName.create_order, {
             user_name: user.name,
@@ -252,9 +278,19 @@ export class OrdersService {
             drop_date_time: createOrderDto.drop_date_time,
           });
         }
+        // await this.sequelize.query(`UPDATE cars SET locked = false WHERE id = ${createOrderDto.car_id}`, transactionHost);
       });
     } catch (error) {
-      this.orderIsInternalError();
+      switch (error.type) {
+        case EOrderErrorType.ORDER_CAR_IS_NOT_AVAILABLE:
+          this.carIsNotAvailable();
+          break;
+        case EOrderErrorType.ORDER_COUPON_IS_INVALID:
+          this.couponIsInValid();
+          break;
+        default:
+          this.orderIsInternalError();
+      }
     }
     return {};
   }
@@ -264,7 +300,7 @@ export class OrdersService {
     orderId: number,
     updateOrderDto: UpdateOrderDto,
   ) {
-    let orderOfUser = await this.ordersRepository.findOne({
+    const orderOfUser = await this.ordersRepository.findOne({
       where: {
         id: orderId,
         user_id: userId,
@@ -285,16 +321,11 @@ export class OrdersService {
       order_status_id = EOrderStatus.cancel;
     }
     try {
-      let currentDate = new Date();
       await this.sequelize.transaction(async (t) => {
-        let transactionHost = { transaction: t };
+        const transactionHost = { transaction: t };
         await orderOfUser.update(
           {
             order_status_id: order_status_id,
-            paid_date_time:
-              order_status_id === EOrderStatus.paid ? currentDate : null,
-            cancel_date_time:
-              order_status_id === EOrderStatus.cancel ? currentDate : null,
             detail: updateOrderDto.detail
               ? updateOrderDto.detail
               : orderOfUser.detail,
@@ -302,21 +333,10 @@ export class OrdersService {
           transactionHost,
         );
 
-        let user = await this.userService.getUserInformation(userId);
-        if (user) {
-          if (order_status_id === EOrderStatus.paid) {
-            await this.orderQueue.add(EProcessName.pay_order, {
-              user_name: user.name,
-              paid_date_time: currentDate,
-            });
-          }
-          if (order_status_id === EOrderStatus.cancel) {
-            await this.orderQueue.add(EProcessName.cancel_order, {
-              user_name: user.name,
-              cancel_date_time: currentDate,
-            });
-          }
-        }
+        const orderStatusHistory = new OrderStatusHistory();
+        orderStatusHistory.order_id = orderOfUser.id;
+        orderStatusHistory.order_status_id = order_status_id;
+        await orderStatusHistory.save(transactionHost);
       });
     } catch (error) {
       this.orderIsInternalError();
@@ -324,7 +344,7 @@ export class OrdersService {
   }
 
   async findOne(userId: number, id: number): Promise<OrderResponseDto> {
-    let orderOfUser = await this.ordersRepository.findOne<Order>({
+    const orderOfUser = await this.ordersRepository.findOne<Order>({
       where: {
         id: id,
         user_id: userId,
@@ -334,16 +354,36 @@ export class OrdersService {
         {
           model: Car,
           include: [
-            Office,
-            CarType,
-            CarSteering,
-            CarCapacity,
-            CarStatus,
-            CarImage,
-            CarPrice,
+            {
+              model: CarType,
+            },
+            {
+              model: CarCapacity,
+            },
+            {
+              model: CarStatus,
+              where: { status: ECarStatus.available },
+            },
+            {
+              model: CarSteering,
+            },
+            {
+              model: CarImage,
+              required: false,
+            },
             {
               model: UserReviewCar,
               include: [User],
+              required: false,
+            },
+            {
+              model: PickCarCity,
+              include: [City],
+              required: false,
+            },
+            {
+              model: DropCarCity,
+              include: [City],
               required: false,
             },
           ],
@@ -355,6 +395,9 @@ export class OrdersService {
         },
         {
           model: PaymentType,
+        },
+        {
+          model: OrderStatus,
         },
       ],
     } as FindOptions);

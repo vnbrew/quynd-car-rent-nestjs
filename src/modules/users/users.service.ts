@@ -3,6 +3,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserResponseDto } from './dto/create-user-response.dto';
 import {
+  SEQUELIZE,
+  USER_BILLING_INFO_REPOSITORY,
   USER_TOKENS_REPOSITORY,
   USERS_REPOSITORY,
 } from '../../shared/constants';
@@ -28,13 +30,18 @@ import { UserLoginResponseDto } from './dto/user-login-response.dto';
 import { UserLogoutResponseDto } from './dto/user-logout-response.dto';
 import { JwtService } from '@nestjs/jwt';
 import { RedisCacheService } from '../../shared/cache/rediscache.service';
+import { BillingInfo } from './entities/billing-info.entity';
+import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
 export class UsersService {
   constructor(
+    @Inject(SEQUELIZE) private readonly sequelize: Sequelize,
     @Inject(USERS_REPOSITORY) private readonly usersRepository: typeof User,
     @Inject(USER_TOKENS_REPOSITORY)
     private readonly userTokensRepository: typeof UserToken,
+    @Inject(USER_BILLING_INFO_REPOSITORY)
+    private readonly billingInfoRepository: typeof BillingInfo,
     private readonly exceptionService: AppExceptionService,
     private readonly i18n: I18nService,
     @InjectQueue(EQueueName.register) private readonly registerQueue: Queue,
@@ -65,11 +72,11 @@ export class UsersService {
   }
 
   async addAccessTokenToDB(userId: number, access_token: string) {
-    let expiration_time: Date = new Date();
+    const expiration_time: Date = new Date();
     expiration_time.setSeconds(
       expiration_time.getSeconds() + parseInt(process.env.JWT_EXP_TIME),
     );
-    let userToken = new UserToken();
+    const userToken = new UserToken();
     userToken.user_id = userId;
     userToken.token = access_token;
     userToken.expiration_time = expiration_time;
@@ -77,11 +84,11 @@ export class UsersService {
   }
 
   async addOrUpdateUserAccessToken(userId: number, access_token: string) {
-    let expiration_time: Date = new Date();
+    const expiration_time: Date = new Date();
     expiration_time.setSeconds(
       expiration_time.getSeconds() + parseInt(process.env.JWT_EXP_TIME),
     );
-    let userTokenInDB = await this.getUserTokenByUserId(userId);
+    const userTokenInDB = await this.getUserTokenByUserId(userId);
     if (userTokenInDB) {
       const options: UpdateOptions = {
         where: { user_id: userId },
@@ -94,7 +101,7 @@ export class UsersService {
         options,
       );
     } else {
-      let userToken = new UserToken();
+      const userToken = new UserToken();
       userToken.user_id = userId;
       userToken.token = access_token;
       userToken.expiration_time = expiration_time;
@@ -106,7 +113,7 @@ export class UsersService {
     const options: FindOptions = {
       where: { token: token },
     };
-    let userTokenInDB = await this.userTokensRepository.findOne(options);
+    const userTokenInDB = await this.userTokensRepository.findOne(options);
     return !!userTokenInDB;
   }
 
@@ -114,7 +121,7 @@ export class UsersService {
     const options: FindOptions = {
       where: { token: token },
     };
-    let userTokenInDB = await this.userTokensRepository.findOne(options);
+    const userTokenInDB = await this.userTokensRepository.findOne(options);
     if (userTokenInDB) {
       await userTokenInDB.destroy();
       return true;
@@ -126,7 +133,7 @@ export class UsersService {
     const options: FindOptions = {
       where: { id: id },
     };
-    let userInDB = await this.usersRepository.findOne<User>(options);
+    const userInDB = await this.usersRepository.findOne<User>(options);
     if (!userInDB) {
       return null;
     }
@@ -135,17 +142,28 @@ export class UsersService {
 
   async register(createUserDto: CreateUserDto): Promise<CreateUserResponseDto> {
     try {
-      const user = new User();
-      user.email = createUserDto.email.trim().toLowerCase();
-      user.name = createUserDto.name;
-      user.address = createUserDto.address;
-      user.city = createUserDto.city;
-      user.phone_number = createUserDto.phone_number;
-      const salt = await genSalt(10);
-      user.password = await hash(createUserDto.password, salt);
-      await user.save();
-      await this.registerQueue.add(EProcessName.register_completed, {
-        user_name: user.name,
+      await this.sequelize.transaction(async (t) => {
+        const transactionHost = { transaction: t };
+        const user = new User();
+        user.email = createUserDto.email.trim().toLowerCase();
+        user.name = createUserDto.name;
+        user.address = createUserDto.address;
+        user.city = createUserDto.city;
+        user.phone_number = createUserDto.phone_number;
+        const salt = await genSalt(10);
+        user.password = await hash(createUserDto.password, salt);
+        const newUser = await user.save(transactionHost);
+
+        const billing = new BillingInfo();
+        billing.user_id = newUser.id;
+        billing.name = createUserDto.name;
+        billing.address = createUserDto.address;
+        billing.city = createUserDto.city;
+        billing.phone_number = createUserDto.phone_number;
+        await billing.save(transactionHost);
+        await this.registerQueue.add(EProcessName.register_completed, {
+          user_name: user.name,
+        });
       });
       return new CreateUserResponseDto();
     } catch (error) {
@@ -155,10 +173,10 @@ export class UsersService {
             const code = '';
             const field = e.path;
             const message = e.message;
-            let detail: IDetailExceptionMessage = { code, field, message };
+            const detail: IDetailExceptionMessage = { code, field, message };
             return detail;
           });
-          let message = this.i18n.translate('error.data_type', {
+          const message = this.i18n.translate('error.data_type', {
             lang: I18nContext.current().lang,
           });
           this.exceptionService.badRequestException(
@@ -169,7 +187,7 @@ export class UsersService {
           );
         }
       }
-      let message = this.i18n.translate('error.internal_server_error', {
+      const message = this.i18n.translate('error.internal_server_error', {
         lang: I18nContext.current().lang,
       });
       this.exceptionService.internalServerErrorException(
@@ -184,30 +202,30 @@ export class UsersService {
   async login(
     userLoginRequestDto: UserLoginRequestDto,
   ): Promise<UserLoginResponseDto> {
-    let email = userLoginRequestDto.email;
-    let password = userLoginRequestDto.password;
-    let userInDB = await this.getUserByEmail(email);
+    const email = userLoginRequestDto.email;
+    const password = userLoginRequestDto.password;
+    const userInDB = await this.getUserByEmail(email);
     if (!userInDB) {
-      let code = BadRequestCode.BA_EMAIL_DOES_NOT_EXIST;
-      let message = this.i18n.translate('error.email_does_not_exist', {
+      const code = BadRequestCode.BA_EMAIL_DOES_NOT_EXIST;
+      const message = this.i18n.translate('error.email_does_not_exist', {
         lang: I18nContext.current().lang,
       });
       this.exceptionService.badRequestException(code, '', message, []);
     }
     const isMatch = await compare(password, userInDB.password);
     if (!isMatch) {
-      let code = BadRequestCode.BA_INVALID_PASSWORD;
-      let message = this.i18n.translate('error.invalid_password', {
+      const code = BadRequestCode.BA_INVALID_PASSWORD;
+      const message = this.i18n.translate('error.invalid_password', {
         lang: I18nContext.current().lang,
       });
       this.exceptionService.badRequestException(code, '', message, []);
     }
-    let payload = {
+    const payload = {
       id: userInDB.id,
       email: userInDB.email,
       role: userInDB.role,
     };
-    let access_token = await this.jwtService.signAsync(payload);
+    const access_token = await this.jwtService.signAsync(payload);
     await this.addAccessTokenToDB(userInDB.id, access_token);
     await this.redisCacheService.addTokenToWhiteList(access_token);
     return new UserLoginResponseDto(access_token);
@@ -223,9 +241,9 @@ export class UsersService {
     const options: FindOptions = {
       where: { id: user.id },
     };
-    let userInDB = await this.usersRepository.findOne<User>(options);
+    const userInDB = await this.usersRepository.findOne<User>(options);
     if (!userInDB) {
-      let message = this.i18n.translate('error.user_does_not_exist', {
+      const message = this.i18n.translate('error.user_does_not_exist', {
         lang: I18nContext.current().lang,
       });
       this.exceptionService.badRequestException(
@@ -242,11 +260,11 @@ export class UsersService {
     id: number,
     updateUserDto: UpdateUserDto,
   ): Promise<UpdateUserResponseDto> {
-    let userInDB = await this.usersRepository.findOne<User>({
+    const userInDB = await this.usersRepository.findOne<User>({
       where: { id },
     } as FindOptions);
     if (!userInDB) {
-      let message = this.i18n.translate('error.user_does_not_exist', {
+      const message = this.i18n.translate('error.user_does_not_exist', {
         lang: I18nContext.current().lang,
       });
       this.exceptionService.badRequestException(
@@ -269,16 +287,16 @@ export class UsersService {
   }
 
   async findAll(): Promise<AllUsersResponseDto> {
-    let users = await this.usersRepository.findAll<User>();
+    const users = await this.usersRepository.findAll<User>();
     return new AllUsersResponseDto(users);
   }
 
   async findOne(id: number): Promise<User> {
-    let userInDB = await this.usersRepository.findOne<User>({
+    const userInDB = await this.usersRepository.findOne<User>({
       where: { id: id },
     } as FindOptions);
     if (!userInDB) {
-      let message = this.i18n.translate('error.user_does_not_exist', {
+      const message = this.i18n.translate('error.user_does_not_exist', {
         lang: I18nContext.current().lang,
       });
       this.exceptionService.badRequestException(
@@ -295,11 +313,11 @@ export class UsersService {
     id: number,
     updateUserDto: UpdateUserDto,
   ): Promise<UpdateUserResponseDto> {
-    let userInDB = await this.usersRepository.findOne<User>({
+    const userInDB = await this.usersRepository.findOne<User>({
       where: { id: id },
     } as FindOptions);
     if (!userInDB) {
-      let message = this.i18n.translate('error.user_does_not_exist', {
+      const message = this.i18n.translate('error.user_does_not_exist', {
         lang: I18nContext.current().lang,
       });
       this.exceptionService.badRequestException(
@@ -322,11 +340,11 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    let userInDB = await this.usersRepository.findOne<User>({
+    const userInDB = await this.usersRepository.findOne<User>({
       where: { id },
     } as FindOptions);
     if (!userInDB) {
-      let message = this.i18n.translate('error.user_does_not_exist', {
+      const message = this.i18n.translate('error.user_does_not_exist', {
         lang: I18nContext.current().lang,
       });
       this.exceptionService.badRequestException(
