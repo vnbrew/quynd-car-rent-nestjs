@@ -182,15 +182,13 @@ export class OrdersService {
 
   async createOrder(userId: number, createOrderDto: CreateOrderDto) {
     try {
-      await this.sequelize.transaction(async (t) => {
-        const transactionHost = { transaction: t };
-        // await this.sequelize.query(`SELECT * FROM cars WHERE id = ${createOrderDto.car_id} FOR UPDATE`, transactionHost);
-        // await this.sequelize.query(`UPDATE cars SET locked = true WHERE id = ${createOrderDto.car_id}`, transactionHost);
+      await this.sequelize.transaction(async (transaction) => {
+        const transactionHost = { transaction: transaction };
         const carInDB = await this.carService.isCarAvailableAndCanPickDropAt(
           createOrderDto.car_id,
           createOrderDto.pick_city,
           createOrderDto.drop_city,
-          t,
+          transaction,
         );
         if (!carInDB) {
           throw { type: EOrderErrorType.ORDER_CAR_IS_NOT_AVAILABLE };
@@ -278,7 +276,6 @@ export class OrdersService {
             drop_date_time: createOrderDto.drop_date_time,
           });
         }
-        // await this.sequelize.query(`UPDATE cars SET locked = false WHERE id = ${createOrderDto.car_id}`, transactionHost);
       });
     } catch (error) {
       switch (error.type) {

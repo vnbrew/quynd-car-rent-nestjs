@@ -25,7 +25,7 @@ export class AppLogFileInterceptor implements NestInterceptor {
           {
             headers: MaskData.maskJSONFields(request.headers, maskJSONOptions),
             type: LOG_TYPE.REQUEST_ARGS,
-            value: MaskData.maskJSONFields(request.body, maskJSONOptions),
+            body: MaskData.maskJSONFields(request.body, maskJSONOptions),
           },
           getCircularReplacer(),
         )}`,

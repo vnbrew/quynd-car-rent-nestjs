@@ -300,7 +300,7 @@ export class CarsService {
         )
     )`;
 
-    const carInDB = await this.carsRepository.findAndCountAll({
+    const carsInDB = await this.carsRepository.findAndCountAll({
       where: {
         id: { [Op.in]: sequelize.literal(query) },
         ...(types && {
@@ -318,6 +318,8 @@ export class CarsService {
         ...(price && { rental_price: { [Op.lte]: +price } }),
         ...(name && { name: { [Op.like]: `%${name}%` } }),
       },
+      offset: offset ? +offset : 0,
+      limit: limit ? +limit : 20,
       group: ['Car.id'],
       include: [
         {
@@ -370,12 +372,11 @@ export class CarsService {
           },
         },
       ],
-      offset: offset ? +offset : 0,
-      limit: limit ? +limit : 20,
     });
+
     return new AllCarResponseDto(
-      carInDB.rows.map((car) => new CarResponseDto(car)),
-      carInDB.count.length,
+      carsInDB.rows.map((car) => new CarResponseDto(car)),
+      carsInDB.count.length,
       +offset,
       +limit,
     );
