@@ -70,7 +70,7 @@ export class OrdersService {
       message: filed_message,
     };
     this.appExceptionService.badRequestException(
-      BadRequestCode.BA_COUPON_DOES_NOT_EXIST,
+      BadRequestCode.BA_NOT_EXIST,
       '',
       message,
       [detail],
@@ -292,7 +292,7 @@ export class OrdersService {
     return {};
   }
 
-  async completeOrder(
+  async paymentOrder(
     userId: number,
     orderId: number,
     updateOrderDto: UpdateOrderDto,
@@ -308,21 +308,12 @@ export class OrdersService {
     if (!orderOfUser) {
       this.orderIsNotAvailable();
     }
-    let order_status_id = EOrderStatus.order;
-    //Pay Order
-    if (updateOrderDto.order_status_id === EOrderStatus.paid) {
-      order_status_id = EOrderStatus.paid;
-    }
-    //Cancel Order
-    else if (updateOrderDto.order_status_id === EOrderStatus.cancel) {
-      order_status_id = EOrderStatus.cancel;
-    }
     try {
       await this.sequelize.transaction(async (t) => {
         const transactionHost = { transaction: t };
         await orderOfUser.update(
           {
-            order_status_id: order_status_id,
+            order_status_id: EOrderStatus.paid,
             detail: updateOrderDto.detail
               ? updateOrderDto.detail
               : orderOfUser.detail,
@@ -332,7 +323,46 @@ export class OrdersService {
 
         const orderStatusHistory = new OrderStatusHistory();
         orderStatusHistory.order_id = orderOfUser.id;
-        orderStatusHistory.order_status_id = order_status_id;
+        orderStatusHistory.order_status_id = EOrderStatus.paid;
+        await orderStatusHistory.save(transactionHost);
+      });
+    } catch (error) {
+      this.orderIsInternalError();
+    }
+  }
+
+  async cancelOrder(
+    userId: number,
+    orderId: number,
+    updateOrderDto: UpdateOrderDto,
+  ) {
+    const orderOfUser = await this.ordersRepository.findOne({
+      where: {
+        id: orderId,
+        user_id: userId,
+        order_status_id: EOrderStatus.order,
+      },
+    } as FindOptions);
+
+    if (!orderOfUser) {
+      this.orderIsNotAvailable();
+    }
+    try {
+      await this.sequelize.transaction(async (t) => {
+        const transactionHost = { transaction: t };
+        await orderOfUser.update(
+          {
+            order_status_id: EOrderStatus.cancel,
+            detail: updateOrderDto.detail
+              ? updateOrderDto.detail
+              : orderOfUser.detail,
+          },
+          transactionHost,
+        );
+
+        const orderStatusHistory = new OrderStatusHistory();
+        orderStatusHistory.order_id = orderOfUser.id;
+        orderStatusHistory.order_status_id = EOrderStatus.cancel;
         await orderStatusHistory.save(transactionHost);
       });
     } catch (error) {

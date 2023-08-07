@@ -180,7 +180,7 @@ export class UsersService {
             lang: I18nContext.current().lang,
           });
           this.exceptionService.badRequestException(
-            BadRequestCode.BA_EMAIL_MUST_BE_UNIQUE,
+            BadRequestCode.BA_UNIQUE_FILED,
             '',
             message,
             transformedErrors,
@@ -206,7 +206,7 @@ export class UsersService {
     const password = userLoginRequestDto.password;
     const userInDB = await this.getUserByEmail(email);
     if (!userInDB) {
-      const code = BadRequestCode.BA_EMAIL_DOES_NOT_EXIST;
+      const code = BadRequestCode.BA_NOT_EXIST;
       const message = this.i18n.translate('error.email_does_not_exist', {
         lang: I18nContext.current().lang,
       });
@@ -247,7 +247,7 @@ export class UsersService {
         lang: I18nContext.current().lang,
       });
       this.exceptionService.badRequestException(
-        BadRequestCode.BA_USER_DOES_NOT_EXIST,
+        BadRequestCode.BA_NOT_EXIST,
         '',
         message,
         [],
@@ -268,7 +268,7 @@ export class UsersService {
         lang: I18nContext.current().lang,
       });
       this.exceptionService.badRequestException(
-        BadRequestCode.BA_USER_DOES_NOT_EXIST,
+        BadRequestCode.BA_NOT_EXIST,
         '',
         message,
         [],
@@ -300,7 +300,7 @@ export class UsersService {
         lang: I18nContext.current().lang,
       });
       this.exceptionService.badRequestException(
-        BadRequestCode.BA_USER_DOES_NOT_EXIST,
+        BadRequestCode.BA_NOT_EXIST,
         '',
         message,
         [],
@@ -321,7 +321,7 @@ export class UsersService {
         lang: I18nContext.current().lang,
       });
       this.exceptionService.badRequestException(
-        BadRequestCode.BA_USER_DOES_NOT_EXIST,
+        BadRequestCode.BA_NOT_EXIST,
         '',
         message,
         [],
@@ -348,7 +348,7 @@ export class UsersService {
         lang: I18nContext.current().lang,
       });
       this.exceptionService.badRequestException(
-        BadRequestCode.BA_USER_DOES_NOT_EXIST,
+        BadRequestCode.BA_NOT_EXIST,
         '',
         message,
         [],

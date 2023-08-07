@@ -435,7 +435,7 @@ export class CarsService {
         lang: I18nContext.current().lang,
       });
       this.appExceptionService.badRequestException(
-        BadRequestCode.BA_CAR_DOES_NOT_EXIST,
+        BadRequestCode.BA_NOT_EXIST,
         '',
         message,
         [],
@@ -456,7 +456,7 @@ export class CarsService {
         lang: I18nContext.current().lang,
       });
       this.appExceptionService.badRequestException(
-        BadRequestCode.BA_CAR_DOES_NOT_EXIST,
+        BadRequestCode.BA_NOT_EXIST,
         '',
         message,
         [],
@@ -647,7 +647,7 @@ export class CarsService {
             lang: I18nContext.current().lang,
           });
           this.appExceptionService.badRequestException(
-            BadRequestCode.BA_CAR_DOES_NOT_EXIST,
+            BadRequestCode.BA_NOT_EXIST,
             '',
             message,
             [],
@@ -717,7 +717,7 @@ export class CarsService {
               lang: I18nContext.current().lang,
             });
             this.appExceptionService.badRequestException(
-              BadRequestCode.BA_USER_FAVORITE_CAR_MUST_ABE_UNIQUE,
+              BadRequestCode.BA_UNIQUE_FILED,
               '',
               message,
               transformedErrors,
@@ -795,7 +795,7 @@ export class CarsService {
             lang: I18nContext.current().lang,
           });
           this.appExceptionService.badRequestException(
-            BadRequestCode.BA_USER_FAVORITE_CAR_MUST_ABE_UNIQUE,
+            BadRequestCode.BA_UNIQUE_FILED,
             '',
             message,
             transformedErrors,
@@ -900,7 +900,7 @@ export class CarsService {
             lang: I18nContext.current().lang,
           });
           this.appExceptionService.badRequestException(
-            BadRequestCode.BA_USER_FAVORITE_CAR_MUST_ABE_UNIQUE,
+            BadRequestCode.BA_UNIQUE_FILED,
             '',
             message,
             transformedErrors,

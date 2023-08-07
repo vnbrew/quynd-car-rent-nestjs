@@ -52,7 +52,7 @@ export class AuthGuard implements CanActivate {
         lang: I18nContext.current().lang,
       });
       this.appExceptionService.unauthorizedException(
-        UnauthorizedCode.UN_TOKEN_OF_USER_LOGOUT,
+        UnauthorizedCode.UN_TOKEN_IN_VALID,
         '',
         message,
         [],

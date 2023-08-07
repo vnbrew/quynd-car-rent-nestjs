@@ -13,6 +13,12 @@ module.exports = {
         password: hashedPassword,
         role: "admin",
         name: "Nguyen Duc Quy"
+      },
+      {
+        email: "user1@gmail.com",
+        password: hashedPassword,
+        role: "user",
+        name: "User 1"
       }
     ]);
 
@@ -23,6 +29,13 @@ module.exports = {
         city: "DN",
         address: "DN",
         phone_number: "+84987677544"
+      },
+      {
+        user_id: 2,
+        name: "User 1",
+        city: "DN",
+        address: "DN",
+        phone_number: "+84987223123"
       }
     ]);
   },
@@ -30,7 +43,7 @@ module.exports = {
   async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete("users", {
       email: {
-        [Sequelize.Op.in]: ["quynd@tech.est-rouge.com"]
+        [Sequelize.Op.in]: ["quynd@tech.est-rouge.com", "user1@gmail.com"]
       }
     });
   }

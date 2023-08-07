@@ -19,7 +19,10 @@ export class OrdersController {
 
   @HttpCode(204)
   @Post('orders')
-  async createOrder(@Req() request, @Body() createOrderDto: CreateOrderDto) {
+  async createOrder(
+    @Req() request: any,
+    @Body() createOrderDto: CreateOrderDto,
+  ) {
     return await this.ordersService.createOrder(
       request.user.id,
       createOrderDto,
@@ -27,13 +30,27 @@ export class OrdersController {
   }
 
   @HttpCode(204)
-  @Patch('orders/:id')
-  async completeOrder(
-    @Req() request,
+  @Patch('payment/:id')
+  async paymentOrder(
+    @Req() request: any,
     @Param('id') id: string,
     @Body() updateOrderDto: UpdateOrderDto,
   ) {
-    return await this.ordersService.completeOrder(
+    return await this.ordersService.paymentOrder(
+      request.user.id,
+      +id,
+      updateOrderDto,
+    );
+  }
+
+  @HttpCode(204)
+  @Patch('cancel/:id')
+  async cancelOrder(
+    @Req() request: any,
+    @Param('id') id: string,
+    @Body() updateOrderDto: UpdateOrderDto,
+  ) {
+    return await this.ordersService.cancelOrder(
       request.user.id,
       +id,
       updateOrderDto,
