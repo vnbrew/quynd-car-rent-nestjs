@@ -1,0 +1,18 @@
+{
+  "existing_email": "このメールアドレスは既に使用されています。",
+  "data_type": "間違ったデータ型",
+  "internal_server_error": "内部サーバーエラー",
+  "email_does_not_exist": "Email does not exist.",
+  "invalid_password": "Incorrect password.",
+  "unauthorized": "Unauthorized.",
+  "method_not_allowed": "Method Not Allowed.",
+  "user_does_not_exist": "User does not exist",
+  "car_does_not_exist": "Car does not exist",
+  "foreign_key_constraint_fails": "Cannot add or update a child row: a foreign key constraint fails",
+  "incorrect_datetime_value": "Incorrect datetime value",
+  "incorrect_decimal_value": "Incorrect decimal value",
+  "car_is_not_available": "This car is not available",
+  "rental_is_not_available": "This rental is not available",
+  "coupon_is_not_available": "Coupon code is not available",
+  "order_is_not_available": "This order is not available"
+}

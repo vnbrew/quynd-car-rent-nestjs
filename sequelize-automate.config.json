@@ -1,0 +1,15 @@
+{
+  "dbOptions": {
+    "database": "quynd_car_rent_nestjs",
+    "username": "root",
+    "password": "er-quynd-123",
+    "dialect": "mysql",
+    "host": "localhost",
+    "port": 3306,
+    "logging": false
+  },
+  "options": {
+    "type": "js",
+    "dir": "models"
+  }
+}
